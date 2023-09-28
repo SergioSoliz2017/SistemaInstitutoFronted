@@ -3,7 +3,12 @@ import {
   faCircleXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
-import { BoxCampo, IconoValidacion, InputBox, TextBox } from "./DiseñoInputValidar"
+import {
+  BoxCampo,
+  IconoValidacion,
+  InputBox,
+  TextBox,
+} from "./DiseñoInputValidar";
 export default function InputValidar({
   estado,
   cambiarEstado,
@@ -11,11 +16,32 @@ export default function InputValidar({
   label,
   placeholder,
   name,
-  expresionRegular
+  expresionRegular,
 }) {
+
+  function calcularEdad(fecha_nacimiento) {
+    var hoy = new Date();
+    var cumpleanos = new Date(fecha_nacimiento);
+    var edad = hoy.getFullYear() - cumpleanos.getFullYear();
+    var m = hoy.getMonth() - cumpleanos.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
+        edad--;
+    }
+    return edad;
+}
+
   const validacion = () => {
-    if (expresionRegular) {
-      if (expresionRegular.test(estado.campo)) {
+    if (tipo != "date") {
+      if (expresionRegular) {
+        if (expresionRegular.test(estado.campo)) {
+          cambiarEstado({ ...estado, valido: "true" });
+        } else {
+          cambiarEstado({ ...estado, valido: "false" });
+        }
+      }
+    } else {
+      var edad = calcularEdad(estado.campo);
+      if (edad >= 5) {
         cambiarEstado({ ...estado, valido: "true" });
       } else {
         cambiarEstado({ ...estado, valido: "false" });

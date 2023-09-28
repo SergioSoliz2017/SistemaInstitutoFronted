@@ -68,10 +68,9 @@ export const ImagenLogoCentro = styled.img`
 `;
 export const ContainerContenido = styled.div`
   width: 70%;
-  height: 85%;
-  background: red;
+  height: 80%;
   position: absolute;
-  top: 75px;
+  top: 90px;
   display: flex;
 `;
 export const ContainerLateral = styled.div`
@@ -88,15 +87,34 @@ export const ContainerRegistro = styled.div`
   display: flex;
   flex-direction: column;
 `;
+export const ContainerCarga = styled.div`
+  width: 70%;
+  height: 100%;
+  background: #d6d6d6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+export const ImagenCarga = styled.img`
+
+`
 export const TituloLateral = styled.span`
-  height: 30px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  width: 100%;
-  color: #d6d6d6;
-  font-size: 18px;
-  font-family: bold;
+  font-size: 25px;
+  font-weight: 1000;
+  position: relative;
+  font-family: "bold";
   text-align: center;
+  margin: 10px 10px 25% 10px;
+  color:#d6d6d6;
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 100%;
+    background: linear-gradient(135deg, #000000, #ffffff);
+  }
 `;
 export const TituloRegistro = styled.span`
   margin: 25px;
@@ -105,16 +123,47 @@ export const TituloRegistro = styled.span`
   font-family: bold;
   text-align: center;
 `;
-export const PasosLateral = styled.span`
-  margin-left: 9%;
-  color: #d6d6d6;
-  font-size: 15px;
-  font-family: bold;
-  margin-bottom: 20px;
+export const ContainerPasosLateral = styled.div `
+width: 100%;
+height: 50px;
+display: flex;
+align-items: center;
+`
+export const CircleProgress = styled.div`
+  margin: 5px 20px 5px 30px;
+  height:40px;
+  width:40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d6d6d6;
+  border-radius: 50%;
   ${(props) =>
     props.seleccionado === "true" &&
     css`
-      color: #4aba44;
+      background: green;
+    `}
+`
+export const Rectangulo = styled.div`
+  width: 15px;
+  height: 30px;
+  margin: -2px 20px -3px 42.5px;
+  background: #d6d6d6;
+  ${(props) =>
+    props.seleccionado === "true" &&
+    css`
+      background: green;
+    `}
+`
+
+export const PasosLateral = styled.span`
+  color: #d6d6d6;
+  font-size: 18px;
+  font-family: bold;
+  ${(props) =>
+    props.seleccionado === "true" &&
+    css`
+      color: green;
     `}
 `;
 export const BotonSiguientePasos = styled.button`
@@ -136,13 +185,60 @@ export const BotonSiguientePasos = styled.button`
 export const ContainerBotonSiguientePasos = styled.div`
   width: 100%;
   height: 50px;
+  left: 10px;
+  display: flex;
+  position: relative;
 `;
 export const ImgIcon = styled(FontAwesomeIcon)`
   width: 100%;
   height: 100%;
+  ${(props) =>
+    props.lateral === "true" &&
+    css`
+      height: 50%;
+    `}
 `;
 export const ContainerDatos = styled.div`
 width: 100%;
-height: 75%;
-background: orange;
+display: flex;
+`
+
+export const Category = styled.div`
+  display: flex;
+  width: 100%;
+  margin: 14px 0;
+  justify-content: center;
+  gap: 250px;
+`;
+export const Label = styled.label`
+  display: flex;
+  align-items: center;
+  font-family: "bold";
+`;
+export const Radio = styled.input`
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  margin-right: 10px;
+`;
+export const Titulo = styled.div`
+  font-size: 25px;
+  margin-top: 10px;
+  font-weight: 1000;
+  position: relative;
+  font-family: "bold";
+  text-align: center;
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 100%;
+    background: linear-gradient(135deg, #000000, #ffffff);
+  }
+`;
+export const ContainerTodo= styled.div`
+  width:100%;
+  height: 88%;
 `
