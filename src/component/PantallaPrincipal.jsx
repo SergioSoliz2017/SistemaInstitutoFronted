@@ -28,6 +28,10 @@ import {
   Rectangulo,
   ContainerCarga,
   ImagenCarga,
+  ContainerTabla,
+  ContainerImgIcon,
+  ContainerBotonBusqueda,
+  BotonBuscar,
 } from "./DiseñoPantallaPrincipal";
 import InputValidar from "./InputValidar";
 import { useState } from "react";
@@ -38,11 +42,57 @@ import {
   fa1,
   fa2,
   fa3,
+  faChess,
+  faPenToSquare,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import alerta from "sweetalert2";
 import SelectInput from "./SelectValidar";
 import axios from "axios";
-
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import ModalEditar from "./ModalEditar";
+import { useEffect } from "react";
+import ModalBuscar from "./ModalBuscar";
+const styles = makeStyles({
+  encabezado: {
+    background: "#000",
+  },
+  celdas: {
+    height: "50px",
+    fontFamily: "bold",
+    fontWeight: "1000",
+    fontSize: "18px",
+    borderBottom: "1px solid #d6d6d6",
+    borderLeft: "1px solid #d6d6d6",
+    borderTop: "1px solid #d6d6d6",
+    color: "#d6d6d6",
+  },
+  fila: {
+    borderBottom: "2px solid white",
+    "&:hover": {
+      backgroundColor: "#a09fa2",
+      borderBottom: "2px solid black",
+    },
+  },
+  texto: {
+    height: "50px",
+    fontFamily: "bold",
+    fontSize: "16px",
+  },
+  icon: {
+    height: "50px",
+    width: "50px",
+    fontFamily: "bold",
+    fontSize: "14px",
+  },
+});
 export default function PantallaPrincipal() {
   const [opcion, setOpcion] = useState(0);
   const [opcionPasos, setOpcionPasos] = useState(1);
@@ -66,17 +116,27 @@ export default function PantallaPrincipal() {
   });
   const [generoTutor, setGeneroTutor] = useState("");
   const [celularTutor, setCelularTutor] = useState({ campo: "", valido: null });
+  const [correoTutor, setCorreoTutor] = useState({ campo: "", valido: null });
+  const [ocupacionTutor, setOcupacionTutor] = useState({
+    campo: "",
+    valido: null,
+  });
   //datosExtras
   const [direccion, setDireccion] = useState({ campo: "", valido: null });
   const [colegio, setColegio] = useState({ campo: "", valido: null });
   const [turno, setTurno] = useState({ campo: "", valido: null });
   const [curso, setCurso] = useState({ campo: "", valido: null });
   const [tipoColegio, setTipoColegio] = useState({ campo: "", valido: null });
+  const [relacion, setRelacion] = useState({ campo: "", valido: null });
+  const [pais, setPais] = useState({ campo: "", valido: null });
+  const [ciudad, setCiudad] = useState({ campo: "", valido: null });
+  const [departamento, setDepartamento] = useState({ campo: "", valido: null });
   //carga
   const [seSubio, setSeSubio] = useState(false);
   //database
   const url = "http://127.0.0.1:8000/";
-
+  //listas
+  const [lista, setLista] = useState(0);
   const expresiones = {
     nombre: /^[a-zA-ZÀ-ÿ\s- ]{3,40}$/, // Letras y espacios, pueden llevar acentos.
     correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
@@ -347,6 +407,74 @@ export default function PantallaPrincipal() {
           });
         }
       }
+      if (correoTutor.campo == "") {
+        esValido = false;
+        setCelularTutor({ ...correoTutor, valido: "false" });
+        toast("Ingresar correo del tutor", {
+          icon: "⚠️",
+          duration: 3000,
+          style: {
+            border: "2px solid #000",
+            padding: "10px",
+            color: "#000",
+            background: "#d6d6d6",
+            borderRadius: "20px",
+            fontFamily: "bold",
+            fontWeight: "1000",
+          },
+        });
+      } else {
+        if (correoTutor.valido == "false") {
+          esValido = false;
+          toast("Correo del tutor invalido", {
+            icon: "⚠️",
+            duration: 3000,
+            style: {
+              border: "2px solid #000",
+              padding: "10px",
+              color: "#000",
+              background: "#d6d6d6",
+              borderRadius: "20px",
+              fontFamily: "bold",
+              fontWeight: "1000",
+            },
+          });
+        }
+      }
+      if (ocupacionTutor.campo == "") {
+        esValido = false;
+        setCelularTutor({ ...ocupacionTutor, valido: "false" });
+        toast("Ingresar ocupacion del tutor", {
+          icon: "⚠️",
+          duration: 3000,
+          style: {
+            border: "2px solid #000",
+            padding: "10px",
+            color: "#000",
+            background: "#d6d6d6",
+            borderRadius: "20px",
+            fontFamily: "bold",
+            fontWeight: "1000",
+          },
+        });
+      } else {
+        if (ocupacionTutor.valido == "false") {
+          esValido = false;
+          toast("Ocupacion del tutor invalido", {
+            icon: "⚠️",
+            duration: 3000,
+            style: {
+              border: "2px solid #000",
+              padding: "10px",
+              color: "#000",
+              background: "#d6d6d6",
+              borderRadius: "20px",
+              fontFamily: "bold",
+              fontWeight: "1000",
+            },
+          });
+        }
+      }
       if (generoTutor == "") {
         esValido = false;
         toast("Ingresar genero del tutor", {
@@ -419,6 +547,108 @@ export default function PantallaPrincipal() {
         if (colegio.valido == "false") {
           esValido = false;
           toast("Colegio invalido", {
+            icon: "⚠️",
+            duration: 3000,
+            style: {
+              border: "2px solid #000",
+              padding: "10px",
+              color: "#000",
+              background: "#d6d6d6",
+              borderRadius: "20px",
+              fontFamily: "bold",
+              fontWeight: "1000",
+            },
+          });
+        }
+      }
+      if (pais.campo == "") {
+        esValido = false;
+        setCelularTutor({ ...pais, valido: "false" });
+        toast("Ingresar pais", {
+          icon: "⚠️",
+          duration: 3000,
+          style: {
+            border: "2px solid #000",
+            padding: "10px",
+            color: "#000",
+            background: "#d6d6d6",
+            borderRadius: "20px",
+            fontFamily: "bold",
+            fontWeight: "1000",
+          },
+        });
+      } else {
+        if (pais.valido == "false") {
+          esValido = false;
+          toast("Pais invalido", {
+            icon: "⚠️",
+            duration: 3000,
+            style: {
+              border: "2px solid #000",
+              padding: "10px",
+              color: "#000",
+              background: "#d6d6d6",
+              borderRadius: "20px",
+              fontFamily: "bold",
+              fontWeight: "1000",
+            },
+          });
+        }
+      }
+      if (departamento.campo == "") {
+        esValido = false;
+        setCelularTutor({ ...departamento, valido: "false" });
+        toast("Ingresar departamento", {
+          icon: "⚠️",
+          duration: 3000,
+          style: {
+            border: "2px solid #000",
+            padding: "10px",
+            color: "#000",
+            background: "#d6d6d6",
+            borderRadius: "20px",
+            fontFamily: "bold",
+            fontWeight: "1000",
+          },
+        });
+      } else {
+        if (departamento.valido == "false") {
+          esValido = false;
+          toast("Departamento invalido", {
+            icon: "⚠️",
+            duration: 3000,
+            style: {
+              border: "2px solid #000",
+              padding: "10px",
+              color: "#000",
+              background: "#d6d6d6",
+              borderRadius: "20px",
+              fontFamily: "bold",
+              fontWeight: "1000",
+            },
+          });
+        }
+      }
+      if (ciudad.campo == "") {
+        esValido = false;
+        setCelularTutor({ ...ciudad, valido: "false" });
+        toast("Ingresar ciudad", {
+          icon: "⚠️",
+          duration: 3000,
+          style: {
+            border: "2px solid #000",
+            padding: "10px",
+            color: "#000",
+            background: "#d6d6d6",
+            borderRadius: "20px",
+            fontFamily: "bold",
+            fontWeight: "1000",
+          },
+        });
+      } else {
+        if (ciudad.valido == "false") {
+          esValido = false;
+          toast("Ciudad invalida", {
             icon: "⚠️",
             duration: 3000,
             style: {
@@ -535,6 +765,40 @@ export default function PantallaPrincipal() {
           });
         }
       }
+      if (relacion.campo == "") {
+        esValido = false;
+        setCelularTutor({ ...relacion, valido: "false" });
+        toast("Ingresar relacion", {
+          icon: "⚠️",
+          duration: 3000,
+          style: {
+            border: "2px solid #000",
+            padding: "10px",
+            color: "#000",
+            background: "#d6d6d6",
+            borderRadius: "20px",
+            fontFamily: "bold",
+            fontWeight: "1000",
+          },
+        });
+      } else {
+        if (relacion.valido == "false") {
+          esValido = false;
+          toast("Relacion invalido", {
+            icon: "⚠️",
+            duration: 3000,
+            style: {
+              border: "2px solid #000",
+              padding: "10px",
+              color: "#000",
+              background: "#d6d6d6",
+              borderRadius: "20px",
+              fontFamily: "bold",
+              fontWeight: "1000",
+            },
+          });
+        }
+      }
     }
     return esValido;
   }
@@ -558,6 +822,7 @@ export default function PantallaPrincipal() {
             })
             .then((result) => {
               if (result.isDismissed) {
+                setRelacion({campo: "No tiene", valido:"true" });
                 setNombreTutor(nombre);
                 setApellidoTutor(apellido);
                 setFechaNacimientoTutor(fechaNacimientoEstudiante);
@@ -623,6 +888,9 @@ export default function PantallaPrincipal() {
       FECHANACIMIENTOESTUDIANTE: fechaNacimientoEstudiante.campo,
       GENEROESTUDIANTE: generoEstudiante,
       DIRECCION: direccion.campo,
+      PAIS: pais.campo,
+      DEPARTAMENTO: departamento.campo,
+      CIUDAD: ciudad.campo,
       COLEGIO: colegio.campo,
       TURNO: turno.campo,
       CURSO: curso.campo,
@@ -630,12 +898,21 @@ export default function PantallaPrincipal() {
     };
     const tutor = {
       CODTUTOR: codigoTutor,
-      CODESTUDIANTE: codigoEstudiante,
       NOMBRETUTOR: nombreTutor.campo,
       FECHANACIMIENTOTUTOR: fechaNacimientoTutor.campo,
       CELULARTUTOR: celularTutor.campo,
       APELLIDOTUTOR: apellidoTutor.campo,
       GENEROTUTOR: generoTutor,
+      OCUPACION: ocupacionTutor.campo,
+      CORREO: correoTutor.campo,
+      RELACION: relacion.campo,
+    };
+    const hoy = new Date().toLocaleDateString()
+    const registro = {
+      CODTRABAJADOR: "",
+      FECHAINSCRIPCION: hoy,
+      TIEMPOINSCRIPCION: "2meses",
+      COSTOINSCRIPCION: 50,
     };
     const EstudianteTutor = {
       estudiante_id: codigoEstudiante,
@@ -647,16 +924,22 @@ export default function PantallaPrincipal() {
           axios
             .post(url + "asignar-tutor", EstudianteTutor)
             .then((response) => {
-              setSeSubio(false);
-              borrarDatos();
+              axios.post(url + "agregarRegistro", registro).then((response) => {
+                setSeSubio(false);
+                borrarDatos();
+              });
             });
         } else {
           axios.post(url + "agregarTutor", tutor).then((response) => {
             axios
               .post(url + "asignar-tutor", EstudianteTutor)
               .then((response) => {
-                setSeSubio(false);
-                borrarDatos();
+                axios
+                  .post(url + "agregarRegistro", registro)
+                  .then((response) => {
+                    setSeSubio(false);
+                    borrarDatos();
+                  });
               });
           });
         }
@@ -680,7 +963,72 @@ export default function PantallaPrincipal() {
     setTurno({ campo: "", valido: null });
     setCurso({ campo: "", valido: null });
     setTipoColegio({ campo: "", valido: null });
+    setCorreoTutor({ campo: "", valido: null });
+    setPais({ campo: "", valido: null });
+    setDepartamento({ campo: "", valido: null });
+    setCiudad({ campo: "", valido: null });
+    setRelacion({ campo: "", valido: null });
+    setOcupacionTutor({ campo: "", valido: null });
   }
+  const [carga, setCarga] = useState(false);
+  const [listaEstudiantes, setListaEstudiantes] = useState([]);
+  const [listaTutores, setListaTutores] = useState([]);
+
+  const obtenerListaEstudiantes = () => {
+    setLista(1);
+    setCarga(true);
+    axios.get(url + "obtenerEstudiantes").then((response) => {
+      if (response.data.length > 0) {
+        setCarga(false);
+        setListaEstudiantes(response.data);
+      } else {
+        setCarga(false);
+        alert("algo paso");
+      }
+    });
+  };
+  const obtenerListaTutores = () => {
+    setLista(2);
+    setCarga(true);
+    axios.get(url + "obtenerTutores").then((response) => {
+      if (response.data.length > 0) {
+        setCarga(false);
+        setListaTutores(response.data);
+      } else {
+        setCarga(false);
+        alert("algo paso");
+      }
+    });
+  };
+  const classes = styles();
+  const [editEstudiante, setEditEstudiante] = useState(false);
+  const [estudianteElegido, setEstudianteElegido] = useState([]);
+  const [modalBuscar, setModalBuscar] = useState(false);
+  useEffect(() => {
+    if (lista === 1) {
+      axios.get(url + "obtenerEstudiantes").then((response) => {
+        if (response.data.length > 0) {
+          setCarga(false);
+          setListaEstudiantes(response.data);
+        } else {
+          setCarga(false);
+          alert("algo paso");
+        }
+      });
+    }
+    if (lista == 2) {
+      axios.get(url + "obtenerTutores").then((response) => {
+        if (response.data.length > 0) {
+          setCarga(false);
+          setListaTutores(response.data);
+        } else {
+          setCarga(false);
+          alert("algo paso");
+        }
+      });
+    }
+  }, [editEstudiante]);
+  const [ocultar, setOcultar] = useState("false");
   return (
     <GlobalStyle>
       <Nav>
@@ -706,7 +1054,7 @@ export default function PantallaPrincipal() {
             }}
             seleccionado={opcion == 2 ? "true" : "false"}
           >
-            LISTA ESTUDIANTES
+            VER LISTAS
           </BotonNav>
           <BotonNav
             onClick={() => {
@@ -718,7 +1066,7 @@ export default function PantallaPrincipal() {
           </BotonNav>
         </ContainerBotonNav>
       </Nav>
-      <ContainerPrincipal>
+      <ContainerPrincipal ocultar={ocultar}>
         {opcion === 0 && (
           <ImagenLogoCentro src={require("../Imagenes/Logo.png")} />
         )}
@@ -892,6 +1240,26 @@ export default function PantallaPrincipal() {
                           expresionRegular={expresiones.telefono}
                         />
                       </ContainerDatos>
+                      <ContainerDatos>
+                        <InputValidar
+                          estado={correoTutor}
+                          cambiarEstado={setCorreoTutor}
+                          tipo="email"
+                          label="Correo electronico del tutor"
+                          placeholder="Correo electronico del tutor"
+                          name="Correo electronico del tutor"
+                          expresionRegular={expresiones.correo}
+                        />
+                        <InputValidar
+                          estado={ocupacionTutor}
+                          cambiarEstado={setOcupacionTutor}
+                          tipo="text"
+                          label="Ocupacion del tutor"
+                          placeholder="Ocupacion del tutor"
+                          name="ocupacionTutor"
+                          expresionRegular={expresiones.nombre}
+                        />
+                      </ContainerDatos>
                       <Titulo>GENERO</Titulo>
                       <Category>
                         <Label for="dot-1">
@@ -943,19 +1311,46 @@ export default function PantallaPrincipal() {
                         />
                       </ContainerDatos>
                       <ContainerDatos>
+                        <InputValidar
+                          estado={pais}
+                          cambiarEstado={setPais}
+                          tipo="text"
+                          label="Pais"
+                          placeholder="Pais"
+                          name="Pais"
+                          expresionRegular={expresiones.nombre}
+                        />
+                        <InputValidar
+                          estado={departamento}
+                          cambiarEstado={setDepartamento}
+                          tipo="text"
+                          label="Departamento"
+                          name="Departamento"
+                          placeholder="Departamento"
+                          expresionRegular={expresiones.nombre}
+                        />
+                        <InputValidar
+                          estado={ciudad}
+                          cambiarEstado={setCiudad}
+                          tipo="text"
+                          label="Cuidad"
+                          name="Cuidad"
+                          placeholder="Cuidad"
+                          expresionRegular={expresiones.nombre}
+                        />
+                      </ContainerDatos>
+                      <ContainerDatos>
                         <SelectInput
                           estado={turno}
                           cambiarEstado={setTurno}
                           label="Turno"
                           name="Turno"
-                          //valido={documento.valido}
                         />
                         <SelectInput
                           estado={curso}
                           cambiarEstado={setCurso}
                           label="Curso"
                           name="curso"
-                          //valido={documento.valido}
                         />
                       </ContainerDatos>
                       <ContainerDatos>
@@ -964,7 +1359,12 @@ export default function PantallaPrincipal() {
                           cambiarEstado={setTipoColegio}
                           label="Tipo colegio"
                           name="tipoColegio"
-                          //valido={documento.valido}
+                        />
+                        <SelectInput
+                          estado={relacion}
+                          cambiarEstado={setRelacion}
+                          label="Relacion con el estudiante"
+                          name="curso"
                         />
                       </ContainerDatos>
                     </ContainerTodo>
@@ -993,9 +1393,187 @@ export default function PantallaPrincipal() {
             </ContainerContenido>
           </>
         )}
-        {opcion === 2 && <div>nose</div>}
+        {opcion === 2 && (
+          <ContainerContenido>
+            <ContainerLateral>
+              <TituloLateral>LISTAS</TituloLateral>
+              <ContainerPasosLateral
+                onClick={obtenerListaEstudiantes}
+                button="true"
+                seleccionado={lista == 1 ? "true" : "false"}
+              >
+                <CircleProgress seleccionado={lista == 1 ? "true" : "false"}>
+                  <ImgIcon lateral={"true"} icon={faChess} />
+                </CircleProgress>
+                <PasosLateral seleccionado={lista == 1 ? "true" : "false"}>
+                  Lista de estudiantes
+                </PasosLateral>
+              </ContainerPasosLateral>
+              <ContainerPasosLateral
+                onClick={obtenerListaTutores}
+                button="true"
+                seleccionado={lista == 2 ? "true" : "false"}
+              >
+                <CircleProgress seleccionado={lista == 2 ? "true" : "false"}>
+                  <ImgIcon lateral={"true"} icon={faChess} />
+                </CircleProgress>
+                <PasosLateral seleccionado={lista == 2 ? "true" : "false"}>
+                  Lista tutores
+                </PasosLateral>
+              </ContainerPasosLateral>
+            </ContainerLateral>
+            <ContainerRegistro>
+              {!carga && (
+                <>
+                  {lista == 1 && (
+                    <>
+                      <ContainerTabla>
+                        <Table>
+                          <TableHead>
+                            <TableRow className={classes.encabezado}>
+                              <TableCell className={classes.celdas}>
+                                CODIGO
+                              </TableCell>
+                              <TableCell className={classes.celdas}>
+                                NOMBRE
+                              </TableCell>
+                              <TableCell className={classes.celdas}>
+                                APELLIDO
+                              </TableCell>
+                              <TableCell className={classes.celdas}>
+                                EDITAR
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {listaEstudiantes.map((estudiante) => {
+                              return (
+                                <TableRow className={classes.fila}>
+                                  <TableCell className={classes.texto}>
+                                    {estudiante.CODESTUDIANTE}
+                                  </TableCell>
+                                  <TableCell className={classes.texto}>
+                                    {estudiante.NOMBREESTUDIANTE}
+                                  </TableCell>
+                                  <TableCell className={classes.texto}>
+                                    {estudiante.APELLIDOESTUDIANTE}
+                                  </TableCell>
+                                  <TableCell
+                                    align="center"
+                                    className={classes.icon}
+                                  >
+                                    <ContainerImgIcon
+                                      onClick={() => {
+                                        setEditEstudiante(true);
+                                        setOcultar("true");
+                                        setEstudianteElegido(estudiante);
+                                      }}
+                                    >
+                                      <ImgIcon
+                                        tabla={"true"}
+                                        icon={faPenToSquare}
+                                      />
+                                    </ContainerImgIcon>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </ContainerTabla>
+                      <ContainerBotonBusqueda>
+                        <BotonBuscar
+                          onClick={() => {
+                            setModalBuscar(true);
+                            setOcultar("true");
+                          }}
+                        >
+                          <ImgIcon buscar={"true"} icon={faSearch} />
+                        </BotonBuscar>
+                      </ContainerBotonBusqueda>
+                    </>
+                  )}
+                  {lista == 2 && (
+                    <>
+                      <ContainerTabla>
+                        <Table>
+                          <TableHead>
+                            <TableRow className={classes.encabezado}>
+                              <TableCell className={classes.celdas}>
+                                CODIGO
+                              </TableCell>
+                              <TableCell className={classes.celdas}>
+                                NOMBRE
+                              </TableCell>
+                              <TableCell className={classes.celdas}>
+                                APELLIDO
+                              </TableCell>
+                              <TableCell className={classes.celdas}>
+                                EDITAR
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {listaTutores.map((tutor) => {
+                              return (
+                                <TableRow className={classes.fila}>
+                                  <TableCell className={classes.texto}>
+                                    {tutor.CODTUTOR}
+                                  </TableCell>
+                                  <TableCell className={classes.texto}>
+                                    {tutor.NOMBRETUTOR}
+                                  </TableCell>
+                                  <TableCell className={classes.texto}>
+                                    {tutor.APELLIDOTUTOR}
+                                  </TableCell>
+                                  <TableCell
+                                    align="center"
+                                    className={classes.icon}
+                                  >
+                                    <ContainerImgIcon
+                                      onClick={() => {
+                                        //setEditEstudiante(true);
+                                        //setEstudianteElegido(estudiante);
+                                      }}
+                                    >
+                                      <ImgIcon
+                                        tabla={"true"}
+                                        icon={faPenToSquare}
+                                      />
+                                    </ContainerImgIcon>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </ContainerTabla>
+                    </>
+                  )}
+                </>
+              )}
+              {carga && (
+                <ContainerCarga>
+                  <ImagenCarga src={require("../Imagenes/Carga.gif")} />
+                </ContainerCarga>
+              )}
+            </ContainerRegistro>
+          </ContainerContenido>
+        )}
         {opcion === 3 && <div>aver</div>}
       </ContainerPrincipal>
+      <ModalEditar
+        estado={editEstudiante}
+        cambiarEstado={setEditEstudiante}
+        datos={estudianteElegido}
+        ocultar={setOcultar}
+      />
+      <ModalBuscar
+        estado={modalBuscar}
+        cambiarEstado={setModalBuscar}
+        ocultar={setOcultar}
+        datos={listaEstudiantes}
+      />
       <Toaster reverseOrder={true} position="top-right" />
     </GlobalStyle>
   );

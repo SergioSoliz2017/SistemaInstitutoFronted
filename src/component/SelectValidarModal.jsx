@@ -1,5 +1,5 @@
 import React from "react";
-import { BoxCampo, TextBox, Select } from "./DiseñoInputValidar";
+import { BoxCampo, TextBox, Select } from "./DiseñoInputValidarModal";
 export default function InputValidar({ estado, cambiarEstado, label, name }) {
   const validacion = () => {
     if (estado.campo != "") {
@@ -9,7 +9,7 @@ export default function InputValidar({ estado, cambiarEstado, label, name }) {
     }
   };
 
-  const listaRelacion = ["Padre","Madre","Tio","Tia","Abuelo","Abuela","Tutor legar","No tiene"]
+  const listaRelacion = ["Padre","Madre","Tio","Tia","Abuelo","Abuela","Tutor legar"]
   const listTipoColegio = ["Fiscal", "Convenio", "Particular"];
   const listTurno = ["Mañana", "Tarde", "Noche"];
   const listCurso = ["1° Primaria", "2° Primaria","3° Primaria","4° Primaria","5° Primaria","6° Primaria",
