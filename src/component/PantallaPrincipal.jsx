@@ -45,6 +45,10 @@ import {
   faChess,
   faPenToSquare,
   faSearch,
+  fa4,
+  fa5,
+  faXmark,
+  faAdd,
 } from "@fortawesome/free-solid-svg-icons";
 import alerta from "sweetalert2";
 import SelectInput from "./SelectValidar";
@@ -60,6 +64,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import ModalEditar from "./ModalEditar";
 import { useEffect } from "react";
 import ModalBuscar from "./ModalBuscar";
+import SelectCurso from "./SelectCurso";
+import SelectGrupo from "./SelectGrupo";
+import ModalTutor from "./ModalTutor";
+import ModalAñadirTutor from "./ModalAñadirTutor";
 const styles = makeStyles({
   encabezado: {
     background: "#000",
@@ -145,6 +153,13 @@ export default function PantallaPrincipal() {
     fecha: /^(?:3[01]|[12][0-9]|0?[1-9])([\-/.])(0?[1-9]|1[1-2])\1\d{4}$/,
     lugar: /^[a-zA-ZÀ-ÿ\s0-9- ]{3,40}$/,
   };
+  //cursos
+  const [cursoRegistrados, setCursoRegistrados] = useState({
+    campo: "",
+    valido: null,
+  });
+  const [grupo, setGrupo] = useState({ campo: "", valido: null });
+  const [listaCursos, setListaCursos] = useState([]);
   function esValido() {
     var esValido = true;
     if (opcionPasos == 1) {
@@ -409,7 +424,7 @@ export default function PantallaPrincipal() {
       }
       if (correoTutor.campo == "") {
         esValido = false;
-        setCelularTutor({ ...correoTutor, valido: "false" });
+        setCorreoTutor({ ...correoTutor, valido: "false" });
         toast("Ingresar correo del tutor", {
           icon: "⚠️",
           duration: 3000,
@@ -443,7 +458,7 @@ export default function PantallaPrincipal() {
       }
       if (ocupacionTutor.campo == "") {
         esValido = false;
-        setCelularTutor({ ...ocupacionTutor, valido: "false" });
+        setOcupacionTutor({ ...ocupacionTutor, valido: "false" });
         toast("Ingresar ocupacion del tutor", {
           icon: "⚠️",
           duration: 3000,
@@ -803,7 +818,7 @@ export default function PantallaPrincipal() {
     return esValido;
   }
   const siguientePasoRegistro = () => {
-    if (opcionPasos + 1 < 4) {
+    if (opcionPasos + 1 < 5) {
       if (esValido()) {
         if (opcionPasos + 1 == 2) {
           alerta
@@ -822,7 +837,7 @@ export default function PantallaPrincipal() {
             })
             .then((result) => {
               if (result.isDismissed) {
-                setRelacion({campo: "No tiene", valido:"true" });
+                setRelacion({ campo: "No tiene", valido: "true" });
                 setNombreTutor(nombre);
                 setApellidoTutor(apellido);
                 setFechaNacimientoTutor(fechaNacimientoEstudiante);
@@ -837,6 +852,9 @@ export default function PantallaPrincipal() {
               setOpcionPasos(opcionPasos + 1);
             });
         } else {
+          if (opcionPasos + 1 == 4) {
+            obtenerCursos();
+          }
           setOpcionPasos(opcionPasos + 1);
         }
       }
@@ -846,6 +864,11 @@ export default function PantallaPrincipal() {
         subirBaseDatos();
       }
     }
+  };
+  const obtenerCursos = () => {
+    axios.get(url + "obtenerCursos").then((response) => {
+      setListaCursos(response.data);
+    });
   };
   const atrasPasoRegistro = () => {
     if (opcionPasos - 1 > 0) {
@@ -895,6 +918,7 @@ export default function PantallaPrincipal() {
       TURNO: turno.campo,
       CURSO: curso.campo,
       TIPOCOLEGIO: tipoColegio.campo,
+      HABILITADO: "Habilitado",
     };
     const tutor = {
       CODTUTOR: codigoTutor,
@@ -906,12 +930,12 @@ export default function PantallaPrincipal() {
       OCUPACION: ocupacionTutor.campo,
       CORREO: correoTutor.campo,
       RELACION: relacion.campo,
+      ESTADO: "Activo",
     };
-    const hoy = new Date().toLocaleDateString()
+    const hoy = new Date().toLocaleDateString();
     const registro = {
       CODTRABAJADOR: "",
       FECHAINSCRIPCION: hoy,
-      TIEMPOINSCRIPCION: "2meses",
       COSTOINSCRIPCION: 50,
     };
     const EstudianteTutor = {
@@ -925,8 +949,45 @@ export default function PantallaPrincipal() {
             .post(url + "asignar-tutor", EstudianteTutor)
             .then((response) => {
               axios.post(url + "agregarRegistro", registro).then((response) => {
-                setSeSubio(false);
-                borrarDatos();
+                axios
+                  .get(url + "obtenerCurso/" + cursoRegistrados.campo)
+                  .then((curso) => {
+                    const CursoInscrito = {
+                      CODCURSOINSCRITO: cursoRegistrados.campo,
+                      CODESTUDIANTE: codigoEstudiante,
+                      CURSOINSCRITO: curso.data[0].CURSO,
+                      DURACIONCURSO: curso.data[0].DURACIONCURSO,
+                    };
+                    axios
+                      .get(url + "obtenerGrupoNombre/" + grupo.campo)
+                      .then((grupo) => {
+                        var i = 0;
+                        var grupoEncontrado = "";
+                        while (i < grupo.data.length) {
+                          if (
+                            grupo.data[i].CODCURSO == cursoRegistrados.campo
+                          ) {
+                            grupoEncontrado = grupo.data[i];
+                          }
+                          i = i + 1;
+                        }
+                        const GrupoInscrito = {
+                          CODCURSOINSCRITO: grupoEncontrado.CODCURSO,
+                          CANTIDADMAXIMA: grupoEncontrado.CANTIDADMAXIMA,
+                          NOMBREGRUPO: grupoEncontrado.NOMBREGRUPO,
+                        };
+                        axios
+                          .post(url + "agregarCursoInscrito", CursoInscrito)
+                          .then((respose) => {
+                            axios
+                              .post(url + "agregarGrupoInscrito", GrupoInscrito)
+                              .then((response) => {
+                                setSeSubio(false);
+                                borrarDatos();
+                              });
+                          });
+                      });
+                  });
               });
             });
         } else {
@@ -937,8 +998,48 @@ export default function PantallaPrincipal() {
                 axios
                   .post(url + "agregarRegistro", registro)
                   .then((response) => {
-                    setSeSubio(false);
-                    borrarDatos();
+                    axios
+                      .get(url + "obtenerCurso/" + cursoRegistrados.campo)
+                      .then((curso) => {
+                        const CursoInscrito = {
+                          CODCURSOINSCRITO: cursoRegistrados.campo,
+                          CODESTUDIANTE: codigoEstudiante,
+                          CURSOINSCRITO: curso.data[0].CURSO,
+                          DURACIONCURSO: curso.data[0].DURACIONCURSO,
+                        };
+                        axios
+                          .get(url + "obtenerGrupoNombre/" + grupo.campo)
+                          .then((grupo) => {
+                            var i = 0;
+                            var grupoEncontrado = "";
+                            while (i < grupo.data.length) {
+                              if (
+                                grupo.data[i].CODCURSO == cursoRegistrados.campo
+                              ) {
+                                grupoEncontrado = grupo.data[i];
+                              }
+                              i = i + 1;
+                            }
+                            const GrupoInscrito = {
+                              CODCURSOINSCRITO: grupoEncontrado.CODCURSO,
+                              CANTIDADMAXIMA: grupoEncontrado.CANTIDADMAXIMA,
+                              NOMBREGRUPO: grupoEncontrado.NOMBREGRUPO,
+                            };
+                            axios
+                              .post(url + "agregarCursoInscrito", CursoInscrito)
+                              .then((respose) => {
+                                axios
+                                  .post(
+                                    url + "agregarGrupoInscrito",
+                                    GrupoInscrito
+                                  )
+                                  .then((response) => {
+                                    setSeSubio(false);
+                                    borrarDatos();
+                                  });
+                              });
+                          });
+                      });
                   });
               });
           });
@@ -969,6 +1070,8 @@ export default function PantallaPrincipal() {
     setCiudad({ campo: "", valido: null });
     setRelacion({ campo: "", valido: null });
     setOcupacionTutor({ campo: "", valido: null });
+    setCursoRegistrados({ campo: "", valido: null });
+    setGrupo({ campo: "", valido: null });
   }
   const [carga, setCarga] = useState(false);
   const [listaEstudiantes, setListaEstudiantes] = useState([]);
@@ -1004,6 +1107,8 @@ export default function PantallaPrincipal() {
   const [editEstudiante, setEditEstudiante] = useState(false);
   const [estudianteElegido, setEstudianteElegido] = useState([]);
   const [modalBuscar, setModalBuscar] = useState(false);
+  const [tutorElegido, setTutorElegido] = useState([]);
+  const [modalTutor, setModalTutor] = useState(false);
   useEffect(() => {
     if (lista === 1) {
       axios.get(url + "obtenerEstudiantes").then((response) => {
@@ -1012,7 +1117,6 @@ export default function PantallaPrincipal() {
           setListaEstudiantes(response.data);
         } else {
           setCarga(false);
-          alert("algo paso");
         }
       });
     }
@@ -1023,12 +1127,12 @@ export default function PantallaPrincipal() {
           setListaTutores(response.data);
         } else {
           setCarga(false);
-          alert("algo paso");
         }
       });
     }
-  }, [editEstudiante]);
+  }, [editEstudiante, modalTutor]);
   const [ocultar, setOcultar] = useState("false");
+  const [modalAñadirTutor,setAñadirTutor] = useState(false)
   return (
     <GlobalStyle>
       <Nav>
@@ -1127,6 +1231,25 @@ export default function PantallaPrincipal() {
                     seleccionado={opcionPasos >= 3 ? "true" : "false"}
                   >
                     Informacion opcional
+                  </PasosLateral>
+                </ContainerPasosLateral>
+                <Rectangulo
+                  seleccionado={opcionPasos >= 4 ? "true" : "false"}
+                />
+                <ContainerPasosLateral>
+                  <CircleProgress
+                    seleccionado={opcionPasos >= 4 ? "true" : "false"}
+                  >
+                    {opcionPasos <= 4 ? (
+                      <ImgIcon lateral={"true"} icon={fa4} />
+                    ) : (
+                      <ImgIcon lateral={"true"} icon={faCheck} />
+                    )}
+                  </CircleProgress>
+                  <PasosLateral
+                    seleccionado={opcionPasos >= 4 ? "true" : "false"}
+                  >
+                    Registro de curso y biometrico
                   </PasosLateral>
                 </ContainerPasosLateral>
               </ContainerLateral>
@@ -1369,6 +1492,30 @@ export default function PantallaPrincipal() {
                       </ContainerDatos>
                     </ContainerTodo>
                   )}
+                  {opcionPasos == 4 && (
+                    <ContainerTodo>
+                      <Titulo>REGISTRO A UN CURSO</Titulo>
+                      <ContainerDatos>
+                        <SelectCurso
+                          estado={cursoRegistrados}
+                          cambiarEstado={setCursoRegistrados}
+                          label="Cursos"
+                          name="cursos"
+                          dato={listaCursos}
+                        />
+                        <SelectGrupo
+                          estado={grupo}
+                          cambiarEstado={setGrupo}
+                          label="Grupos"
+                          name="grupos"
+                          dato={cursoRegistrados.campo}
+                        />
+                      </ContainerDatos>
+                      <Titulo espacio={"true"}>
+                        REGISTRO DATOS BIOMETRICOS
+                      </Titulo>
+                    </ContainerTodo>
+                  )}
                   <ContainerBotonSiguientePasos>
                     <BotonSiguientePasos
                       ocultar={opcionPasos === 1 ? "true" : "false"}
@@ -1509,7 +1656,7 @@ export default function PantallaPrincipal() {
                                 APELLIDO
                               </TableCell>
                               <TableCell className={classes.celdas}>
-                                EDITAR
+                                ESTADO
                               </TableCell>
                             </TableRow>
                           </TableHead>
@@ -1532,13 +1679,18 @@ export default function PantallaPrincipal() {
                                   >
                                     <ContainerImgIcon
                                       onClick={() => {
-                                        //setEditEstudiante(true);
-                                        //setEstudianteElegido(estudiante);
+                                        setModalTutor(true);
+                                        setTutorElegido(tutor);
+                                        setOcultar("true");
                                       }}
                                     >
                                       <ImgIcon
                                         tabla={"true"}
-                                        icon={faPenToSquare}
+                                        icon={
+                                          tutor.ESTADO == "Activo"
+                                            ? faCheck
+                                            : faXmark
+                                        }
                                       />
                                     </ContainerImgIcon>
                                   </TableCell>
@@ -1548,6 +1700,16 @@ export default function PantallaPrincipal() {
                           </TableBody>
                         </Table>
                       </ContainerTabla>
+                      <ContainerBotonBusqueda>
+                        <BotonBuscar
+                          onClick={() => {
+                            setAñadirTutor(true)
+                            setOcultar("true")
+                          }}
+                        >
+                          <ImgIcon buscar={"true"} icon={faAdd} />
+                        </BotonBuscar>
+                      </ContainerBotonBusqueda>
                     </>
                   )}
                 </>
@@ -1573,6 +1735,18 @@ export default function PantallaPrincipal() {
         cambiarEstado={setModalBuscar}
         ocultar={setOcultar}
         datos={listaEstudiantes}
+      />
+      <ModalTutor
+        estado={modalTutor}
+        cambiarEstado={setModalTutor}
+        datos={tutorElegido}
+        ocultar={setOcultar}
+      />
+      <ModalAñadirTutor
+      estado={modalAñadirTutor}
+      cambiarEstado={setAñadirTutor}
+      ocultar={setOcultar}
+      lista={setLista}
       />
       <Toaster reverseOrder={true} position="top-right" />
     </GlobalStyle>

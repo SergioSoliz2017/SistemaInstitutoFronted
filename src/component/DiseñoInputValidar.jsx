@@ -7,6 +7,11 @@ export const BoxCampo = styled.div`
   position: relative;
   z-index: 90;
   height: 75px;
+  ${(props) =>
+    props.crear === "true" &&
+    css`
+      margin:0px 10px 5px 10px;
+    `}
 `;
 export const IconoValidacion = styled(FontAwesomeIcon)`
   position: absolute;
@@ -86,6 +91,7 @@ export const TextBox = styled.span`
 `;
 export const Select = styled.select`
   height: 45px;
+  width: 100%;
   font-family: bold;
   outline: none;
   border-radius: 5px;

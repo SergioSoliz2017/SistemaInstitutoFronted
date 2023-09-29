@@ -108,7 +108,7 @@ export const TituloLateral = styled.span`
   position: relative;
   font-family: "bold";
   text-align: center;
-  margin: 10px 10px 25% 10px;
+  margin: 10px 10px 15% 10px;
   color: #d6d6d6;
   &::before {
     content: "";
@@ -269,6 +269,11 @@ export const Titulo = styled.div`
     width: 100%;
     background: linear-gradient(135deg, #000000, #ffffff);
   }
+  ${(props) =>
+    props.espacio === "true" &&
+    css`
+      top:20px;
+    `}
 `;
 export const ContainerTodo = styled.div`
   width: 100%;

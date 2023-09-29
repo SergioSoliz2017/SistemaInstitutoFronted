@@ -9,6 +9,7 @@ import {
   InputBox,
   TextBox,
 } from "./DiseñoInputValidar";
+
 export default function InputValidar({
   estado,
   cambiarEstado,
@@ -17,6 +18,7 @@ export default function InputValidar({
   placeholder,
   name,
   expresionRegular,
+  crear
 }) {
 
   function calcularEdad(fecha_nacimiento) {
@@ -49,7 +51,7 @@ export default function InputValidar({
     }
   };
   return (
-    <BoxCampo>
+    <BoxCampo crear = {crear}>
       <TextBox>{label}</TextBox>
       <InputBox
         type={tipo}

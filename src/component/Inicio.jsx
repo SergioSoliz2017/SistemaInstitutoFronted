@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState} from "react";
 import {
   GlobalStyle,
   ContainerInicioSesion,
@@ -15,6 +15,7 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { useHistory } from "react-router";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
+
 export default function Inicio() {
   const [id, setId] = useState("");
   const [contraseña, setContraseña] = useState("");
