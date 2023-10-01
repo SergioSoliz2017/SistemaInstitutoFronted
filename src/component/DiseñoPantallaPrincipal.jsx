@@ -72,7 +72,7 @@ export const ImagenLogoCentro = styled.img`
   padding: 5px;
 `;
 export const ContainerContenido = styled.div`
-  width: 70%;
+  width: 80%;
   height: 80%;
   position: absolute;
   top: 90px;

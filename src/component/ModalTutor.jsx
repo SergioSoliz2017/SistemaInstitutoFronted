@@ -23,7 +23,10 @@ import alerta from "sweetalert2";
 export default function ModalTutor({ estado, cambiarEstado, datos, ocultar }) {
   const [estadoTutor, setEstadoTutor] = useState("");
   const [motivo, setMotivo] = useState("");
-  const listaEstado = ["Activo", "Inactivo", "Baja"];
+  const listaEstado1 = ["Inactivo", "Baja"];
+  const listaEstado2 = ["Activo", "Baja"];
+  const listaEstado3 = ["Activo","Inactivo"];
+
   const url = "http://127.0.0.1:8000/";
 
   function esValido() {
@@ -80,25 +83,44 @@ export default function ModalTutor({ estado, cambiarEstado, datos, ocultar }) {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            axios
-              .put(url + "acutalizarEstadoTutor/" + datos.CODTUTOR, {
-                ESTADO: estadoTutor,
-              })
-              .then((response) => {
-                alerta.fire({
-                  title: "Registro Exitoso",
-                  icon: "success",
-                  confirmButtonColor: "#000",
-                  background: "#d6d6d6",
-                  iconColor: "#000",
-                  color: "#000",
+            alerta.fire({
+              title: "Registro Exitoso",
+              icon: "success",
+              confirmButtonColor: "#000",
+              background: "#d6d6d6",
+              iconColor: "#000",
+              color: "#000",
+            });
+            if (estadoTutor === "Baja") {
+              axios
+                .get(url + "darBajaTutor/" + datos.CODTUTOR)
+                .then((response) => {
+                  setEstadoTutor("");
+                  setMotivo("");
+                  cambiarEstado(false);
+                  ocultar("false");
                 });
-                //aumentar que se desabiliten si no tienen mas tutores los estudiantes
-                setEstadoTutor("");
-                setMotivo("");
-                cambiarEstado(false);
-                ocultar("false");
-              });
+            }
+            if (estadoTutor === "Activo") {
+              axios
+                .get(url + "darActivoTutor/" + datos.CODTUTOR)
+                .then((response) => {
+                  setEstadoTutor("");
+                  setMotivo("");
+                  cambiarEstado(false);
+                  ocultar("false");
+                });
+            }
+            if (estadoTutor === "Inactivo") {
+              axios
+                .get(url + "darInactivoTutor/" + datos.CODTUTOR)
+                .then((response) => {
+                  setEstadoTutor("");
+                  setMotivo("");
+                  cambiarEstado(false);
+                  ocultar("false");
+                });
+            }
           }
         });
     }
@@ -132,9 +154,27 @@ export default function ModalTutor({ estado, cambiarEstado, datos, ocultar }) {
                   }}
                 >
                   <option value="">Seleccione estado</option>
-                  {listaEstado.map((datos) => {
-                    return <option value={datos}>{datos}</option>;
-                  })}
+                  {datos.ESTADO === "Activo" && (
+                    <>
+                      {listaEstado1.map((datos) => {
+                        return <option value={datos}>{datos}</option>;
+                      })}
+                    </>
+                  )}
+                  {datos.ESTADO === "Inactivo" && (
+                    <>
+                      {listaEstado2.map((datos) => {
+                        return <option value={datos}>{datos}</option>;
+                      })}
+                    </>
+                  )}
+                  {datos.ESTADO === "Baja" && (
+                    <>
+                      {listaEstado3.map((datos) => {
+                        return <option value={datos}>{datos}</option>;
+                      })}
+                    </>
+                  )}
                 </Select>
               </BoxCampo>
               <BoxCampo>

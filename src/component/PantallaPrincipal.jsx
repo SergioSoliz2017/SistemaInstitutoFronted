@@ -49,6 +49,8 @@ import {
   fa5,
   faXmark,
   faAdd,
+  faQuestion,
+  faInfo,
 } from "@fortawesome/free-solid-svg-icons";
 import alerta from "sweetalert2";
 import SelectInput from "./SelectValidar";
@@ -1132,7 +1134,18 @@ export default function PantallaPrincipal() {
     }
   }, [editEstudiante, modalTutor]);
   const [ocultar, setOcultar] = useState("false");
-  const [modalAñadirTutor,setAñadirTutor] = useState(false)
+  const [modalAñadirTutor, setAñadirTutor] = useState(false);
+  function colocar(estado) {
+    var icon = faQuestion;
+    if (estado == "Activo") {
+      icon = faCheck;
+    } else {
+      if (estado == "Baja") {
+        icon = faXmark;
+      }
+    }
+    return icon;
+  }
   return (
     <GlobalStyle>
       <Nav>
@@ -1656,6 +1669,9 @@ export default function PantallaPrincipal() {
                                 APELLIDO
                               </TableCell>
                               <TableCell className={classes.celdas}>
+                                VER MAS
+                              </TableCell>
+                              <TableCell className={classes.celdas}>
                                 ESTADO
                               </TableCell>
                             </TableRow>
@@ -1673,6 +1689,18 @@ export default function PantallaPrincipal() {
                                   <TableCell className={classes.texto}>
                                     {tutor.APELLIDOTUTOR}
                                   </TableCell>
+                                  <TableCell className={classes.texto}>
+                                    <ContainerImgIcon
+                                      onClick={() => {
+                                        console.log("mas info")
+                                      }}
+                                    >
+                                      <ImgIcon
+                                        tabla={"true"}
+                                        icon={faInfo}
+                                      />
+                                    </ContainerImgIcon>
+                                  </TableCell>
                                   <TableCell
                                     align="center"
                                     className={classes.icon}
@@ -1686,11 +1714,7 @@ export default function PantallaPrincipal() {
                                     >
                                       <ImgIcon
                                         tabla={"true"}
-                                        icon={
-                                          tutor.ESTADO == "Activo"
-                                            ? faCheck
-                                            : faXmark
-                                        }
+                                        icon={colocar(tutor.ESTADO)}
                                       />
                                     </ContainerImgIcon>
                                   </TableCell>
@@ -1703,8 +1727,8 @@ export default function PantallaPrincipal() {
                       <ContainerBotonBusqueda>
                         <BotonBuscar
                           onClick={() => {
-                            setAñadirTutor(true)
-                            setOcultar("true")
+                            setAñadirTutor(true);
+                            setOcultar("true");
                           }}
                         >
                           <ImgIcon buscar={"true"} icon={faAdd} />
@@ -1743,10 +1767,10 @@ export default function PantallaPrincipal() {
         ocultar={setOcultar}
       />
       <ModalAñadirTutor
-      estado={modalAñadirTutor}
-      cambiarEstado={setAñadirTutor}
-      ocultar={setOcultar}
-      lista={setLista}
+        estado={modalAñadirTutor}
+        cambiarEstado={setAñadirTutor}
+        ocultar={setOcultar}
+        lista={setLista}
       />
       <Toaster reverseOrder={true} position="top-right" />
     </GlobalStyle>
