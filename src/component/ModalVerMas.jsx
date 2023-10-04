@@ -65,7 +65,7 @@ export default function ModalVerMas({
   const [listaEstudiantes, setListaEstudiantes] = useState([]);
 
   const classes = styles();
-  const url = "http://127.0.0.1:8000/";
+  const url = "https://sistema-intituto.fly.dev/";
   useEffect(() => {
     if (tipo === "Estudiante") {
       axios.get(url + "obtenerTutores/" + datos).then((response) => {

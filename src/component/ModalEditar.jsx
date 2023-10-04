@@ -14,7 +14,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SelectInput from "./SelectValidarModal";
 import axios from "axios";
-const url = "http://127.0.0.1:8000/";
+const url = "https://sistema-intituto.fly.dev/";
 
 export default function ModalEditar({ estado, cambiarEstado, datos , ocultar }) {
   const [nombre, setNombre] = useState({
