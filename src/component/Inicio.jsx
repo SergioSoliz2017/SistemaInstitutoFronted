@@ -21,9 +21,9 @@ export default function Inicio() {
   const [contraseña, setContraseña] = useState("");
   const historial = useHistory();
   function ingresar() {
-    if (esValido()) {
-      if (id == "123") {
-        if (contraseña == "123") {
+    if (EsValido()) {
+      if (id === "123") {
+        if (contraseña === "123") {
           toast.success("Inicio Correcto", {
             duration: 3000,
             style: {
@@ -70,9 +70,9 @@ export default function Inicio() {
     }
   }
 
-  function esValido() {
+  function EsValido() {
     var esValido = true;
-    if (id == "") {
+    if (id === "") {
       esValido = false;
       toast("Ingesar ID", {
         icon: "⚠️",
@@ -88,7 +88,7 @@ export default function Inicio() {
         },
       });
     }
-    if (contraseña == "") {
+    if (contraseña === "") {
       esValido = false;
       toast("Ingesar Contraseña", {
         icon: "⚠️",

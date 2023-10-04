@@ -165,8 +165,8 @@ export default function PantallaPrincipal() {
   const [listaCursos, setListaCursos] = useState([]);
   function esValido() {
     var esValido = true;
-    if (opcionPasos == 1) {
-      if (nombre.campo == "") {
+    if (opcionPasos === 1) {
+      if (nombre.campo === "") {
         esValido = false;
         setNombre({ ...nombre, valido: "false" });
         toast("Ingresar nombre del estudiante", {
@@ -183,7 +183,7 @@ export default function PantallaPrincipal() {
           },
         });
       } else {
-        if (nombre.valido == "false") {
+        if (nombre.valido === "false") {
           esValido = false;
           toast("Nombre del estudiante invalido", {
             icon: "⚠️",
