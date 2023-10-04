@@ -27,7 +27,7 @@ export default function ModalTutor({ estado, cambiarEstado, datos, ocultar }) {
   const listaEstado2 = ["Activo", "Baja"];
   const listaEstado3 = ["Activo", "Inactivo"];
 
-  const url = "https://sistema-intituto.fly.dev/";
+  const url = "http://127.0.0.1:8000/";
 
   function esValido() {
     var esValido = true;

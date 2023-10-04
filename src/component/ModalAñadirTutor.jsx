@@ -60,7 +60,7 @@ export default function ModalAñadirTutor({
   const cambioGeneroTutor = (e) => {
     setGeneroTutor(e.target.value);
   };
-  const url = "https://sistema-intituto.fly.dev/";
+  const url = "http://127.0.0.1:8000/";
 
   function borrarDatos() {
     setNombreTutor({ campo: "", valido: null });

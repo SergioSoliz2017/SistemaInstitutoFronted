@@ -12,7 +12,7 @@ export default function SelectGrupo({
   dato,
 }) {
   const [listaGrupos, setListaGrupos] = useState([]);
-  const url = "https://sistema-intituto.fly.dev/";
+  const url = "http://127.0.0.1:8000/";
 
   useEffect(() => {
     if (dato != "") {

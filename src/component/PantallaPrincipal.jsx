@@ -145,7 +145,7 @@ export default function PantallaPrincipal() {
   //carga
   const [seSubio, setSeSubio] = useState(false);
   //database
-  const url = "https://sistema-intituto.fly.dev/";
+  const url = "http://127.0.0.1:8000/";
   //listas
   const [lista, setLista] = useState(0);
   const expresiones = {

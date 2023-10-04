@@ -18,7 +18,7 @@ export default function InputValidar({
       cambiarEstado({ ...estado, valido: "false" });
     }
   };
-  const url = "https://sistema-intituto.fly.dev/";
+  const url = "http://127.0.0.1:8000/";
 
   const [listaEstudiantes, setListaEstudiantes] = useState([]);
   useEffect(() => {
