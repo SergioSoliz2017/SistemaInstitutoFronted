@@ -25,7 +25,7 @@ export default function ModalTutor({ estado, cambiarEstado, datos, ocultar }) {
   const [motivo, setMotivo] = useState("");
   const listaEstado1 = ["Inactivo", "Baja"];
   const listaEstado2 = ["Activo", "Baja"];
-  const listaEstado3 = ["Activo","Inactivo"];
+  const listaEstado3 = ["Activo", "Inactivo"];
 
   const url = "http://127.0.0.1:8000/";
 
@@ -91,34 +91,47 @@ export default function ModalTutor({ estado, cambiarEstado, datos, ocultar }) {
               iconColor: "#000",
               color: "#000",
             });
+            const hoy = new Date().toLocaleDateString();
+            const Motivo = {
+              CODTUTOR: datos.CODTUTOR,
+              MOTIVO: motivo,
+              FECHAMOTIVO: hoy,
+              ESTADO: estadoTutor,
+            };
             if (estadoTutor === "Baja") {
               axios
                 .get(url + "darBajaTutor/" + datos.CODTUTOR)
                 .then((response) => {
-                  setEstadoTutor("");
-                  setMotivo("");
-                  cambiarEstado(false);
-                  ocultar("false");
+                  axios.post(url + "agregarMotivo", Motivo).then((response) => {
+                    setEstadoTutor("");
+                    setMotivo("");
+                    cambiarEstado(false);
+                    ocultar("false");
+                  });
                 });
             }
             if (estadoTutor === "Activo") {
               axios
                 .get(url + "darActivoTutor/" + datos.CODTUTOR)
                 .then((response) => {
-                  setEstadoTutor("");
-                  setMotivo("");
-                  cambiarEstado(false);
-                  ocultar("false");
+                  axios.post(url + "agregarMotivo", Motivo).then((response) => {
+                    setEstadoTutor("");
+                    setMotivo("");
+                    cambiarEstado(false);
+                    ocultar("false");
+                  });
                 });
             }
             if (estadoTutor === "Inactivo") {
               axios
                 .get(url + "darInactivoTutor/" + datos.CODTUTOR)
                 .then((response) => {
-                  setEstadoTutor("");
-                  setMotivo("");
-                  cambiarEstado(false);
-                  ocultar("false");
+                  axios.post(url + "agregarMotivo", Motivo).then((response) => {
+                    setEstadoTutor("");
+                    setMotivo("");
+                    cambiarEstado(false);
+                    ocultar("false");
+                  });
                 });
             }
           }
@@ -185,9 +198,9 @@ export default function ModalTutor({ estado, cambiarEstado, datos, ocultar }) {
                   placeholder="Motivo"
                   id="motivo"
                   onChange={(e) => {
-                    setMotivo({ ...motivo, campo: e.target.value });
+                    setMotivo(e.target.value);
+                    console.log(motivo);
                   }}
-                  valido={motivo.valido}
                 />
               </BoxCampo>
               <ContainerBoton>

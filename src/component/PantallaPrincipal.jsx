@@ -70,6 +70,7 @@ import SelectCurso from "./SelectCurso";
 import SelectGrupo from "./SelectGrupo";
 import ModalTutor from "./ModalTutor";
 import ModalAñadirTutor from "./ModalAñadirTutor";
+import ModalInformacion from "./ModalInformacion";
 const styles = makeStyles({
   encabezado: {
     background: "#000",
@@ -906,8 +907,12 @@ export default function PantallaPrincipal() {
   function subirBaseDatos() {
     var codigoEstudiante = generarCodigoEstudiante();
     var codigoTutor = generarCodigoTutor();
+    var codigoInscripcion = generarCodInscripcion();
+    const hoy = new Date().toLocaleDateString();
     const estudiante = {
       CODESTUDIANTE: codigoEstudiante,
+      CODINSCRIPCION: codigoInscripcion,
+      CODCURSOINSCRITO: cursoRegistrados,
       NOMBREESTUDIANTE: nombre.campo,
       APELLIDOESTUDIANTE: apellido.campo,
       FECHANACIMIENTOESTUDIANTE: fechaNacimientoEstudiante.campo,
@@ -921,6 +926,10 @@ export default function PantallaPrincipal() {
       CURSO: curso.campo,
       TIPOCOLEGIO: tipoColegio.campo,
       HABILITADO: "Habilitado",
+      HUELLAESTUDIANTE: "AVER",
+      FECHAINSCRIPCION: hoy,
+      COSTOINSCRIPCION: 50,
+      SEDE: "COCHABAMBA",
     };
     const tutor = {
       CODTUTOR: codigoTutor,
@@ -934,12 +943,6 @@ export default function PantallaPrincipal() {
       RELACION: relacion.campo,
       ESTADO: "Activo",
     };
-    const hoy = new Date().toLocaleDateString();
-    const registro = {
-      CODTRABAJADOR: "",
-      FECHAINSCRIPCION: hoy,
-      COSTOINSCRIPCION: 50,
-    };
     const EstudianteTutor = {
       estudiante_id: codigoEstudiante,
       tutor_id: codigoTutor,
@@ -950,7 +953,49 @@ export default function PantallaPrincipal() {
           axios
             .post(url + "asignar-tutor", EstudianteTutor)
             .then((response) => {
-              axios.post(url + "agregarRegistro", registro).then((response) => {
+              axios
+                .get(url + "obtenerCurso/" + cursoRegistrados.campo)
+                .then((curso) => {
+                  const CursoInscrito = {
+                    CODCURSOINSCRITO: cursoRegistrados.campo,
+                    CODESTUDIANTE: codigoEstudiante,
+                    CURSOINSCRITO: curso.data[0].CURSO,
+                    DURACIONCURSO: curso.data[0].DURACIONCURSO,
+                  };
+                  axios
+                    .get(url + "obtenerGrupoNombre/" + grupo.campo)
+                    .then((grupo) => {
+                      var i = 0;
+                      var grupoEncontrado = "";
+                      while (i < grupo.data.length) {
+                        if (grupo.data[i].CODCURSO == cursoRegistrados.campo) {
+                          grupoEncontrado = grupo.data[i];
+                        }
+                        i = i + 1;
+                      }
+                      const GrupoInscrito = {
+                        CODCURSOINSCRITO: grupoEncontrado.CODCURSO,
+                        CANTIDADMAXIMA: grupoEncontrado.CANTIDADMAXIMA,
+                        NOMBREGRUPO: grupoEncontrado.NOMBREGRUPO,
+                      };
+                      axios
+                        .post(url + "agregarCursoInscrito", CursoInscrito)
+                        .then((respose) => {
+                          axios
+                            .post(url + "agregarGrupoInscrito", GrupoInscrito)
+                            .then((response) => {
+                              setSeSubio(false);
+                              borrarDatos();
+                            });
+                        });
+                    });
+                });
+            });
+        } else {
+          axios.post(url + "agregarTutor", tutor).then((response) => {
+            axios
+              .post(url + "asignar-tutor", EstudianteTutor)
+              .then((response) => {
                 axios
                   .get(url + "obtenerCurso/" + cursoRegistrados.campo)
                   .then((curso) => {
@@ -991,59 +1036,6 @@ export default function PantallaPrincipal() {
                       });
                   });
               });
-            });
-        } else {
-          axios.post(url + "agregarTutor", tutor).then((response) => {
-            axios
-              .post(url + "asignar-tutor", EstudianteTutor)
-              .then((response) => {
-                axios
-                  .post(url + "agregarRegistro", registro)
-                  .then((response) => {
-                    axios
-                      .get(url + "obtenerCurso/" + cursoRegistrados.campo)
-                      .then((curso) => {
-                        const CursoInscrito = {
-                          CODCURSOINSCRITO: cursoRegistrados.campo,
-                          CODESTUDIANTE: codigoEstudiante,
-                          CURSOINSCRITO: curso.data[0].CURSO,
-                          DURACIONCURSO: curso.data[0].DURACIONCURSO,
-                        };
-                        axios
-                          .get(url + "obtenerGrupoNombre/" + grupo.campo)
-                          .then((grupo) => {
-                            var i = 0;
-                            var grupoEncontrado = "";
-                            while (i < grupo.data.length) {
-                              if (
-                                grupo.data[i].CODCURSO == cursoRegistrados.campo
-                              ) {
-                                grupoEncontrado = grupo.data[i];
-                              }
-                              i = i + 1;
-                            }
-                            const GrupoInscrito = {
-                              CODCURSOINSCRITO: grupoEncontrado.CODCURSO,
-                              CANTIDADMAXIMA: grupoEncontrado.CANTIDADMAXIMA,
-                              NOMBREGRUPO: grupoEncontrado.NOMBREGRUPO,
-                            };
-                            axios
-                              .post(url + "agregarCursoInscrito", CursoInscrito)
-                              .then((respose) => {
-                                axios
-                                  .post(
-                                    url + "agregarGrupoInscrito",
-                                    GrupoInscrito
-                                  )
-                                  .then((response) => {
-                                    setSeSubio(false);
-                                    borrarDatos();
-                                  });
-                              });
-                          });
-                      });
-                  });
-              });
           });
         }
       });
@@ -1074,6 +1066,26 @@ export default function PantallaPrincipal() {
     setOcupacionTutor({ campo: "", valido: null });
     setCursoRegistrados({ campo: "", valido: null });
     setGrupo({ campo: "", valido: null });
+  }
+  function generarCodInscripcion() {
+    var codigo = "";
+    var subNombre = nombreTutor.campo.substring(0, 3);
+    var subApellido = apellidoTutor.campo.substring(0, 3);
+    var año = new Date().getFullYear();
+    var mes = new Date().getMonth() + 1;
+    var fecha = new Date().getDate();
+    codigo =
+      año +
+      "" +
+      mes +
+      "" +
+      fecha +
+      "" +
+      subNombre +
+      subApellido +
+      cursoRegistrados.campo +
+      grupo.campo;
+    return codigo.toUpperCase();
   }
   const [carga, setCarga] = useState(false);
   const [listaEstudiantes, setListaEstudiantes] = useState([]);
@@ -1146,6 +1158,8 @@ export default function PantallaPrincipal() {
     }
     return icon;
   }
+  const [modalInformacion, setModalInformacion] = useState(false);
+  const [tipo, setTipo] = useState("");
   return (
     <GlobalStyle>
       <Nav>
@@ -1600,6 +1614,12 @@ export default function PantallaPrincipal() {
                               <TableCell className={classes.celdas}>
                                 APELLIDO
                               </TableCell>
+                              <TableCell
+                                align="center"
+                                className={classes.celdas}
+                              >
+                                VER MAS
+                              </TableCell>
                               <TableCell className={classes.celdas}>
                                 EDITAR
                               </TableCell>
@@ -1617,6 +1637,18 @@ export default function PantallaPrincipal() {
                                   </TableCell>
                                   <TableCell className={classes.texto}>
                                     {estudiante.APELLIDOESTUDIANTE}
+                                  </TableCell>
+                                  <TableCell className={classes.texto}>
+                                    <ContainerImgIcon
+                                      onClick={() => {
+                                        setModalInformacion(true);
+                                        setOcultar("true");
+                                        setEstudianteElegido(estudiante);
+                                        setTipo("Estudiante");
+                                      }}
+                                    >
+                                      <ImgIcon tabla={"true"} icon={faInfo} />
+                                    </ContainerImgIcon>
                                   </TableCell>
                                   <TableCell
                                     align="center"
@@ -1668,7 +1700,10 @@ export default function PantallaPrincipal() {
                               <TableCell className={classes.celdas}>
                                 APELLIDO
                               </TableCell>
-                              <TableCell className={classes.celdas}>
+                              <TableCell
+                                align="center"
+                                className={classes.celdas}
+                              >
                                 VER MAS
                               </TableCell>
                               <TableCell className={classes.celdas}>
@@ -1692,13 +1727,13 @@ export default function PantallaPrincipal() {
                                   <TableCell className={classes.texto}>
                                     <ContainerImgIcon
                                       onClick={() => {
-                                        console.log("mas info")
+                                        setModalInformacion(true);
+                                        setOcultar("true");
+                                        setEstudianteElegido(tutor);
+                                        setTipo("Tutor");
                                       }}
                                     >
-                                      <ImgIcon
-                                        tabla={"true"}
-                                        icon={faInfo}
-                                      />
+                                      <ImgIcon tabla={"true"} icon={faInfo} />
                                     </ContainerImgIcon>
                                   </TableCell>
                                   <TableCell
@@ -1771,6 +1806,13 @@ export default function PantallaPrincipal() {
         cambiarEstado={setAñadirTutor}
         ocultar={setOcultar}
         lista={setLista}
+      />
+      <ModalInformacion
+        estado={modalInformacion}
+        cambiarEstado={setModalInformacion}
+        ocultar={setOcultar}
+        datos={estudianteElegido}
+        tipo={tipo}
       />
       <Toaster reverseOrder={true} position="top-right" />
     </GlobalStyle>
