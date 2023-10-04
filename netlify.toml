@@ -1,0 +1,6 @@
+[build]
+command = "npm run build"  # o el comando que utilizas para construir tu aplicación
+publish = "build"  # o el directorio de salida de la construcción
+
+[context.production.environment]
+CI = "false"
