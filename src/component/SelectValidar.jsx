@@ -3,6 +3,7 @@ import { BoxCampo, TextBox, Select } from "./DiseñoInputValidar";
 import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
+import { url } from "./VariableEntornos";
 export default function InputValidar({
   estado,
   cambiarEstado,
@@ -18,7 +19,6 @@ export default function InputValidar({
       cambiarEstado({ ...estado, valido: "false" });
     }
   };
-  const url = "https://sistema-instituto.fly.dev/";
 
   const [listaEstudiantes, setListaEstudiantes] = useState([]);
   useEffect(() => {

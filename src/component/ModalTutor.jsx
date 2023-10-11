@@ -19,15 +19,14 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import alerta from "sweetalert2";
-
+import { url
+ } from "./VariableEntornos";
 export default function ModalTutor({ estado, cambiarEstado, datos, ocultar }) {
   const [estadoTutor, setEstadoTutor] = useState("");
   const [motivo, setMotivo] = useState("");
   const listaEstado1 = ["Inactivo", "Baja"];
   const listaEstado2 = ["Activo", "Baja"];
   const listaEstado3 = ["Activo", "Inactivo"];
-
-  const url = "https://sistema-instituto.fly.dev/";
 
   function esValido() {
     var esValido = true;

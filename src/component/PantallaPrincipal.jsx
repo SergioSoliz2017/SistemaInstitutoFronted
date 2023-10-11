@@ -104,6 +104,7 @@ const styles = makeStyles({
     fontSize: "14px",
   },
 });
+import { url } from "./VariableEntornos";
 export default function PantallaPrincipal() {
   const [opcion, setOpcion] = useState(0);
   const [opcionPasos, setOpcionPasos] = useState(1);
@@ -144,8 +145,6 @@ export default function PantallaPrincipal() {
   const [departamento, setDepartamento] = useState({ campo: "", valido: null });
   //carga
   const [seSubio, setSeSubio] = useState(false);
-  //database
-  const url = "https://sistema-instituto.fly.dev/";
   //listas
   const [lista, setLista] = useState(0);
   const expresiones = {

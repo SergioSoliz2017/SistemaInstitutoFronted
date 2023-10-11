@@ -54,6 +54,8 @@ const styles = makeStyles({
     fontSize: "14px",
   },
 });
+import { url
+ } from "./VariableEntornos";
 export default function ModalVerMas({
   estado,
   cambiarEstado,
@@ -65,7 +67,7 @@ export default function ModalVerMas({
   const [listaEstudiantes, setListaEstudiantes] = useState([]);
 
   const classes = styles();
-  const url = "https://sistema-instituto.fly.dev/";
+  
   useEffect(() => {
     if (tipo === "Estudiante") {
       axios.get(url + "obtenerTutores/" + datos).then((response) => {

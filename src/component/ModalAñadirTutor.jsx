@@ -18,7 +18,7 @@ import { Category, Label, Radio } from "./DiseñoPantallaPrincipal";
 import alerta from "sweetalert2";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-
+import { url } from "./VariableEntornos";
 export default function ModalAñadirTutor({
   estado,
   cambiarEstado,
@@ -60,7 +60,6 @@ export default function ModalAñadirTutor({
   const cambioGeneroTutor = (e) => {
     setGeneroTutor(e.target.value);
   };
-  const url = "https://sistema-instituto.fly.dev/";
 
   function borrarDatos() {
     setNombreTutor({ campo: "", valido: null });

@@ -3,7 +3,8 @@ import { BoxCampo, TextBox, Select } from "./DiseñoInputValidar";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
-
+import { url
+ } from "./VariableEntornos";
 export default function SelectGrupo({
   estado,
   cambiarEstado,
@@ -12,7 +13,6 @@ export default function SelectGrupo({
   dato,
 }) {
   const [listaGrupos, setListaGrupos] = useState([]);
-  const url = "https://sistema-instituto.fly.dev/";
 
   useEffect(() => {
     if (dato != "") {
