@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const BoxCampo = styled.div`
-  margin: 20px 10px 12px 10px;
+  margin: 15px 10px 12px 10px;
   width: calc(50% - 25px);
   position: relative;
   z-index: 90;

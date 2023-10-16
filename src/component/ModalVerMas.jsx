@@ -54,8 +54,6 @@ const styles = makeStyles({
     fontSize: "14px",
   },
 });
-import { url
- } from "./VariableEntornos";
 export default function ModalVerMas({
   estado,
   cambiarEstado,
@@ -65,7 +63,7 @@ export default function ModalVerMas({
 }) {
   const [listaTutores, setListaTutores] = useState([]);
   const [listaEstudiantes, setListaEstudiantes] = useState([]);
-
+  const url = "http://127.0.0.1:8000/";
   const classes = styles();
   
   useEffect(() => {

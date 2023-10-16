@@ -1,4 +1,5 @@
 import React from "react";
+import { url } from "./VariableEntornos";
 import toast, { Toaster } from "react-hot-toast";
 import { GlobalStyle } from "./DiseñosInicio";
 import {
@@ -32,6 +33,7 @@ import {
   ContainerImgIcon,
   ContainerBotonBusqueda,
   BotonBuscar,
+  BotonAbrirExe,
 } from "./DiseñoPantallaPrincipal";
 import InputValidar from "./InputValidar";
 import { useState } from "react";
@@ -104,8 +106,9 @@ const styles = makeStyles({
     fontSize: "14px",
   },
 });
-import { url } from "./VariableEntornos";
+
 export default function PantallaPrincipal() {
+  //const url = "http://127.0.0.1:8000/";
   const [opcion, setOpcion] = useState(0);
   const [opcionPasos, setOpcionPasos] = useState(1);
   //estudiante
@@ -163,7 +166,7 @@ export default function PantallaPrincipal() {
   const [grupo, setGrupo] = useState({ campo: "", valido: null });
   const [listaCursos, setListaCursos] = useState([]);
   function esValido() {
-    var esValido = true;
+    var esValido = true; /*
     if (opcionPasos === 1) {
       if (nombre.campo === "") {
         esValido = false;
@@ -816,7 +819,7 @@ export default function PantallaPrincipal() {
           });
         }
       }
-    }
+    }*/
     return esValido;
   }
   const siguientePasoRegistro = () => {
@@ -925,7 +928,6 @@ export default function PantallaPrincipal() {
       CURSO: curso.campo,
       TIPOCOLEGIO: tipoColegio.campo,
       HABILITADO: "Habilitado",
-      HUELLAESTUDIANTE: "AVER",
       FECHAINSCRIPCION: hoy,
       COSTOINSCRIPCION: 50,
       SEDE: "COCHABAMBA",
@@ -1065,6 +1067,7 @@ export default function PantallaPrincipal() {
     setOcupacionTutor({ campo: "", valido: null });
     setCursoRegistrados({ campo: "", valido: null });
     setGrupo({ campo: "", valido: null });
+    setHabilitarHuella(false);
   }
   function generarCodInscripcion() {
     var codigo = "";
@@ -1122,26 +1125,29 @@ export default function PantallaPrincipal() {
   const [modalBuscar, setModalBuscar] = useState(false);
   const [tutorElegido, setTutorElegido] = useState([]);
   const [modalTutor, setModalTutor] = useState(false);
+
   useEffect(() => {
-    if (lista === 1) {
-      axios.get(url + "obtenerEstudiantes").then((response) => {
-        if (response.data.length > 0) {
-          setCarga(false);
-          setListaEstudiantes(response.data);
-        } else {
-          setCarga(false);
-        }
-      });
-    }
-    if (lista == 2) {
-      axios.get(url + "obtenerTutores").then((response) => {
-        if (response.data.length > 0) {
-          setCarga(false);
-          setListaTutores(response.data);
-        } else {
-          setCarga(false);
-        }
-      });
+    if (opcion === 2) {
+      if (lista === 1) {
+        axios.get(url + "obtenerEstudiantes").then((response) => {
+          if (response.data.length > 0) {
+            setCarga(false);
+            setListaEstudiantes(response.data);
+          } else {
+            setCarga(false);
+          }
+        });
+      }
+      if (lista == 2) {
+        axios.get(url + "obtenerTutores").then((response) => {
+          if (response.data.length > 0) {
+            setCarga(false);
+            setListaTutores(response.data);
+          } else {
+            setCarga(false);
+          }
+        });
+      }
     }
   }, [editEstudiante, modalTutor]);
   const [ocultar, setOcultar] = useState("false");
@@ -1159,6 +1165,29 @@ export default function PantallaPrincipal() {
   }
   const [modalInformacion, setModalInformacion] = useState(false);
   const [tipo, setTipo] = useState("");
+
+  const [habilitarHuella, setHabilitarHuella] = useState(false);
+
+  const abrirExe = () => {
+    try {
+      axios.post(url + "ejecutar-exe").then((response) => {
+        setHabilitarHuella(true);
+      });
+    } catch (error) {
+      console.error("Error de red", error);
+    }
+  };
+
+  const [habilitarVerificarHuella, setHabilitarVerificarHuella] =
+    useState(false);
+
+  const abrirExeVerificar = () => {
+    try {
+      axios.post(url + "ejecutar-exe-verificar").then((response) => {});
+    } catch (error) {
+      console.error("Error de red", error);
+    }
+  };
   return (
     <GlobalStyle>
       <Nav>
@@ -1192,7 +1221,7 @@ export default function PantallaPrincipal() {
             }}
             seleccionado={opcion == 3 ? "true" : "false"}
           >
-            LISTA TUTORES
+            CONTROL ASISTENCIA
           </BotonNav>
         </ContainerBotonNav>
       </Nav>
@@ -1540,6 +1569,15 @@ export default function PantallaPrincipal() {
                       <Titulo espacio={"true"}>
                         REGISTRO DATOS BIOMETRICOS
                       </Titulo>
+                      <ContainerDatos exe={"true"}>
+                        <BotonAbrirExe
+                          disabled={habilitarHuella}
+                          habilitado={"" + habilitarHuella + ""}
+                          onClick={abrirExe}
+                        >
+                          Tomar Huellas Digitales
+                        </BotonAbrirExe>
+                      </ContainerDatos>
                     </ContainerTodo>
                   )}
                   <ContainerBotonSiguientePasos>
@@ -1780,7 +1818,22 @@ export default function PantallaPrincipal() {
             </ContainerRegistro>
           </ContainerContenido>
         )}
-        {opcion === 3 && <div>aver</div>}
+        {opcion === 3 && (
+          <ContainerContenido>
+            <ContainerLateral></ContainerLateral>
+            <ContainerRegistro>
+              <ContainerDatos exe={"true"}>
+                <BotonAbrirExe
+                  disabled={habilitarVerificarHuella}
+                  habilitado={"" + habilitarVerificarHuella + ""}
+                  onClick={abrirExeVerificar}
+                >
+                  Tomar Huellas Digitales
+                </BotonAbrirExe>
+              </ContainerDatos>
+            </ContainerRegistro>
+          </ContainerContenido>
+        )}
       </ContainerPrincipal>
       <ModalEditar
         estado={editEstudiante}

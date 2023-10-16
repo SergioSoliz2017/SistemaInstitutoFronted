@@ -223,7 +223,7 @@ export const ImgIcon = styled(FontAwesomeIcon)`
     css`
       height: 50%;
     `}
-    ${(props) =>
+  ${(props) =>
     props.buscar === "true" &&
     css`
       height: 80%;
@@ -232,7 +232,12 @@ export const ImgIcon = styled(FontAwesomeIcon)`
 export const ContainerDatos = styled.div`
   width: 100%;
   display: flex;
-  margin-bottom:-10px;
+  margin-bottom: -10px;
+  ${(props) =>
+    props.exe === "true" &&
+    css`
+      justify-content: center;
+    `}
 `;
 
 export const Category = styled.div`
@@ -272,7 +277,7 @@ export const Titulo = styled.div`
   ${(props) =>
     props.espacio === "true" &&
     css`
-      top:20px;
+      top: 20px;
     `}
 `;
 export const ContainerTodo = styled.div`
@@ -295,19 +300,44 @@ export const ContainerBotonBusqueda = styled.div`
   align-items: center;
   justify-content: end;
 `;
-export const BotonBuscar = styled.button `
- height: 80%;
- width: 8%;
- display: flex;
- align-items: center;
- justify-content: center;
- border-radius: 50%;
- border: 4px solid black;
- background: transparent;
- &:hover {
+export const BotonBuscar = styled.button`
+  height: 80%;
+  width: 8%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 4px solid black;
+  background: transparent;
+  &:hover {
     outline: none;
     background: black;
     color: #d6d6d6;
     box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.4);
   }
-`
+`;
+
+export const BotonAbrirExe = styled.button`
+  height: 40px;
+  width: 40%;
+  margin-top: 50px;
+  font-family: "bold";
+  border-radius: 20px;
+  ${(props) =>
+    props.habilitado === "true" &&
+    css`
+      border: 2px solid black;
+      background: green;
+      color: #d6d6d6;
+    `}
+  ${(props) =>
+    props.habilitado === "false" &&
+    css`
+      &:hover {
+        outline: none;
+        background: black;
+        color: #d6d6d6;
+        box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.4);
+      }
+    `}
+`;

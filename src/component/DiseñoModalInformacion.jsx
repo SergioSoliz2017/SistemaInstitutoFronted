@@ -15,7 +15,7 @@ export const Overlay = styled.div`
 export const ContenedorModal = styled.div`
   transition: all 1s ease-in-out;
   width: 50%;
-  height: 75%;
+  height: 79%;
   min-height: 100px;
   background: #d6d6d6;
   position: relative;
@@ -31,7 +31,7 @@ export const ContenedorModal = styled.div`
     ${(props) =>
     props.tipo === "Tutor" &&
     css`
-      height: 60%;
+      height: 65%;
     `}
 `;
 export const EncabezadoModal = styled.div`
