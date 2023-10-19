@@ -11,6 +11,7 @@ export default function SelectGrupo({
   label,
   name,
   dato,
+  sub
 }) {
   const [listaGrupos, setListaGrupos] = useState([]);
 
@@ -31,7 +32,7 @@ export default function SelectGrupo({
   };
 
   return (
-    <BoxCampo>
+    <BoxCampo sub={sub}>
       <TextBox>{label}</TextBox>
       <Select
         id={name}

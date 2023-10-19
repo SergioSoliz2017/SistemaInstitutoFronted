@@ -18,7 +18,8 @@ export default function InputValidar({
   placeholder,
   name,
   expresionRegular,
-  crear
+  crear,
+  sub
 }) {
 
   function calcularEdad(fecha_nacimiento) {
@@ -51,7 +52,7 @@ export default function InputValidar({
     }
   };
   return (
-    <BoxCampo crear = {crear}>
+    <BoxCampo crear = {crear} sub = {sub}>
       <TextBox>{label}</TextBox>
       <InputBox
         type={tipo}

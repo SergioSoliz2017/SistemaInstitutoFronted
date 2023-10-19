@@ -1,37 +1,64 @@
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export const Nav = styled.nav`
+export const Nav = styled.div`
   background: #d6d6d6;
-  height: 110px;
+  height: 100vh;
+  overflow-y: auto;
+  position: fixed;
+  width: 23%;
+  box-sizing: border-box;
+  margin: 0;
+`;
+export const ContainerLogo = styled.div`
+  position: relative;
+  height: min-content;
   width: 100%;
-  border-bottom: 2px solid black;
+  top: 30px;
+  cursor: pointer;
   display: flex;
-  justify-content: flex-start;
-  padding: 0.5rem calc((100vw-1000px) / 2);
-  z-index: 10;
-  position: absolute;
-  top: 0%;
 `;
 export const ImagenLogo = styled.img`
   position: relative;
-  height: 85%;
-  width: 8%;
-  left: 2%;
-  top: 5px;
+  height: 30%;
+  width: 20%;
+  left: 5%;
   cursor: pointer;
-  padding: 5px;
 `;
 export const ContainerBotonNav = styled.div`
   width: 100%;
-  margin-left: 5%;
+  margin-top: 30%;
   display: flex;
-  gap: 50px;
-  align-items: center;
+  flex-direction: column;
+  position: relative;
+`;
+export const TituloDasboard = styled.div`
+  font-size: 33px;
+  font-weight: 1000;
+  position: relative;
+  display: flex;
+
+  ${(props) =>
+    props.subTitutlo === "true" &&
+    css`
+      margin-top: -14px;
+      font-size: 15px;
+      margin-left: 2px;
+    `}
+`;
+
+export const ContainerTitulo = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  left: 8%;
 `;
 export const BotonNav = styled.button`
-  height: 50px;
+  width: 70%;
+  margin-left: 10px;
+  margin-bottom: 15px;
   border: none;
+  text-align: start;
   background: transparent;
   cursor: pointer;
   border-radius: 20px;
@@ -48,14 +75,20 @@ export const BotonNav = styled.button`
       border: 1px solid #d6d6d6;
     `}
 `;
-export const ContainerPrincipal = styled.div`
+export const ContainerImagenCentro = styled.div`
   width: 100%;
   height: 100%;
-  top: 48px;
-  position: relative;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+`;
+export const ContainerPrincipal = styled.div`
+  box-sizing: border-box;
+  width: 77%;
+  height: 100vh;
+  overflow: auto;
+  position: relative;
+  margin-left: 23%;
   ${(props) =>
     props.ocultar === "true" &&
     css`
@@ -66,59 +99,52 @@ export const ImagenLogoCentro = styled.img`
   position: relative;
   height: 70%;
   width: 35%;
-  left: 2%;
   top: 5px;
   cursor: pointer;
   padding: 5px;
 `;
 export const ContainerContenido = styled.div`
-  width: 80%;
-  height: 80%;
-  position: absolute;
-  top: 90px;
-  display: flex;
+  width: 100%;
+  margin-top: 15px;
+  position: relative;
 `;
 export const ContainerLateral = styled.div`
-  width: 30%;
-  height: 100%;
-  background: black;
+  width: 35%;
+  width: 100%;
+  margin-top: 10px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 export const ContainerRegistro = styled.div`
-  width: 70%;
-  height: 100%;
-  background: #d6d6d6;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-export const ContainerCarga = styled.div`
   width: 100%;
+  margin-top: 20px;
   height: 100%;
-  background: #d6d6d6;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
-export const ImagenCarga = styled.img``;
+export const ContainerCarga = styled.div`
+  width: 50%;
+  height: 50%;
+  margin-top: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: #d6d6d6;
+  border-radius: 25px;
+`;
+export const ImagenCarga = styled.img`
+  width: 50%;
+`;
 export const TituloLateral = styled.span`
-  font-size: 25px;
+  font-size: 30px;
   font-weight: 1000;
   position: relative;
   font-family: "bold";
-  text-align: center;
-  margin: 10px 10px 15% 10px;
   color: #d6d6d6;
-  &::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 3px;
-    width: 100%;
-    background: linear-gradient(135deg, #000000, #ffffff);
-  }
+  margin: 30px 10px 20px 100px;
 `;
 export const TituloRegistro = styled.span`
   margin: 25px;
@@ -128,8 +154,6 @@ export const TituloRegistro = styled.span`
   text-align: center;
 `;
 export const ContainerPasosLateral = styled.div`
-  width: 100%;
-  height: 50px;
   display: flex;
   align-items: center;
   ${(props) =>
@@ -140,52 +164,61 @@ export const ContainerPasosLateral = styled.div`
     `}
 `;
 export const CircleProgress = styled.div`
-  margin: 5px 20px 5px 30px;
   height: 40px;
   width: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #d6d6d6;
+  background: #a5a7aa;
   border-radius: 50%;
+  border: 1px solid black;
   ${(props) =>
     props.seleccionado === "true" &&
     css`
-      background: green;
+      background: black;
+      border: 1px solid #d6d6d6;
+      color: #d6d6d6;
     `}
 `;
 export const Rectangulo = styled.div`
-  width: 15px;
-  height: 30px;
-  margin: -2px 20px -3px 42.5px;
+  width: 30%;
+  height: 10px;
   background: #d6d6d6;
   ${(props) =>
     props.seleccionado === "true" &&
     css`
-      background: green;
+      background: black;
+      border: 1px solid #d6d6d6;
+      color: #d6d6d6;
     `}
 `;
 
-export const PasosLateral = styled.span`
-  color: #d6d6d6;
-  font-size: 18px;
+export const PasosLateral = styled.button`
+  color: black;
+  font-weight: 1000;
   font-family: bold;
+  border-radius: 15px;
+  width: 40%;
+  font-size: 20px;
+  background: #d6d6d6;
+  &:hover {
+    color: #d6d6d6;
+    background: black;
+    outline: none;
+    background: black;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.4);
+  }
   ${(props) =>
     props.seleccionado === "true" &&
     css`
-      color: green;
+      color: #d6d6d6;
+      background: black;
     `}
 `;
 export const BotonSiguientePasos = styled.button`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  margin-left: 20px;
-  ${(props) =>
-    props.right === "true" &&
-    css`
-      margin-left: 80%;
-    `}
   ${(props) =>
     props.ocultar === "true" &&
     css`
@@ -228,16 +261,19 @@ export const ImgIcon = styled(FontAwesomeIcon)`
     css`
       height: 80%;
     `}
+    ${(props) =>
+    props.menu === "true" &&
+    css`
+      margin-left: 10px;
+      margin-right: 10px;
+    `}
 `;
 export const ContainerDatos = styled.div`
   width: 100%;
-  display: flex;
   margin-bottom: -10px;
-  ${(props) =>
-    props.exe === "true" &&
-    css`
-      justify-content: center;
-    `}
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 `;
 
 export const Category = styled.div`
@@ -259,40 +295,36 @@ export const Radio = styled.input`
   margin-right: 10px;
 `;
 export const Titulo = styled.div`
-  font-size: 25px;
+  font-size: 28px;
   margin-top: 10px;
   font-weight: 1000;
   position: relative;
   font-family: "bold";
   text-align: center;
-  &::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 3px;
-    width: 100%;
-    background: linear-gradient(135deg, #000000, #ffffff);
-  }
-  ${(props) =>
-    props.espacio === "true" &&
-    css`
-      top: 20px;
-    `}
+  width: 100%;
 `;
 export const ContainerTodo = styled.div`
-  width: 100%;
-  height: 88%;
+  background: #d6d6d6;
+  border-radius: 25px;
+  width: 70%;
+  height: 100%;
+  ${(props) =>
+    props.lista === "true" &&
+    css`
+      width: 80%;
+      height:calc( ${(props) => props.cantidad * 65}px + 210px);
+      display: flex;
+      flex-direction: column;
+    `}
 `;
 export const ContainerTabla = styled.div`
   width: 90%;
-  height: 78%;
   z-index: 1;
-  margin-top: 50px;
+  margin-top: 20px;
   overflow-y: auto;
 `;
 export const ContainerBotonBusqueda = styled.div`
-  width: 90%;
+  width: 80px;
   height: 60px;
   z-index: 1;
   display: flex;
@@ -302,7 +334,9 @@ export const ContainerBotonBusqueda = styled.div`
 `;
 export const BotonBuscar = styled.button`
   height: 80%;
-  width: 8%;
+  margin-right: 20px;
+  margin-top: 20px;
+  width: 70%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -341,3 +375,57 @@ export const BotonAbrirExe = styled.button`
       }
     `}
 `;
+
+export const ContainerHuella = styled.button`
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
+  border: none;
+  background: transparent;
+`;
+
+export const ImagenHuella = styled.img`
+  width: 150px;
+  height: 150px;
+`;
+
+export const BarraEscaneo = styled.div`
+  position: absolute;
+  top: 50px;
+  height: 5px;
+  width: 100%;
+  background-color: #000000;
+  animation: ${({ escaneando }) => (escaneando ? barra : "none")} 2s infinite;
+`;
+
+const barra = keyframes`
+  0%, 100% {
+    top: 0%;
+  }
+  50% {
+    top: 100%;
+  }
+`;
+export const LineaLista = styled.div`
+  width: 5px;
+  border-radius: 25px;
+  background: black;
+  height: 50px;
+`;
+export const ContainerBotonLista = styled.div`
+  width: 70%;
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+`;
+export const ContainerTituloBusqueda = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+`;
+
+export const Texto = styled.span `
+  font-size: 20px;
+  font-family: "bold";
+`

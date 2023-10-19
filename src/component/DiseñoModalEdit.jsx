@@ -22,6 +22,7 @@ export const ContenedorModal = styled.div`
   box-shadow: rgba(100, 100, 111, 0.2) 8px 7px 29px 8px;
   padding: 20px;
   top: 50px;
+  opacity: 1;
 `;
 export const EncabezadoModal = styled.div`
   display: flex;

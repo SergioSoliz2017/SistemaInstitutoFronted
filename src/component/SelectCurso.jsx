@@ -9,6 +9,7 @@ export default function SelectCurso({
   label,
   name,
   dato,
+  sub
 }) {
   const [listaCursos, setListaCursos] = useState([]);
 
@@ -25,7 +26,7 @@ export default function SelectCurso({
   };
 
   return (
-    <BoxCampo>
+    <BoxCampo sub={sub}>
       <TextBox>{label}</TextBox>
       <Select
         id={name}

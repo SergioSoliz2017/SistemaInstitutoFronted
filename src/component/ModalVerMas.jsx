@@ -1,6 +1,7 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import {url} from "./VariableEntornos"
 import {
   BotonCerrar,
   ContainerTabla,
@@ -63,7 +64,7 @@ export default function ModalVerMas({
 }) {
   const [listaTutores, setListaTutores] = useState([]);
   const [listaEstudiantes, setListaEstudiantes] = useState([]);
-  const url = "http://127.0.0.1:8000/";
+  
   const classes = styles();
   
   useEffect(() => {

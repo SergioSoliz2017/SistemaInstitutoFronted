@@ -14,15 +14,15 @@ export const Overlay = styled.div`
 `;
 export const ContenedorModal = styled.div`
   transition: all 2s ease-in-out;
-  width: 50%;
-  height: 80%;
+  width: 60%;
+  height: 65%;
   min-height: 100px;
   background: #d6d6d6;
   position: relative;
   border-radius: 5px;
   box-shadow: rgba(100, 100, 111, 0.2) 8px 7px 29px 8px;
-  padding: 20px;
-  top: 50px;
+  padding: 30px;
+  top: 15px;
 `;
 export const EncabezadoModal = styled.div`
   display: flex;

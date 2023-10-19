@@ -1,5 +1,5 @@
 import React from "react";
-import { useState} from "react";
+import { useState } from "react";
 import {
   GlobalStyle,
   ContainerInicioSesion,
@@ -11,6 +11,7 @@ import {
   BotonIniciar,
   ConatinerBoton,
   ConatinerImput,
+  Container,
 } from "./DiseñosInicio";
 import toast, { Toaster } from "react-hot-toast";
 import { useHistory } from "react-router";
@@ -25,7 +26,7 @@ export default function Inicio() {
       if (id === "123") {
         if (contraseña === "123") {
           toast.success("Inicio Correcto", {
-            duration: 3000,
+            duration: 9000,
             style: {
               border: "2px solid #000",
               padding: "10px",
@@ -110,41 +111,44 @@ export default function Inicio() {
   document.title = "Inicio";
   return (
     <GlobalStyle>
-      <ContainerInicioSesion>
-        <ImagenLogo src={require("../Imagenes/Logo.png")} />
-        <ConatinerImput>
-          <BoxImputIcon>
-            <Icon>
-              <ImgIcon icon={faUser} />
-            </Icon>
-            <ImputIcon
-              placeholder="Nombre Usuario"
-              maxLength={22}
-              onChange={(e) => {
-                setId(e.target.value);
-              }}
-              id="id"
-            />
-          </BoxImputIcon>
-          <BoxImputIcon>
-            <Icon>
-              <ImgIcon icon={faLock} />
-            </Icon>
-            <ImputIcon
-              placeholder="Contraseña"
-              type="password"
-              maxLength={10}
-              onChange={(e) => {
-                setContraseña(e.target.value);
-              }}
-              id="contraseña"
-            />
-          </BoxImputIcon>
-        </ConatinerImput>
-        <ConatinerBoton>
-          <BotonIniciar onClick={ingresar}>Iniciar Sesion</BotonIniciar>
-        </ConatinerBoton>
-      </ContainerInicioSesion>
+      <Container>
+        <ContainerInicioSesion>
+          <ImagenLogo src={require("../Imagenes/Logo.png")} />
+          <ConatinerImput>
+            <BoxImputIcon>
+              <Icon>
+                <ImgIcon icon={faUser} />
+              </Icon>
+              <ImputIcon
+                placeholder="Nombre Usuario"
+                maxLength={22}
+                onChange={(e) => {
+                  setId(e.target.value);
+                }}
+                id="id"
+              />
+            </BoxImputIcon>
+            <BoxImputIcon>
+              <Icon>
+                <ImgIcon icon={faLock} />
+              </Icon>
+              <ImputIcon
+                placeholder="Contraseña"
+                type="password"
+                maxLength={10}
+                onChange={(e) => {
+                  setContraseña(e.target.value);
+                }}
+                id="contraseña"
+              />
+            </BoxImputIcon>
+          </ConatinerImput>
+          <ConatinerBoton>
+            <BotonIniciar onClick={ingresar}>Iniciar Sesion</BotonIniciar>
+          </ConatinerBoton>
+        </ContainerInicioSesion>
+      </Container>
+
       <Toaster reverseOrder={false} position="botton-center" />
     </GlobalStyle>
   );

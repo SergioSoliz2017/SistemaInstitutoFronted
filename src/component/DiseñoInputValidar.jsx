@@ -2,21 +2,33 @@ import styled, { css } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const BoxCampo = styled.div`
-  margin: 15px 10px 12px 10px;
-  width: calc(50% - 25px);
+  margin-bottom: 5px;
+  width: 70%;
   position: relative;
   z-index: 90;
-  height: 75px;
+  
   ${(props) =>
     props.crear === "true" &&
     css`
-      margin:0px 10px 5px 10px;
+      margin: 0px 10px 5px 10px;
+    `}
+    ${(props) =>
+    props.sub === "true" &&
+    css`
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    `}
+    ${(props) =>
+    props.ultimo === "true" &&
+    css`
+      margin-bottom: 25px;
     `}
 `;
 export const IconoValidacion = styled(FontAwesomeIcon)`
   position: absolute;
   right: 12px;
-  bottom: 14px;
+  bottom: 11px;
   z-index: 100;
   font-size: 20px;
   opacity: 0;
@@ -35,7 +47,7 @@ export const IconoValidacion = styled(FontAwesomeIcon)`
     `}
 `;
 export const InputBox = styled.input`
-  height: 45px;
+  height: 40px;
   width: 100%;
   outline: none;
   border-radius: 5px;
@@ -82,6 +94,7 @@ export const InputBox = styled.input`
 export const TextBox = styled.span`
   display: block;
   font-weight: 500;
+  width: 150px;
   margin-bottom: 5px;
   ${(props) =>
     props.centro === "true" &&

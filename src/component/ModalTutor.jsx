@@ -144,7 +144,7 @@ export default function ModalTutor({ estado, cambiarEstado, datos, ocultar }) {
         <Overlay>
           <ContenedorModal>
             <EncabezadoModal>
-              <Titulo>{datos.CODTUTOR}</Titulo>
+              <Titulo>Cambiar estado del tutor </Titulo>
             </EncabezadoModal>
             <BotonCerrar
               onClick={() => {
@@ -156,6 +156,7 @@ export default function ModalTutor({ estado, cambiarEstado, datos, ocultar }) {
             >
               <FontAwesomeIcon icon={faXmark} />
             </BotonCerrar>
+            <TextBox centro = {"true"}>{datos.NOMBRETUTOR + " " + datos.APELLIDOTUTOR}</TextBox>
             <DetalleUsuario>
               <BoxCampo>
                 <TextBox>Estado</TextBox>
@@ -198,7 +199,6 @@ export default function ModalTutor({ estado, cambiarEstado, datos, ocultar }) {
                   id="motivo"
                   onChange={(e) => {
                     setMotivo(e.target.value);
-                    console.log(motivo);
                   }}
                 />
               </BoxCampo>

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled, { css } from "styled-components";
 
 export const Overlay = styled.div`
@@ -22,16 +23,16 @@ export const ContenedorModal = styled.div`
   border-radius: 5px;
   box-shadow: rgba(100, 100, 111, 0.2) 8px 7px 29px 8px;
   padding: 20px;
-  top: 50px;
+  top: 15px;
   ${(props) =>
     props.ocultar === "true" &&
     css`
       opacity: 0.5;
     `}
-    ${(props) =>
+  ${(props) =>
     props.tipo === "Tutor" &&
     css`
-      height: 65%;
+      height: 90%;
     `}
 `;
 export const EncabezadoModal = styled.div`
@@ -46,15 +47,7 @@ export const Titulo = styled.div`
   font-weight: 1000;
   position: relative;
   width: 100%;
-  &::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 3px;
-    width: 100%;
-    background: linear-gradient(135deg, #000000, #d6d6d6);
-  }
+  text-align: center;
 `;
 export const BotonCerrar = styled.button`
   position: absolute;
@@ -74,21 +67,22 @@ export const BotonCerrar = styled.button`
 `;
 export const DetalleUsuario = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   width: 100%;
 `;
 export const BoxCampo = styled.div`
-  margin: 20px 10px 0px 10px;
-  width: calc(50% - 25px);
+  margin: 15px 10px 0px 10px;
   position: relative;
   z-index: 90;
-  font-family:"bold";
+  display: flex;
+  font-family: "bold";
   font-size: 20px;
+  align-items: center;
 `;
 export const BotonTutores = styled.button`
   width: 50%;
   height: 100%;
-  border-radius:25px;
+  border-radius: 25px;
   background: black;
   color: #d6d6d6;
 `;
@@ -99,4 +93,48 @@ export const ContainerBoton = styled.div`
   z-index: 90;
   display: flex;
   justify-content: center;
+`;
+export const Texto = styled.div`
+  width: 30%;
+`;
+export const ContainerIcon = styled.div`
+  display: flex;
+  width: 100%;
+`;
+export const ContainerTituloNombre = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+`;
+export const TituloNombre = styled.div`
+  font-size: 20px;
+  font-weight: 1000;
+  position: relative;
+  width: 100%;
+  text-align: center;
+  font-family: "bold";
+`;
+export const ContainerImgIcon = styled.div`
+  position: absolute;
+  top: 85px;
+  right: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin: auto;
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+  border-radius: 50%;
+  &:hover {
+    color: #d6d6d6;
+    background: black;
+  }
+`;
+export const ImgIcon = styled(FontAwesomeIcon)`
+  width: 100%;
+  height: 100%;
 `;

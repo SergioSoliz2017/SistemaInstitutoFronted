@@ -56,7 +56,7 @@ export default function ModalEditar({ estado, cambiarEstado, datos , ocultar }) 
   }, [datos.CODESTUDIANTE]);
 
   const expresiones = {
-    nombre: /^[a-zA-ZÀ-ÿ\s- ]{3,40}$/, // Letras y espacios, pueden llevar acentos.
+    nombre: /^(?=\S)(?!.*\s{2})[a-zA-ZÀ-ÿ\s-]{3,40}$/, // Letras y espacios, pueden llevar acentos.
     correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
     telefono: /^\d{7,8}$/, // 7 a 14 numeros.
     carnet: /^[a-zA-Z0-9-]{6,15}$/,
@@ -124,7 +124,7 @@ export default function ModalEditar({ estado, cambiarEstado, datos , ocultar }) 
         <Overlay>
           <ContenedorModal>
             <EncabezadoModal>
-              <Titulo>{datos.CODESTUDIANTE}</Titulo>
+              <Titulo>{"Editar informacion de estudiante"}</Titulo>
             </EncabezadoModal>
             <BotonCerrar
               onClick={() => {
@@ -139,8 +139,8 @@ export default function ModalEditar({ estado, cambiarEstado, datos , ocultar }) 
                 estado={nombre}
                 cambiarEstado={setNombre}
                 tipo="text"
-                label="Nombre del estudiante"
-                placeholder="Nombre del estudiante"
+                label="Nombre:"
+                placeholder="Nombre"
                 name="nombreEstudiante"
                 expresionRegular={expresiones.nombre}
               />
@@ -148,8 +148,8 @@ export default function ModalEditar({ estado, cambiarEstado, datos , ocultar }) 
                 estado={apellido}
                 cambiarEstado={setApellido}
                 tipo="text"
-                label="Apellido del estudiante"
-                placeholder="Apellido del estudiante"
+                label="Apellido:"
+                placeholder="Apellido"
                 name="apellidoEstudiante"
                 expresionRegular={expresiones.nombre}
               />
@@ -157,8 +157,8 @@ export default function ModalEditar({ estado, cambiarEstado, datos , ocultar }) 
                 estado={fechaNacimientoEstudiante}
                 cambiarEstado={setFechaNacimientoEstudiante}
                 tipo="date"
-                label="Fecha nacimiento del estudiante"
-                placeholder="Fecha nacimiento del estudiante"
+                label="Fecha de nacimiento:"
+                placeholder="Fecha de nacimiento"
                 name="fechaNacimientoEstudiante"
                 expresionRegular={{}}
               />
@@ -166,7 +166,7 @@ export default function ModalEditar({ estado, cambiarEstado, datos , ocultar }) 
                 estado={direccion}
                 cambiarEstado={setDireccion}
                 tipo="text"
-                label="Direccion"
+                label="Direccion:"
                 placeholder="Direccion"
                 name="Direccion"
                 expresionRegular={expresiones.lugar}
@@ -175,7 +175,7 @@ export default function ModalEditar({ estado, cambiarEstado, datos , ocultar }) 
                 estado={pais}
                 cambiarEstado={setPais}
                 tipo="text"
-                label="Pais"
+                label="Pais:"
                 placeholder="Pais"
                 name="Pais"
                 expresionRegular={expresiones.nombre}
@@ -184,7 +184,7 @@ export default function ModalEditar({ estado, cambiarEstado, datos , ocultar }) 
                 estado={departamento}
                 cambiarEstado={setDepartamento}
                 tipo="text"
-                label="Departamento"
+                label="Departamento:"
                 name="Departamento"
                 placeholder="Departamento"
                 expresionRegular={expresiones.nombre}
@@ -193,7 +193,7 @@ export default function ModalEditar({ estado, cambiarEstado, datos , ocultar }) 
                 estado={ciudad}
                 cambiarEstado={setCiudad}
                 tipo="text"
-                label="Cuidad"
+                label="Cuidad:"
                 name="Cuidad"
                 placeholder="Cuidad"
                 expresionRegular={expresiones.nombre}
@@ -202,7 +202,7 @@ export default function ModalEditar({ estado, cambiarEstado, datos , ocultar }) 
                 estado={colegio}
                 cambiarEstado={setColegio}
                 tipo="text"
-                label="Colegio"
+                label="Colegio:"
                 placeholder="Colegio"
                 name="Colegio"
                 expresionRegular={expresiones.lugar}
@@ -210,21 +210,21 @@ export default function ModalEditar({ estado, cambiarEstado, datos , ocultar }) 
               <SelectInput
                 estado={turno}
                 cambiarEstado={setTurno}
-                label="Turno"
+                label="Turno:"
                 name="Turno"
                 //valido={documento.valido}
               />
               <SelectInput
                 estado={curso}
                 cambiarEstado={setCurso}
-                label="Curso"
+                label="Curso:"
                 name="curso"
                 //valido={documento.valido}
               />
               <SelectInput
                 estado={tipoColegio}
                 cambiarEstado={setTipoColegio}
-                label="Tipo colegio"
+                label="Tipo colegio:"
                 name="tipoColegio"
                 //valido={documento.valido}
               />

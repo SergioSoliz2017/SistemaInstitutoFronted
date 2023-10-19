@@ -9,10 +9,10 @@ import {
   ContainerBoton,
   Botones,
 } from "./DiseñoModalAñadirTutor";
-import SelectInput from "./SelectValidar";
+import SelectInput from "./SelectValidarModal";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import InputValidar from "./InputValidar";
+import InputValidar from "./InputValidarModal";
 import { useState } from "react";
 import { Category, Label, Radio } from "./DiseñoPantallaPrincipal";
 import alerta from "sweetalert2";
@@ -50,7 +50,7 @@ export default function ModalAñadirTutor({
     valido: null,
   });
   const expresiones = {
-    nombre: /^[a-zA-ZÀ-ÿ\s- ]{3,40}$/, // Letras y espacios, pueden llevar acentos.
+    nombre: /^(?=\S)(?!.*\s{2})[a-zA-ZÀ-ÿ\s-]{3,40}$/, // Letras y espacios, pueden llevar acentos.
     correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
     telefono: /^\d{7,8}$/, // 7 a 14 numeros.
     carnet: /^[a-zA-Z0-9-]{6,15}$/,
@@ -77,9 +77,9 @@ export default function ModalAñadirTutor({
     var subNombre = nombreTutor.campo.substring(0, 3);
     var subApellido = apellidoTutor.campo.substring(0, 3);
     var año = new Date().getFullYear();
-    var mes = new Date().getMonth() + 1;
-    var fecha = new Date().getDate();
-    codigo = año + "" + mes + "" + fecha + "" + subNombre + subApellido;
+    const dia = new Date().getDate();
+    const mes = new Date().getMonth() + 1;
+    codigo = año + "" + mes + "" + dia + "" + subNombre + subApellido;
     return codigo.toUpperCase();
   }
   function esValido() {
@@ -415,8 +415,8 @@ export default function ModalAñadirTutor({
                 estado={nombreTutor}
                 cambiarEstado={setNombreTutor}
                 tipo="text"
-                label="Nombre del tutor"
-                placeholder="Nombre del tutor"
+                label="Nombre:"
+                placeholder="Nombre"
                 name="nombreTutor"
                 expresionRegular={expresiones.nombre}
                 crear={"true"}
@@ -425,8 +425,8 @@ export default function ModalAñadirTutor({
                 estado={apellidoTutor}
                 cambiarEstado={setApellidoTutor}
                 tipo="text"
-                label="Apellido del tutor"
-                placeholder="Apellido del tutor"
+                label="Apellido:"
+                placeholder="Apellido"
                 name="apellidoTutor"
                 expresionRegular={expresiones.nombre}
                 crear={"true"}
@@ -435,8 +435,8 @@ export default function ModalAñadirTutor({
                 estado={fechaNacimientoTutor}
                 cambiarEstado={setFechaNacimientoTutor}
                 tipo="date"
-                label="Fecha nacimiento del tutor"
-                placeholder="Fecha nacimiento del tutor"
+                label="Fecha de nacimiento:"
+                placeholder="Fecha de nacimiento"
                 name="fechaNacimientoTutor"
                 expresionRegular={{}}
                 crear={"true"}
@@ -445,8 +445,8 @@ export default function ModalAñadirTutor({
                 estado={celularTutor}
                 cambiarEstado={setCelularTutor}
                 tipo="number"
-                label="Celular del tutor"
-                placeholder="Celular del tutor"
+                label="Celular:"
+                placeholder="Celular"
                 name="CelularTutor"
                 expresionRegular={expresiones.telefono}
                 crear={"true"}
@@ -455,8 +455,8 @@ export default function ModalAñadirTutor({
                 estado={correoTutor}
                 cambiarEstado={setCorreoTutor}
                 tipo="email"
-                label="Correo electronico del tutor"
-                placeholder="Correo electronico del tutor"
+                label="Correo electronico:"
+                placeholder="Correo electronico"
                 name="Correo electronico del tutor"
                 expresionRegular={expresiones.correo}
                 crear={"true"}
@@ -465,8 +465,8 @@ export default function ModalAñadirTutor({
                 estado={ocupacionTutor}
                 cambiarEstado={setOcupacionTutor}
                 tipo="text"
-                label="Ocupacion del tutor"
-                placeholder="Ocupacion del tutor"
+                label="Ocupacion:"
+                placeholder="Ocupacion"
                 name="ocupacionTutor"
                 expresionRegular={expresiones.nombre}
                 crear={"true"}
@@ -474,43 +474,26 @@ export default function ModalAñadirTutor({
               <SelectInput
                 estado={relacion}
                 cambiarEstado={setRelacion}
-                label="Relacion con el estudiante"
+                label="Relacion:"
                 name="curso"
                 crear={"true"}
               />
               <SelectInput
                 estado={estudiante}
                 cambiarEstado={setEstudiante}
-                label="Estudiantes"
+                label="Estudiantes:"
                 name="estudiante"
                 crear={"true"}
                 dato={"true"}
               />
-              <Titulo>GENERO</Titulo>
-              <Category>
-                <Label for="dot-1">
-                  <Radio
-                    type="radio"
-                    name="gender"
-                    id="dot-1"
-                    value="Hombre"
-                    checked={generoTutor === "Hombre" ? true : false}
-                    onChange={cambioGeneroTutor}
-                  />
-                  <span className="gender">Hombre</span>
-                </Label>
-                <Label for="dot-2">
-                  <Radio
-                    type="radio"
-                    name="gender"
-                    id="dot-2"
-                    value="Mujer"
-                    checked={generoTutor === "Mujer" ? true : false}
-                    onChange={cambioGeneroTutor}
-                  />
-                  <span className="gender">Mujer</span>
-                </Label>
-              </Category>
+              <SelectInput
+                estado={generoTutor}
+                cambiarEstado={setGeneroTutor}
+                label="Genero:"
+                name="Genero"
+                crear={"true"}
+                dato={"true"}
+              />
               <ContainerBoton>
                 <Botones
                   onClick={() => {

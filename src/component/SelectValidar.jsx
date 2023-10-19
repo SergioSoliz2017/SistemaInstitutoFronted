@@ -11,6 +11,7 @@ export default function InputValidar({
   name,
   crear,
   datos,
+  sub,ultimo
 }) {
   const validacion = () => {
     if (estado.campo != "") {
@@ -39,6 +40,7 @@ export default function InputValidar({
   ];
   const listTipoColegio = ["Fiscal", "Convenio", "Particular"];
   const listTurno = ["Mañana", "Tarde", "Noche"];
+  const genero = ["Hombre", "Mujer"];
   const listCurso = [
     "1° Primaria",
     "2° Primaria",
@@ -54,7 +56,7 @@ export default function InputValidar({
     "6° Secundaria",
   ];
   return (
-    <BoxCampo crear={crear}>
+    <BoxCampo crear={crear} sub = {sub} ultimo={ultimo}>
       <TextBox>{label}</TextBox>
       <Select
         id={name}
@@ -66,7 +68,7 @@ export default function InputValidar({
         onKeyUp={validacion}
         onBlur={validacion}
       >
-        {label === "Turno" && (
+        {label === "Turno:" && (
           <>
             <option value="">Seleccione turno de colegio</option>
             {listTurno.map((datos) => {
@@ -74,7 +76,7 @@ export default function InputValidar({
             })}
           </>
         )}
-        {label === "Curso" && (
+        {label === "Curso:" && (
           <>
             <option value="">Seleccione curso</option>
             {listCurso.map((datos) => {
@@ -82,7 +84,7 @@ export default function InputValidar({
             })}
           </>
         )}
-        {label === "Tipo colegio" && (
+        {label === "Tipo colegio:" && (
           <>
             <option value="">Seleccione tipo de colegio</option>
             {listTipoColegio.map((datos) => {
@@ -90,7 +92,7 @@ export default function InputValidar({
             })}
           </>
         )}
-        {label === "Relacion con el estudiante" && (
+        {label === "Relacion:" && (
           <>
             <option value="">Seleccione relacion</option>
             {listaRelacion.map((datos) => {
@@ -100,11 +102,23 @@ export default function InputValidar({
         )}
         {label === "Estudiantes" && (
           <>
-            <option value="">Selecciones estudiante</option>
+            <option value="">Seleccione estudiante</option>
             {listaEstudiantes.map((datos) => {
               return (
                 <option value={datos.CODESTUDIANTE}>
                   {datos.NOMBREESTUDIANTE}
+                </option>
+              );
+            })}
+          </>
+        )}
+        {label === "Genero:" && (
+          <>
+            <option value="">Seleccione genero</option>
+            {genero.map((datos) => {
+              return (
+                <option value={datos}>
+                  {datos}
                 </option>
               );
             })}

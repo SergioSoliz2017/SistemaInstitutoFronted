@@ -1,5 +1,9 @@
 import React from "react";
+import {url} from "./VariableEntornos"
 import { BoxCampo, TextBox, Select } from "./DiseñoInputValidarModal";
+import { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios";
 export default function InputValidar({ estado, cambiarEstado, label, name }) {
   const validacion = () => {
     if (estado.campo != "") {
@@ -8,6 +12,14 @@ export default function InputValidar({ estado, cambiarEstado, label, name }) {
       cambiarEstado({ ...estado, valido: "false" });
     }
   };
+  const genero = ["Hombre", "Mujer"];
+
+  const [listaEstudiantes, setListaEstudiantes] = useState([]);
+  useEffect(() => {
+    axios.get(url + "obtenerEstudiantes").then((datos) => {
+      setListaEstudiantes(datos.data);
+    });
+  },[]);
 
   const listaRelacion = ["Padre","Madre","Tio","Tia","Abuelo","Abuela","Tutor legar"]
   const listTipoColegio = ["Fiscal", "Convenio", "Particular"];
@@ -27,7 +39,7 @@ export default function InputValidar({ estado, cambiarEstado, label, name }) {
         onKeyUp={validacion}
         onBlur={validacion}
       >
-        {label === "Turno" && (
+        {label === "Turno:" && (
           <>
             <option value="">Seleccione turno de colegio</option>
             {listTurno.map((datos) => {
@@ -39,7 +51,7 @@ export default function InputValidar({ estado, cambiarEstado, label, name }) {
             })}
           </>
         )}
-        {label === "Curso" && (
+        {label === "Curso:" && (
           <>
             <option value="">Seleccione curso</option>
             {listCurso.map((datos) => {
@@ -51,7 +63,7 @@ export default function InputValidar({ estado, cambiarEstado, label, name }) {
             })}
           </>
         )}
-        {label === "Tipo colegio" && (
+        {label === "Tipo colegio:" && (
           <>
             <option value="">Seleccione tipo de colegio</option>
             {listTipoColegio.map((datos) => {
@@ -63,10 +75,35 @@ export default function InputValidar({ estado, cambiarEstado, label, name }) {
             })}
           </>
         )}
-        {label === "Relacion con el estudiante" && (
+        {label === "Relacion:" && (
           <>
             <option value="">Seleccione relacion</option>
             {listaRelacion.map((datos) => {
+              return (
+                <option value={datos}>
+                  {datos}
+                </option>
+              );
+            })}
+          </>
+        )}
+        {label === "Estudiantes:" && (
+          <>
+            <option value="">Seleccione estudiante</option>
+            {listaEstudiantes.map((datos) => {
+              return (
+                <option value={datos.CODESTUDIANTE}>
+                  {datos.NOMBREESTUDIANTE}
+                </option>
+              );
+            })}
+            
+          </>
+        )}
+        {label === "Genero:" && (
+          <>
+            <option value="">Seleccione genero</option>
+            {genero.map((datos) => {
               return (
                 <option value={datos}>
                   {datos}
