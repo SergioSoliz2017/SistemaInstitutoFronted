@@ -35,7 +35,7 @@ export default function InputValidar({
     "Tia",
     "Abuelo",
     "Abuela",
-    "Tutor legar",
+    "Tutor legal",
     "No tiene",
   ];
   const listTipoColegio = ["Fiscal", "Convenio", "Particular"];

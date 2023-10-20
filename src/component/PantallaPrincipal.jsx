@@ -185,7 +185,7 @@ export default function PantallaPrincipal() {
   const [tutorSi, setTutorSi] = useState(false);
 
   function esValido() {
-    var esValido = true; 
+    var esValido = true;
     if (opcionPasos === 1) {
       if (nombre.campo === "") {
         esValido = false;
@@ -294,7 +294,7 @@ export default function PantallaPrincipal() {
       }
       if (generoEstudiante.campo == "") {
         esValido = false;
-        setGeneroEstudiante({ ...generoEstudiante, valido: "false" })
+        setGeneroEstudiante({ ...generoEstudiante, valido: "false" });
         toast("Ingresar genero del estudiante", {
           icon: "⚠️",
           duration: 3000,
@@ -378,7 +378,8 @@ export default function PantallaPrincipal() {
         }
       }
       if (pais.campo == "") {
-        esValido = false;console.log("entra")
+        esValido = false;
+        console.log("entra");
         setPais({ ...pais, valido: "false" });
         toast("Ingresar pais", {
           icon: "⚠️",
@@ -754,7 +755,7 @@ export default function PantallaPrincipal() {
         }
       }
       if (generoTutor == "") {
-        setGeneroTutor({...generoTutor , valido: "false"})
+        setGeneroTutor({ ...generoTutor, valido: "false" });
         esValido = false;
         toast("Ingresar genero del tutor", {
           icon: "⚠️",
@@ -806,7 +807,7 @@ export default function PantallaPrincipal() {
       }
     }
     if (opcionPasos === 3) {
-      if(cursoRegistrados.campo === ""){
+      if (cursoRegistrados.campo === "") {
         esValido = false;
         setCursoRegistrados({ ...cursoRegistrados, valido: "false" });
         toast("Seleccionar curso", {
@@ -823,7 +824,7 @@ export default function PantallaPrincipal() {
           },
         });
       }
-      if(grupo.campo === ""){
+      if (grupo.campo === "") {
         esValido = false;
         setGrupo({ ...grupo, valido: "false" });
         toast("Ingresar nombre del tutor", {
@@ -840,7 +841,7 @@ export default function PantallaPrincipal() {
           },
         });
       }
-      if (!habilitarHuella){
+      if (!habilitarHuella) {
         esValido = false;
         toast("Escanear huella", {
           icon: "⚠️",
@@ -1173,12 +1174,20 @@ export default function PantallaPrincipal() {
     }
   };
 
-  const abrirExeVerificar = () => {
+  const abrirExeVerificar = async () => {
     try {
       setOpcion(0);
-      axios.post(url + "ejecutar-exe-verificar").then((response) => {});
+      const response = await fetch(url + "ejecutar-exe-verificar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Otros encabezados si es necesario
+        },
+      });
+      const data = await response.json();
+      console.log(data);
     } catch (error) {
-      console.error("Error de red", error);
+      console.error("Error:", error);
     }
   };
   const [imagenHuella, setImagenHuella] = useState(
@@ -1209,7 +1218,7 @@ export default function PantallaPrincipal() {
     return edad;
   }
   const [modalVerGrupo, setModalVerGrupo] = useState(false);
-  const [grupoEscogido,setGrupoEscogido] = useState("")
+  const [grupoEscogido, setGrupoEscogido] = useState("");
   return (
     <GlobalStyle>
       <Nav>
