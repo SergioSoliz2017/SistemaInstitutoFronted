@@ -19,27 +19,41 @@ export default function InputValidar({
   name,
   expresionRegular,
   crear,
-  sub
+  sub,
+  opcional,
 }) {
-
   function calcularEdad(fecha_nacimiento) {
     var hoy = new Date();
     var cumpleanos = new Date(fecha_nacimiento);
     var edad = hoy.getFullYear() - cumpleanos.getFullYear();
     var m = hoy.getMonth() - cumpleanos.getMonth();
     if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
-        edad--;
+      edad--;
     }
     return edad;
-}
+  }
 
   const validacion = () => {
     if (tipo != "date") {
-      if (expresionRegular) {
-        if (expresionRegular.test(estado.campo)) {
-          cambiarEstado({ ...estado, valido: "true" });
-        } else {
-          cambiarEstado({ ...estado, valido: "false" });
+      if (!opcional) {
+        if (expresionRegular) {
+          if (expresionRegular.test(estado.campo)) {
+            cambiarEstado({ ...estado, valido: "true" });
+          } else {
+            cambiarEstado({ ...estado, valido: "false" });
+          }
+        }
+      }else{
+        if (expresionRegular && estado.campo != "") {
+          if (expresionRegular.test(estado.campo)) {
+            cambiarEstado({ ...estado, valido: "true" });
+          } else {
+            cambiarEstado({ ...estado, valido: "false" });
+          }
+        }else{
+          if (estado.campo === ""){
+            cambiarEstado({ ...estado, valido: null });
+          }
         }
       }
     } else {
@@ -52,8 +66,8 @@ export default function InputValidar({
     }
   };
   return (
-    <BoxCampo crear = {crear} sub = {sub}>
-      <TextBox>{label}</TextBox>
+    <BoxCampo crear={crear} sub={sub}>
+      <TextBox titulo = {opcional?"true":"false"}>{label}</TextBox>
       <InputBox
         type={tipo}
         placeholder={placeholder}

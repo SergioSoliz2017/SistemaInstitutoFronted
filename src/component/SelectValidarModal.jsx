@@ -4,7 +4,7 @@ import { BoxCampo, TextBox, Select } from "./DiseñoInputValidarModal";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
-export default function InputValidar({ estado, cambiarEstado, label, name }) {
+export default function InputValidar({ estado, cambiarEstado, label, name ,obtener}) {
   const validacion = () => {
     if (estado.campo != "") {
       cambiarEstado({ ...estado, valido: "true" });
@@ -16,10 +16,13 @@ export default function InputValidar({ estado, cambiarEstado, label, name }) {
 
   const [listaEstudiantes, setListaEstudiantes] = useState([]);
   useEffect(() => {
-    axios.get(url + "obtenerEstudiantes").then((datos) => {
+    if(obtener){
+      axios.get(url + "obtenerEstudiantes").then((datos) => {
       setListaEstudiantes(datos.data);
     });
-  },[]);
+    }
+    
+  }, []);
 
   const listaRelacion = ["Padre","Madre","Tio","Tia","Abuelo","Abuela","Tutor legar"]
   const listTipoColegio = ["Fiscal", "Convenio", "Particular"];

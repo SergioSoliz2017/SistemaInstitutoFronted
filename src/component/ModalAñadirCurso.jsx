@@ -64,7 +64,7 @@ export default function ModalAñadirCurso({ estado, cambiarEstado, ocultar, actu
         var crearCurso = {
           CODSEDE: "QUILLACOLLO",
           CODCURSO: codigoCurso.toUpperCase(),
-          CURSODURACION: parseInt(duracion.campo, 10),
+          DURACIONCURSO: parseInt(duracion.campo),
           CURSO: curso.campo,
           LISTAGRUPOS: listaGrupos,
         };

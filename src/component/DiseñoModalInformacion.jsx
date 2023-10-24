@@ -16,7 +16,7 @@ export const Overlay = styled.div`
 export const ContenedorModal = styled.div`
   transition: all 1s ease-in-out;
   width: 50%;
-  height: 79%;
+  height: 80.5%;
   min-height: 100px;
   background: #d6d6d6;
   position: relative;
@@ -39,15 +39,13 @@ export const EncabezadoModal = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
   padding-bottom: 10px;
 `;
 export const Titulo = styled.div`
-  font-size: 25px;
+  font-size: 20px;
   font-weight: 1000;
   position: relative;
   width: 100%;
-  text-align: center;
 `;
 export const BotonCerrar = styled.button`
   position: absolute;
@@ -76,26 +74,46 @@ export const BoxCampo = styled.div`
   z-index: 90;
   display: flex;
   font-family: "bold";
-  font-size: 20px;
+  font-size: 15px;
   align-items: center;
 `;
 export const BotonTutores = styled.button`
-  width: 50%;
+  width: 30%;
   height: 100%;
-  border-radius: 25px;
-  background: black;
-  color: #d6d6d6;
+  border: none;
+  background: #a09fa2;
+  color: black;
+    ${(props) =>
+    props.seleccionado === "true" &&
+    css`
+      color: #d6d6d6;
+      background: black;
+    `}
 `;
 export const ContainerBoton = styled.div`
-  margin: 30px 10px 0px 10px;
   position: relative;
   width: 100%;
+  height: 40px;
   z-index: 90;
   display: flex;
-  justify-content: center;
 `;
+export const ContainerTutores = styled.div`
+margin-top: 20px;
+  width: 100%;
+  height: 250px;
+  overflow-y: auto;
+`;
+export const ContainerVerTutores = styled.div`
+  border: 1px solid black;
+  border-top: none;
+`
 export const Texto = styled.div`
-  width: 30%;
+  width: 25%;
+  ${(props) =>
+    props.espacio === "true" &&
+    css`
+      width:45%;
+    `}
 `;
 export const ContainerIcon = styled.div`
   display: flex;
@@ -109,32 +127,59 @@ export const ContainerTituloNombre = styled.div`
   padding-bottom: 10px;
 `;
 export const TituloNombre = styled.div`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 1000;
   position: relative;
   width: 100%;
-  text-align: center;
   font-family: "bold";
+  ${(props) =>
+    props.centro === "true" &&
+    css`
+      text-align: center;
+    `}
+    ${(props) =>
+    props.primero === "true" &&
+    css`
+      border-top: 1px solid black;
+    `}
 `;
 export const ContainerImgIcon = styled.div`
   position: absolute;
-  top: 85px;
-  right: 20px;
+  top: 20px;
+  right: 55px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   margin: auto;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   padding: 10px;
-  border-radius: 50%;
+  border-radius: 5px;
   &:hover {
     color: #d6d6d6;
     background: black;
   }
+  ${(props) =>
+    props.habilitar === "true" &&
+    css`
+      top: 30%;
+      margin: auto;
+      width: 100px;
+      height: 100px;
+      &:hover {
+        color: black;
+        background: #d6d6d6;
+      }
+    `}
 `;
 export const ImgIcon = styled(FontAwesomeIcon)`
   width: 100%;
   height: 100%;
+  transform: scale(1.5);
+  ${(props) =>
+    props.habilitar === "true" &&
+    css`
+      transform: scale(2.5);
+    `}
 `;

@@ -32,7 +32,7 @@ export default function SelectGrupo({
   };
 
   return (
-    <BoxCampo sub={sub}>
+    <BoxCampo curso={"true"} sub={sub}>
       <TextBox>{label}</TextBox>
       <Select
         id={name}

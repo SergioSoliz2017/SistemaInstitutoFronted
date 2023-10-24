@@ -65,7 +65,7 @@ export default function ModalAñadirTutor({
     setNombreTutor({ campo: "", valido: null });
     setApellidoTutor({ campo: "", valido: null });
     setFechaNacimientoTutor({ campo: "", valido: null });
-    setGeneroTutor("");
+    setGeneroTutor({ campo: "", valido: null });
     setCelularTutor({ campo: "", valido: null });
     setCorreoTutor({ campo: "", valido: null });
     setRelacion({ campo: "", valido: null });
@@ -83,6 +83,7 @@ export default function ModalAñadirTutor({
     return codigo.toUpperCase();
   }
   function esValido() {
+    var esValido = true
     if (nombreTutor.campo == "") {
       esValido = false;
       setNombreTutor({ ...nombreTutor, valido: "false" });
@@ -253,41 +254,7 @@ export default function ModalAñadirTutor({
         });
       }
     }
-    if (ocupacionTutor.campo == "") {
-      esValido = false;
-      setOcupacionTutor({ ...ocupacionTutor, valido: "false" });
-      toast("Ingresar ocupacion del tutor", {
-        icon: "⚠️",
-        duration: 3000,
-        style: {
-          border: "2px solid #000",
-          padding: "10px",
-          color: "#000",
-          background: "#d6d6d6",
-          borderRadius: "20px",
-          fontFamily: "bold",
-          fontWeight: "1000",
-        },
-      });
-    } else {
-      if (ocupacionTutor.valido == "false") {
-        esValido = false;
-        toast("Ocupacion del tutor invalido", {
-          icon: "⚠️",
-          duration: 3000,
-          style: {
-            border: "2px solid #000",
-            padding: "10px",
-            color: "#000",
-            background: "#d6d6d6",
-            borderRadius: "20px",
-            fontFamily: "bold",
-            fontWeight: "1000",
-          },
-        });
-      }
-    }
-    if (generoTutor == "") {
+    if (generoTutor.campo == "") {
       esValido = false;
       toast("Ingresar genero del tutor", {
         icon: "⚠️",
@@ -303,7 +270,7 @@ export default function ModalAñadirTutor({
         },
       });
     }
-    if (relacion == "") {
+    if (relacion.campo == "") {
       esValido = false;
       toast("Selecciones relacion", {
         icon: "⚠️",
@@ -335,6 +302,7 @@ export default function ModalAñadirTutor({
         },
       });
     }
+    return esValido
   }
   const añadir = () => {
     if (esValido()) {
@@ -345,12 +313,13 @@ export default function ModalAñadirTutor({
         FECHANACIMIENTOTUTOR: fechaNacimientoTutor.campo,
         CELULARTUTOR: celularTutor.campo,
         APELLIDOTUTOR: apellidoTutor.campo,
-        GENEROTUTOR: generoTutor,
+        GENEROTUTOR: generoTutor.campo,
         OCUPACION: ocupacionTutor.campo,
         CORREO: correoTutor.campo,
         RELACION: relacion.campo,
         ESTADO: "Activo",
       };
+      console.table(tutor)
       const EstudianteTutor = {
         estudiante_id: estudiante.campo,
         tutor_id: codigoTutor,
@@ -386,13 +355,13 @@ export default function ModalAñadirTutor({
                   cambiarEstado(false);
                   borrarDatos();
                   ocultar("false");
-                  lista(0);
                 });
             });
           }
         });
     }
   };
+  const [obtenerEstudiantes,setObtenerEstudiante] = useState(false)
   return (
     <>
       {estado && (
@@ -485,6 +454,7 @@ export default function ModalAñadirTutor({
                 name="estudiante"
                 crear={"true"}
                 dato={"true"}
+                obtener={true}
               />
               <SelectInput
                 estado={generoTutor}

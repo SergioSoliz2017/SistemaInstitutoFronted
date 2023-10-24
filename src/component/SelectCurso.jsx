@@ -26,7 +26,7 @@ export default function SelectCurso({
   };
 
   return (
-    <BoxCampo sub={sub}>
+    <BoxCampo curso={"true"} sub={sub}>
       <TextBox>{label}</TextBox>
       <Select
         id={name}

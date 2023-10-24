@@ -55,20 +55,15 @@ import {
   fa1,
   fa2,
   fa3,
-  faChess,
-  faPenToSquare,
   faSearch,
   fa4,
-  fa5,
   faXmark,
   faAdd,
   faQuestion,
-  faInfo,
-  faUser,
   faFilePen,
   faListSquares,
-  faClipboardList,
   faGraduationCap,
+  faListCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import alerta from "sweetalert2";
 import SelectInput from "./SelectValidar";
@@ -79,9 +74,10 @@ import {
   TableBody,
   TableCell,
   TableRow,
+  TablePagination,
+  TableContainer,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import ModalEditar from "./ModalEditar";
 import { useEffect } from "react";
 import ModalBuscar from "./ModalBuscar";
 import SelectCurso from "./SelectCurso";
@@ -92,6 +88,9 @@ import ModalInformacion from "./ModalInformacion";
 import { BoxCampo, TextBox } from "./DiseñoInputValidar";
 import ModalAñadirCurso from "./ModalAñadirCurso";
 import ModalVerGrupo from "./ModalVerGrupo";
+import { DetalleUsuario } from "./DiseñoModalEdit";
+import FilaTabla from "./FilaTablaEstudiante";
+import FilaTablaTutor from "./FilaTablaTutor";
 const styles = makeStyles({
   celdas: {
     fontFamily: "bold",
@@ -110,12 +109,6 @@ const styles = makeStyles({
   texto: {
     height: "40px",
     fontFamily: "bold",
-  },
-  icon: {
-    height: "40px",
-    width: "50px",
-    fontFamily: "bold",
-    fontSize: "14px",
   },
   opciones: {
     display: "flex",
@@ -148,6 +141,10 @@ export default function PantallaPrincipal() {
   });
   const [generoTutor, setGeneroTutor] = useState({ campo: "", valido: null });
   const [celularTutor, setCelularTutor] = useState({ campo: "", valido: null });
+  const [celularTutor2, setCelularTutor2] = useState({
+    campo: "",
+    valido: null,
+  });
   const [correoTutor, setCorreoTutor] = useState({ campo: "", valido: null });
   const [ocupacionTutor, setOcupacionTutor] = useState({
     campo: "",
@@ -183,6 +180,7 @@ export default function PantallaPrincipal() {
   const [grupo, setGrupo] = useState({ campo: "", valido: null });
   const [listaCursos, setListaCursos] = useState([]);
   const [tutorSi, setTutorSi] = useState(false);
+  const [sede, setSede] = useState("QUILLACOLLO");
 
   function esValido() {
     var esValido = true;
@@ -309,279 +307,6 @@ export default function PantallaPrincipal() {
           },
         });
       }
-      if (direccion.campo == "") {
-        esValido = false;
-        setDireccion({ ...direccion, valido: "false" });
-        toast("Ingresar direccion", {
-          icon: "⚠️",
-          duration: 3000,
-          style: {
-            border: "2px solid #000",
-            padding: "10px",
-            color: "#000",
-            background: "#d6d6d6",
-            borderRadius: "20px",
-            fontFamily: "bold",
-            fontWeight: "1000",
-          },
-        });
-      } else {
-        if (direccion.valido == "false") {
-          esValido = false;
-          toast("Direccion invalida", {
-            icon: "⚠️",
-            duration: 3000,
-            style: {
-              border: "2px solid #000",
-              padding: "10px",
-              color: "#000",
-              background: "#d6d6d6",
-              borderRadius: "20px",
-              fontFamily: "bold",
-              fontWeight: "1000",
-            },
-          });
-        }
-      }
-      if (colegio.campo == "") {
-        esValido = false;
-        setColegio({ ...colegio, valido: "false" });
-        toast("Ingresar colegio", {
-          icon: "⚠️",
-          duration: 3000,
-          style: {
-            border: "2px solid #000",
-            padding: "10px",
-            color: "#000",
-            background: "#d6d6d6",
-            borderRadius: "20px",
-            fontFamily: "bold",
-            fontWeight: "1000",
-          },
-        });
-      } else {
-        if (colegio.valido == "false") {
-          esValido = false;
-          toast("Colegio invalido", {
-            icon: "⚠️",
-            duration: 3000,
-            style: {
-              border: "2px solid #000",
-              padding: "10px",
-              color: "#000",
-              background: "#d6d6d6",
-              borderRadius: "20px",
-              fontFamily: "bold",
-              fontWeight: "1000",
-            },
-          });
-        }
-      }
-      if (pais.campo == "") {
-        esValido = false;
-        console.log("entra");
-        setPais({ ...pais, valido: "false" });
-        toast("Ingresar pais", {
-          icon: "⚠️",
-          duration: 3000,
-          style: {
-            border: "2px solid #000",
-            padding: "10px",
-            color: "#000",
-            background: "#d6d6d6",
-            borderRadius: "20px",
-            fontFamily: "bold",
-            fontWeight: "1000",
-          },
-        });
-      } else {
-        if (pais.valido == "false") {
-          esValido = false;
-          toast("Pais invalido", {
-            icon: "⚠️",
-            duration: 3000,
-            style: {
-              border: "2px solid #000",
-              padding: "10px",
-              color: "#000",
-              background: "#d6d6d6",
-              borderRadius: "20px",
-              fontFamily: "bold",
-              fontWeight: "1000",
-            },
-          });
-        }
-      }
-      if (departamento.campo == "") {
-        esValido = false;
-        setDepartamento({ ...departamento, valido: "false" });
-        toast("Ingresar departamento", {
-          icon: "⚠️",
-          duration: 3000,
-          style: {
-            border: "2px solid #000",
-            padding: "10px",
-            color: "#000",
-            background: "#d6d6d6",
-            borderRadius: "20px",
-            fontFamily: "bold",
-            fontWeight: "1000",
-          },
-        });
-      } else {
-        if (departamento.valido == "false") {
-          esValido = false;
-          toast("Departamento invalido", {
-            icon: "⚠️",
-            duration: 3000,
-            style: {
-              border: "2px solid #000",
-              padding: "10px",
-              color: "#000",
-              background: "#d6d6d6",
-              borderRadius: "20px",
-              fontFamily: "bold",
-              fontWeight: "1000",
-            },
-          });
-        }
-      }
-      if (ciudad.campo == "") {
-        esValido = false;
-        setCiudad({ ...ciudad, valido: "false" });
-        toast("Ingresar ciudad", {
-          icon: "⚠️",
-          duration: 3000,
-          style: {
-            border: "2px solid #000",
-            padding: "10px",
-            color: "#000",
-            background: "#d6d6d6",
-            borderRadius: "20px",
-            fontFamily: "bold",
-            fontWeight: "1000",
-          },
-        });
-      } else {
-        if (ciudad.valido == "false") {
-          esValido = false;
-          toast("Ciudad invalida", {
-            icon: "⚠️",
-            duration: 3000,
-            style: {
-              border: "2px solid #000",
-              padding: "10px",
-              color: "#000",
-              background: "#d6d6d6",
-              borderRadius: "20px",
-              fontFamily: "bold",
-              fontWeight: "1000",
-            },
-          });
-        }
-      }
-      if (turno.campo == "") {
-        esValido = false;
-        setTurno({ ...turno, valido: "false" });
-        toast("Ingresar turno", {
-          icon: "⚠️",
-          duration: 3000,
-          style: {
-            border: "2px solid #000",
-            padding: "10px",
-            color: "#000",
-            background: "#d6d6d6",
-            borderRadius: "20px",
-            fontFamily: "bold",
-            fontWeight: "1000",
-          },
-        });
-      } else {
-        if (turno.valido == "false") {
-          esValido = false;
-          toast("Turno invalido", {
-            icon: "⚠️",
-            duration: 3000,
-            style: {
-              border: "2px solid #000",
-              padding: "10px",
-              color: "#000",
-              background: "#d6d6d6",
-              borderRadius: "20px",
-              fontFamily: "bold",
-              fontWeight: "1000",
-            },
-          });
-        }
-      }
-      if (curso.campo == "") {
-        esValido = false;
-        setCurso({ ...curso, valido: "false" });
-        toast("Ingresar curso", {
-          icon: "⚠️",
-          duration: 3000,
-          style: {
-            border: "2px solid #000",
-            padding: "10px",
-            color: "#000",
-            background: "#d6d6d6",
-            borderRadius: "20px",
-            fontFamily: "bold",
-            fontWeight: "1000",
-          },
-        });
-      } else {
-        if (curso.valido == "false") {
-          esValido = false;
-          toast("Curso invalido", {
-            icon: "⚠️",
-            duration: 3000,
-            style: {
-              border: "2px solid #000",
-              padding: "10px",
-              color: "#000",
-              background: "#d6d6d6",
-              borderRadius: "20px",
-              fontFamily: "bold",
-              fontWeight: "1000",
-            },
-          });
-        }
-      }
-      if (tipoColegio.campo == "") {
-        esValido = false;
-        setTipoColegio({ ...tipoColegio, valido: "false" });
-        toast("Ingresar tipo de colegio", {
-          icon: "⚠️",
-          duration: 3000,
-          style: {
-            border: "2px solid #000",
-            padding: "10px",
-            color: "#000",
-            background: "#d6d6d6",
-            borderRadius: "20px",
-            fontFamily: "bold",
-            fontWeight: "1000",
-          },
-        });
-      } else {
-        if (tipoColegio.valido == "false") {
-          esValido = false;
-          toast("Tipo de colegio invalido", {
-            icon: "⚠️",
-            duration: 3000,
-            style: {
-              border: "2px solid #000",
-              padding: "10px",
-              color: "#000",
-              background: "#d6d6d6",
-              borderRadius: "20px",
-              fontFamily: "bold",
-              fontWeight: "1000",
-            },
-          });
-        }
-      }
     }
     if (opcionPasos === 2) {
       if (nombreTutor.campo == "") {
@@ -672,40 +397,6 @@ export default function PantallaPrincipal() {
         if (fechaNacimientoTutor.valido == "false") {
           esValido = false;
           toast("Fecha nacimiento del tutor invalido", {
-            icon: "⚠️",
-            duration: 3000,
-            style: {
-              border: "2px solid #000",
-              padding: "10px",
-              color: "#000",
-              background: "#d6d6d6",
-              borderRadius: "20px",
-              fontFamily: "bold",
-              fontWeight: "1000",
-            },
-          });
-        }
-      }
-      if (celularTutor.campo == "") {
-        esValido = false;
-        setCelularTutor({ ...celularTutor, valido: "false" });
-        toast("Ingresar celular del tutor", {
-          icon: "⚠️",
-          duration: 3000,
-          style: {
-            border: "2px solid #000",
-            padding: "10px",
-            color: "#000",
-            background: "#d6d6d6",
-            borderRadius: "20px",
-            fontFamily: "bold",
-            fontWeight: "1000",
-          },
-        });
-      } else {
-        if (celularTutor.valido == "false") {
-          esValido = false;
-          toast("Celular del tutor invalido", {
             icon: "⚠️",
             duration: 3000,
             style: {
@@ -841,7 +532,9 @@ export default function PantallaPrincipal() {
           },
         });
       }
-      if (!habilitarHuella) {
+    }
+    if (opcionPasos === 4) {
+      if (!huellaEscaneada) {
         esValido = false;
         toast("Escanear huella", {
           icon: "⚠️",
@@ -861,7 +554,7 @@ export default function PantallaPrincipal() {
     return esValido;
   }
   const siguientePasoRegistro = () => {
-    if (opcionPasos + 1 < 4) {
+    if (opcionPasos + 1 < 5) {
       if (esValido()) {
         if (opcionPasos + 1 == 2) {
           if (!tutorSi) {
@@ -916,6 +609,7 @@ export default function PantallaPrincipal() {
   const obtenerCursos = () => {
     axios.get(url + "obtenerCursos").then((response) => {
       setListaCursos(response.data);
+      setActualizo(false);
     });
   };
   const atrasPasoRegistro = () => {
@@ -1010,7 +704,7 @@ export default function PantallaPrincipal() {
       HABILITADO: "Habilitado",
       FECHAINSCRIPCION: hoy,
       COSTOINSCRIPCION: 50,
-      SEDE: "QUILLACOLLO",
+      SEDE: "COCHABAMBA",
     };
     const tutor = {
       CODTUTOR: codigoTutor,
@@ -1110,18 +804,19 @@ export default function PantallaPrincipal() {
   };
   const classes = styles();
   const [editEstudiante, setEditEstudiante] = useState(false);
-  const [estudianteElegido, setEstudianteElegido] = useState([]);
+  const [elegido, setElegido] = useState([]);
   const [modalBuscar, setModalBuscar] = useState(false);
-  const [tutorElegido, setTutorElegido] = useState([]);
   const [modalTutor, setModalTutor] = useState(false);
   const [modalAñadirCurso, setModalAñadirCurso] = useState(false);
-
+  const [seActualizo, setActualizo] = useState(false);
+  const [modalAñadirTutor, setAñadirTutor] = useState(false);
   useEffect(() => {
     if (opcion === 2) {
       if (lista === 1) {
         axios.get(url + "obtenerEstudiantes").then((response) => {
           if (response.data.length > 0) {
             setCarga(false);
+            setActualizo(false);
             setListaEstudiantes(response.data);
           } else {
             setCarga(false);
@@ -1132,6 +827,7 @@ export default function PantallaPrincipal() {
         axios.get(url + "obtenerTutores").then((response) => {
           if (response.data.length > 0) {
             setCarga(false);
+            setActualizo(false);
             setListaTutores(response.data);
           } else {
             setCarga(false);
@@ -1139,34 +835,29 @@ export default function PantallaPrincipal() {
         });
       }
     }
-    if (opcion === 3) {
+    if (opcion === 3 && seActualizo) {
       obtenerCursos();
     }
-  }, [editEstudiante, modalTutor, modalAñadirCurso]);
+  }, [
+    editEstudiante,
+    modalTutor,
+    modalAñadirCurso,
+    seActualizo,
+    modalAñadirTutor,
+  ]);
   const [ocultar, setOcultar] = useState("false");
-  const [modalAñadirTutor, setAñadirTutor] = useState(false);
 
-  function colocar(estado) {
-    var icon = faQuestion;
-    if (estado == "Activo") {
-      icon = faCheck;
-    } else {
-      if (estado == "Baja") {
-        icon = faXmark;
-      }
-    }
-    return icon;
-  }
   const [modalInformacion, setModalInformacion] = useState(false);
   const [tipo, setTipo] = useState("");
 
   const [habilitarHuella, setHabilitarHuella] = useState(false);
-
+  const [huellaEscaneada, setHuellaEscaneada] = useState(false);
   const abrirExe = () => {
     try {
       axios.post(url + "ejecutar-exe").then((response) => {
-        setHabilitarHuella(true);
+        setHabilitarHuella(false);
         setEscaneando(false);
+        setHuellaEscaneada(true);
         setImagenHuella(require("../Imagenes/HuellaRegistrada.png"));
       });
     } catch (error) {
@@ -1174,20 +865,14 @@ export default function PantallaPrincipal() {
     }
   };
 
-  const abrirExeVerificar = async () => {
+  const abrirExeVerificar = () => {
     try {
       setOpcion(0);
-      const response = await fetch(url + "ejecutar-exe-verificar", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Otros encabezados si es necesario
-        },
-      });
-      const data = await response.json();
-      console.log(data);
+      axios
+        .post(url + "ejecutar-exe-verificar", { SEDE: sede })
+        .then((response) => {});
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error de red", error);
     }
   };
   const [imagenHuella, setImagenHuella] = useState(
@@ -1219,6 +904,25 @@ export default function PantallaPrincipal() {
   }
   const [modalVerGrupo, setModalVerGrupo] = useState(false);
   const [grupoEscogido, setGrupoEscogido] = useState("");
+  const [pagina, setPagina] = useState(0);
+  const [rowPerPage, setRowPerPage] = useState(5);
+  const [paginaTutor, setPaginaTutor] = useState(0);
+  const [rowPerPageTutor, setRowPerPageTutor] = useState(5);
+
+  const cambiarPagina = (event, newpage) => {
+    setPagina(newpage);
+  };
+  const cambiarPerPage = (event) => {
+    setRowPerPage(+event.target.value);
+    setPagina(0);
+  };
+  const cambiarPaginaTutor = (event, newpage) => {
+    setPaginaTutor(newpage);
+  };
+  const cambiarPerPageTutor = (event) => {
+    setRowPerPageTutor(+event.target.value);
+    setPaginaTutor(0);
+  };
   return (
     <GlobalStyle>
       <Nav>
@@ -1258,15 +962,20 @@ export default function PantallaPrincipal() {
           <BotonNav
             onClick={() => {
               setOpcion(3);
-              obtenerCursos();
+              setActualizo(true);
+              //obtenerCursos();
             }}
             seleccionado={opcion == 3 ? "true" : "false"}
           >
             <ImgIcon menu={"true"} icon={faGraduationCap} />
             Cursos
           </BotonNav>
-          <BotonNav onClick={abrirExeVerificar}>
-            <ImgIcon menu={"true"} icon={faClipboardList} />
+          <BotonNav
+            onClick={() => {
+              abrirExeVerificar();
+            }}
+          >
+            <ImgIcon menu={"true"} icon={faListCheck} />
             Control asistencia
           </BotonNav>
         </ContainerBotonNav>
@@ -1321,6 +1030,20 @@ export default function PantallaPrincipal() {
                     )}
                   </CircleProgress>
                 </ContainerPasosLateral>
+                <Rectangulo
+                  seleccionado={opcionPasos >= 3 ? "true" : "false"}
+                />
+                <ContainerPasosLateral>
+                  <CircleProgress
+                    seleccionado={opcionPasos >= 4 ? "true" : "false"}
+                  >
+                    {opcionPasos <= 4 ? (
+                      <ImgIcon lateral={"true"} icon={fa4} />
+                    ) : (
+                      <ImgIcon lateral={"true"} icon={faCheck} />
+                    )}
+                  </CircleProgress>
+                </ContainerPasosLateral>
               </ContainerLateral>
               {!seSubio && (
                 <ContainerRegistro>
@@ -1352,7 +1075,6 @@ export default function PantallaPrincipal() {
                           name="apellidoEstudiante"
                           expresionRegular={expresiones.nombre}
                         />
-
                         <InputValidar
                           estado={fechaNacimientoEstudiante}
                           cambiarEstado={setFechaNacimientoEstudiante}
@@ -1366,13 +1088,16 @@ export default function PantallaPrincipal() {
                           estado={direccion}
                           cambiarEstado={setDireccion}
                           tipo="text"
-                          label="Direccion:"
+                          label="Direccion (opcional):"
                           placeholder="Direccion"
                           name="Direccion"
                           expresionRegular={expresiones.lugar}
+                          opcional={true}
                         />
                         <BoxCampo>
-                          <TextBox>Residencia:</TextBox>
+                          <TextBox titulo={"true"}>
+                            Residencia (opcional):
+                          </TextBox>
                         </BoxCampo>
                         <InputValidar
                           sub={"true"}
@@ -1383,6 +1108,7 @@ export default function PantallaPrincipal() {
                           placeholder="Pais"
                           name="Pais"
                           expresionRegular={expresiones.nombre}
+                          opcional={true}
                         />
                         <InputValidar
                           sub={"true"}
@@ -1393,6 +1119,7 @@ export default function PantallaPrincipal() {
                           name="Departamento"
                           placeholder="Departamento"
                           expresionRegular={expresiones.nombre}
+                          opcional={true}
                         />
                         <InputValidar
                           sub={"true"}
@@ -1403,9 +1130,12 @@ export default function PantallaPrincipal() {
                           name="Cuidad"
                           placeholder="Cuidad"
                           expresionRegular={expresiones.nombre}
+                          opcional={true}
                         />
                         <BoxCampo>
-                          <TextBox>Estudios:</TextBox>
+                          <TextBox titulo={"true"}>
+                            Estudios (opcional):
+                          </TextBox>
                         </BoxCampo>
                         <InputValidar
                           sub={"true"}
@@ -1416,6 +1146,7 @@ export default function PantallaPrincipal() {
                           placeholder="Colegio"
                           name="Colegio"
                           expresionRegular={expresiones.lugar}
+                          opcional={true}
                         />
                         <SelectInput
                           sub={"true"}
@@ -1423,6 +1154,7 @@ export default function PantallaPrincipal() {
                           cambiarEstado={setTurno}
                           label="Turno:"
                           name="Turno"
+                          opcional={true}
                         />
                         <SelectInput
                           sub={"true"}
@@ -1430,6 +1162,7 @@ export default function PantallaPrincipal() {
                           cambiarEstado={setCurso}
                           label="Curso:"
                           name="curso"
+                          opcional={true}
                         />
                         <SelectInput
                           sub={"true"}
@@ -1437,6 +1170,7 @@ export default function PantallaPrincipal() {
                           cambiarEstado={setTipoColegio}
                           label="Tipo colegio:"
                           name="tipoColegio"
+                          opcional={true}
                         />
                         <SelectInput
                           estado={generoEstudiante}
@@ -1483,10 +1217,21 @@ export default function PantallaPrincipal() {
                           estado={celularTutor}
                           cambiarEstado={setCelularTutor}
                           tipo="number"
-                          label="Celular:"
+                          label="Celular (opcional):"
                           placeholder="Celular"
                           name="CelularTutor"
                           expresionRegular={expresiones.telefono}
+                          opcional={true}
+                        />
+                        <InputValidar
+                          estado={celularTutor2}
+                          cambiarEstado={setCelularTutor2}
+                          tipo="number"
+                          label="Celular (Alternativo):"
+                          placeholder="Celular"
+                          name="CelularTutor"
+                          expresionRegular={expresiones.telefono}
+                          opcional={true}
                         />
                         <InputValidar
                           estado={correoTutor}
@@ -1501,10 +1246,11 @@ export default function PantallaPrincipal() {
                           estado={ocupacionTutor}
                           cambiarEstado={setOcupacionTutor}
                           tipo="text"
-                          label="Ocupacion:"
+                          label="Ocupacion (opcional):"
                           placeholder="Ocupacion"
                           name="ocupacionTutor"
                           expresionRegular={expresiones.nombre}
+                          opcional={true}
                         />
                         <SelectInput
                           estado={relacion}
@@ -1523,29 +1269,47 @@ export default function PantallaPrincipal() {
                     </ContainerTodo>
                   )}
                   {opcionPasos == 3 && (
-                    <ContainerTodo>
+                    <ContainerTodo cursos={"true"}>
                       <Titulo>Registro de cursos</Titulo>
                       <ContainerDatos>
-                        <SelectCurso
-                          sub={"true"}
-                          estado={cursoRegistrados}
-                          cambiarEstado={setCursoRegistrados}
-                          label="Cursos:"
-                          name="cursos"
-                          dato={listaCursos}
-                        />
-                        <SelectGrupo
-                          sub={"true"}
-                          estado={grupo}
-                          cambiarEstado={setGrupo}
-                          label="Grupos:"
-                          name="grupos"
-                          dato={cursoRegistrados.campo}
-                        />
+                        <DetalleUsuario>
+                          <SelectCurso
+                            sub={"true"}
+                            estado={cursoRegistrados}
+                            cambiarEstado={setCursoRegistrados}
+                            label="Cursos:"
+                            name="cursos"
+                            dato={listaCursos}
+                          />
+                          <SelectGrupo
+                            sub={"true"}
+                            estado={grupo}
+                            cambiarEstado={setGrupo}
+                            label="Grupos:"
+                            name="grupos"
+                            dato={cursoRegistrados.campo}
+                          />
+                        </DetalleUsuario>
                       </ContainerDatos>
+                    </ContainerTodo>
+                  )}
+                  {opcionPasos == 4 && (
+                    <ContainerTodo>
                       <Titulo>Registro de huella</Titulo>
                       <ContainerDatos>
-                        <Texto>{nombre.campo + " " + apellido.campo}</Texto>
+                        {!huellaEscaneada && (
+                          <Texto>
+                            Presione para registrar los datos biometricos de:{" "}
+                            {nombre.campo + " " + apellido.campo}
+                          </Texto>
+                        )}
+                        {huellaEscaneada && (
+                          <Texto>
+                            Se registraron los datos biometricos de:{" "}
+                            {nombre.campo + " " + apellido.campo}{" "}
+                            {" correctamente"}
+                          </Texto>
+                        )}
                         <Texto>
                           {calcularEdad(fechaNacimientoEstudiante.campo) +
                             " Años"}
@@ -1655,53 +1419,46 @@ export default function PantallaPrincipal() {
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {listaEstudiantes.map((estudiante) => {
-                                  return (
-                                    <TableRow className={classes.fila}>
-                                      <TableCell className={classes.texto}>
-                                        {(cantidad = cantidad + 1)}
-                                      </TableCell>
-                                      <TableCell className={classes.texto}>
-                                        {estudiante.CODESTUDIANTE}
-                                      </TableCell>
-                                      <TableCell className={classes.texto}>
-                                        {estudiante.NOMBREESTUDIANTE}
-                                      </TableCell>
-                                      <TableCell className={classes.texto}>
-                                        {estudiante.APELLIDOESTUDIANTE}
-                                      </TableCell>
-                                      <TableCell className={classes.opciones}>
-                                        <ContainerImgIcon
-                                          onClick={() => {
-                                            setModalInformacion(true);
-                                            setOcultar("true");
-                                            setEstudianteElegido(estudiante);
-                                            setTipo("Estudiante");
-                                          }}
-                                        >
-                                          <ImgIcon
-                                            tabla={"true"}
-                                            icon={faInfo}
-                                          />
-                                        </ContainerImgIcon>
-                                        <ContainerImgIcon
-                                          onClick={() => {
-                                            setEditEstudiante(true);
-                                            setOcultar("true");
-                                            setEstudianteElegido(estudiante);
-                                          }}
-                                        >
-                                          <ImgIcon
-                                            tabla={"true"}
-                                            icon={faPenToSquare}
-                                          />
-                                        </ContainerImgIcon>
-                                      </TableCell>
-                                    </TableRow>
-                                  );
-                                })}
+                                {listaEstudiantes
+                                  .slice(
+                                    pagina * rowPerPage,
+                                    pagina * rowPerPage + rowPerPage
+                                  )
+                                  .map((estudiante, index) => {
+                                    const rowNum =
+                                      pagina * rowPerPage + index + 1;
+                                    return (
+                                      <FilaTabla
+                                        key={estudiante.CODESTUDIANTE}
+                                        estudiante={estudiante}
+                                        modalInformacion={setModalInformacion}
+                                        ocultar={setOcultar}
+                                        estudianteElegido={setElegido}
+                                        tipo={setTipo}
+                                        actualizo={setActualizo}
+                                        cantidad={rowNum}
+                                      />
+                                    );
+                                  })}
                               </TableBody>
                             </Table>
+                            <TablePagination
+                              rowsPerPageOptions={[2]}
+                              rowsPerPage={rowPerPage}
+                              page={pagina}
+                              count={listaEstudiantes.length}
+                              component="div"
+                              onPageChange={cambiarPagina}
+                              onRowsPerPageChange={cambiarPerPage}
+                              labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+                              style={{
+                                display: "flex",
+                                position: "absolute",
+                                bottom: "1px",
+                                justifyContent: "center",
+                                width: "72%",
+                              }}
+                            />
                           </ContainerTabla>
                         </ContainerDatos>
                       </ContainerTodo>
@@ -1752,53 +1509,47 @@ export default function PantallaPrincipal() {
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {listaTutores.map((tutor) => {
-                                  return (
-                                    <TableRow className={classes.fila}>
-                                      <TableCell className={classes.texto}>
-                                        {(cantidad = cantidad + 1)}
-                                      </TableCell>
-                                      <TableCell className={classes.texto}>
-                                        {tutor.CODTUTOR}
-                                      </TableCell>
-                                      <TableCell className={classes.texto}>
-                                        {tutor.NOMBRETUTOR}
-                                      </TableCell>
-                                      <TableCell className={classes.texto}>
-                                        {tutor.APELLIDOTUTOR}
-                                      </TableCell>
-                                      <TableCell className={classes.opciones}>
-                                        <ContainerImgIcon
-                                          onClick={() => {
-                                            setModalInformacion(true);
-                                            setOcultar("true");
-                                            setEstudianteElegido(tutor);
-                                            setTipo("Tutor");
-                                          }}
-                                        >
-                                          <ImgIcon
-                                            tabla={"true"}
-                                            icon={faInfo}
-                                          />
-                                        </ContainerImgIcon>
-                                        <ContainerImgIcon
-                                          onClick={() => {
-                                            setModalTutor(true);
-                                            setTutorElegido(tutor);
-                                            setOcultar("true");
-                                          }}
-                                        >
-                                          <ImgIcon
-                                            tabla={"true"}
-                                            icon={colocar(tutor.ESTADO)}
-                                          />
-                                        </ContainerImgIcon>
-                                      </TableCell>
-                                    </TableRow>
-                                  );
-                                })}
+                                {listaTutores
+                                  .slice(
+                                    paginaTutor * rowPerPageTutor,
+                                    paginaTutor * rowPerPageTutor +
+                                      rowPerPageTutor
+                                  )
+                                  .map((tutor, index) => {
+                                    const rowNumTutor =
+                                      paginaTutor * rowPerPageTutor + index + 1;
+                                    return (
+                                      <FilaTablaTutor
+                                        tutor={tutor}
+                                        modalInformacion={setModalInformacion}
+                                        ocultar={setOcultar}
+                                        tutorElegido={setElegido}
+                                        tipo={setTipo}
+                                        actualizo={setActualizo}
+                                        cantidad={rowNumTutor}
+                                        modalTutor={setModalTutor}
+                                      />
+                                    );
+                                  })}
                               </TableBody>
                             </Table>
+                            <TablePagination
+                              rowsPerPageOptions={[]}
+                              rowsPerPage={rowPerPageTutor}
+                              page={paginaTutor}
+                              count={listaTutores.length}
+                              component="div"
+                              onPageChange={cambiarPaginaTutor}
+                              onRowsPerPageChange={cambiarPerPageTutor}
+                              labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+                              style={{
+                                display: "flex",
+                                position: "absolute",
+                                bottom: "1px",
+                                justifyContent: "center",
+                                width: "72%",
+                              }}
+                            />
                           </ContainerTabla>
                         </ContainerDatos>
                       </ContainerTodo>
@@ -1850,6 +1601,9 @@ export default function PantallaPrincipal() {
                           <TableCell align="center" className={classes.celdas}>
                             GRUPOS
                           </TableCell>
+                          <TableCell align="center" className={classes.celdas}>
+                            ELIMINAR
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -1882,6 +1636,52 @@ export default function PantallaPrincipal() {
                                   />
                                 </ContainerImgIcon>
                               </TableCell>
+                              <TableCell className={classes.texto}>
+                                <ContainerImgIcon
+                                  onClick={() => {
+                                    alerta
+                                      .fire({
+                                        title: "¿Esta seguro de eliminar?",
+                                        icon: "question",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#000",
+                                        cancelButtonColor: "#d33",
+                                        reverseButtons: true,
+                                        confirmButtonText: "Si",
+                                        cancelButtonText: "No",
+                                        background: "#d6d6d6",
+                                        iconColor: "#000",
+                                        color: "#000",
+                                      })
+                                      .then((result) => {
+                                        if (result.isConfirmed) {
+                                          alerta.fire({
+                                            title: "Operacion Exitosa",
+                                            icon: "success",
+                                            confirmButtonColor: "#000",
+                                            background: "#d6d6d6",
+                                            iconColor: "#000",
+                                            color: "#000",
+                                          });
+
+                                          const cursoEliminar = {
+                                            CODSEDE: curso.CODSEDE,
+                                            CODCURSO: curso.CODCURSO,
+                                          };
+                                          axios
+                                            .delete(url + "eliminarCurso", {
+                                              data: cursoEliminar,
+                                            })
+                                            .then((response) =>
+                                              setActualizo(true)
+                                            );
+                                        }
+                                      });
+                                  }}
+                                >
+                                  <ImgIcon tabla={"true"} icon={faXmark} />
+                                </ContainerImgIcon>
+                              </TableCell>
                             </TableRow>
                           );
                         })}
@@ -1894,12 +1694,6 @@ export default function PantallaPrincipal() {
           </ContainerContenido>
         )}
       </ContainerPrincipal>
-      <ModalEditar
-        estado={editEstudiante}
-        cambiarEstado={setEditEstudiante}
-        datos={estudianteElegido}
-        ocultar={setOcultar}
-      />
       <ModalBuscar
         estado={modalBuscar}
         cambiarEstado={setModalBuscar}
@@ -1909,7 +1703,7 @@ export default function PantallaPrincipal() {
       <ModalTutor
         estado={modalTutor}
         cambiarEstado={setModalTutor}
-        datos={tutorElegido}
+        datos={elegido}
         ocultar={setOcultar}
       />
       <ModalAñadirTutor
@@ -1922,13 +1716,15 @@ export default function PantallaPrincipal() {
         estado={modalInformacion}
         cambiarEstado={setModalInformacion}
         ocultar={setOcultar}
-        datos={estudianteElegido}
+        datos={elegido}
         tipo={tipo}
+        actualizo={setActualizo}
       />
       <ModalAñadirCurso
         estado={modalAñadirCurso}
         cambiarEstado={setModalAñadirCurso}
         ocultar={setOcultar}
+        actualizar={setActualizo}
       />
       <ModalVerGrupo
         estado={modalVerGrupo}

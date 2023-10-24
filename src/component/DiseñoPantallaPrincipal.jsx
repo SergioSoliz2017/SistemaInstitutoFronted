@@ -181,7 +181,7 @@ export const CircleProgress = styled.div`
     `}
 `;
 export const Rectangulo = styled.div`
-  width: 30%;
+  width: 25%;
   height: 10px;
   background: #d6d6d6;
   ${(props) =>
@@ -234,23 +234,30 @@ export const ContainerBotonSiguientePasos = styled.div`
 `;
 
 export const ContainerImgIcon = styled.div`
+  position: relative;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
   margin: auto;
-  width: 38px;
-  height: 38px;
-  padding: 10px;
+  width: 40px;
+  height: 40px;
+  padding: 1px;
   border-radius: 50%;
   &:hover {
     color: #d6d6d6;
     background: black;
   }
+  ${(props) =>
+    props.switch === "true" &&
+    css`
+      &:hover {
+        color: black;
+        background: #a09fa2;
+      }
+    `}
 `;
 export const ImgIcon = styled(FontAwesomeIcon)`
-  width: 100%;
-  height: 100%;
   ${(props) =>
     props.lateral === "true" &&
     css`
@@ -266,6 +273,11 @@ export const ImgIcon = styled(FontAwesomeIcon)`
     css`
       margin-left: 10px;
       margin-right: 10px;
+    `}
+    ${(props) =>
+    props.tabla === "true" &&
+    css`
+      transform: scale(2);
     `}
 `;
 export const ContainerDatos = styled.div`
@@ -312,16 +324,21 @@ export const ContainerTodo = styled.div`
     props.lista === "true" &&
     css`
       width: 80%;
-      height:calc( ${(props) => props.cantidad * 65}px + 210px);
+      height: 565px;
       display: flex;
       flex-direction: column;
+      overflow-y: auto;
+    `}
+  ${(props) =>
+    props.cursos === "true" &&
+    css`
+      height: 500px;
     `}
 `;
 export const ContainerTabla = styled.div`
   width: 90%;
   z-index: 1;
   margin-top: 20px;
-  overflow-y: auto;
 `;
 export const ContainerBotonBusqueda = styled.div`
   width: 80px;
@@ -378,16 +395,17 @@ export const BotonAbrirExe = styled.button`
 
 export const ContainerHuella = styled.button`
   position: relative;
-  width: 150px;
-  height: 150px;
+  width: 350px;
+  height: 350px;
   margin-bottom: 20px;
   border: none;
+  background: red;
   background: transparent;
 `;
 
 export const ImagenHuella = styled.img`
-  width: 150px;
-  height: 150px;
+  width: 100%;
+  height: 100%;
 `;
 
 export const BarraEscaneo = styled.div`
@@ -425,7 +443,9 @@ export const ContainerTituloBusqueda = styled.div`
   justify-content: center;
 `;
 
-export const Texto = styled.span `
+export const Texto = styled.span`
   font-size: 20px;
   font-family: "bold";
-`
+  width: 50%;
+  text-align: center;
+`;

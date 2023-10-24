@@ -11,22 +11,17 @@ export default function InputValidar({
   name,
   crear,
   datos,
-  sub,ultimo
+  sub,ultimo,opcional
 }) {
   const validacion = () => {
     if (estado.campo != "") {
       cambiarEstado({ ...estado, valido: "true" });
     } else {
-      cambiarEstado({ ...estado, valido: "false" });
+      if (!opcional){
+        cambiarEstado({ ...estado, valido: "false" });
+      }
     }
   };
-
-  const [listaEstudiantes, setListaEstudiantes] = useState([]);
-  useEffect(() => {
-    axios.get(url + "obtenerEstudiantes").then((datos) => {
-      setListaEstudiantes(datos.data);
-    });
-  }, [datos]);
 
   const listaRelacion = [
     "Padre",
@@ -100,18 +95,7 @@ export default function InputValidar({
             })}
           </>
         )}
-        {label === "Estudiantes" && (
-          <>
-            <option value="">Seleccione estudiante</option>
-            {listaEstudiantes.map((datos) => {
-              return (
-                <option value={datos.CODESTUDIANTE}>
-                  {datos.NOMBREESTUDIANTE}
-                </option>
-              );
-            })}
-          </>
-        )}
+        
         {label === "Genero:" && (
           <>
             <option value="">Seleccione genero</option>

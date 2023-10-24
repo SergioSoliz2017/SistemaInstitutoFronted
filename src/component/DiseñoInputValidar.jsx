@@ -6,13 +6,13 @@ export const BoxCampo = styled.div`
   width: 70%;
   position: relative;
   z-index: 90;
-  
+
   ${(props) =>
     props.crear === "true" &&
     css`
       margin: 0px 10px 5px 10px;
     `}
-    ${(props) =>
+  ${(props) =>
     props.sub === "true" &&
     css`
       display: flex;
@@ -23,6 +23,15 @@ export const BoxCampo = styled.div`
     props.ultimo === "true" &&
     css`
       margin-bottom: 25px;
+    `}
+    ${(props) =>
+    props.curso === "true" &&
+    css`
+      margin: 00px 10px 5px 10px;
+      width: calc(30% - 20px);
+      position: relative;
+      z-index: 90;
+      height: 75px;
     `}
 `;
 export const IconoValidacion = styled(FontAwesomeIcon)`
@@ -97,9 +106,9 @@ export const TextBox = styled.span`
   width: 150px;
   margin-bottom: 5px;
   ${(props) =>
-    props.centro === "true" &&
+    props.titulo === "true" &&
     css`
-      text-align: center;
+      width: auto;
     `}
 `;
 export const Select = styled.select`

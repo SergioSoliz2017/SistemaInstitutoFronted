@@ -15,11 +15,22 @@ import {
   ContainerImgIcon,
   ImgIcon,
   ContainerTituloNombre,
+  ContainerTutores,
+  ContainerVerTutores,
 } from "./DiseñoModalInformacion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
+import alerta from "sweetalert2";
+import {
+  faPenToSquare,
+  faToggleOff,
+  faToggleOn,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import ModalVerMas from "./ModalVerMas";
 import ModalEditar from "./ModalEditar";
+import { url } from "./VariableEntornos";
+import axios from "axios";
+import { useEffect } from "react";
 
 export default function ModalInformacion({
   estado,
@@ -27,6 +38,7 @@ export default function ModalInformacion({
   datos,
   ocultar,
   tipo,
+  actualizo,
 }) {
   const [editEstudiante, setEditEstudiante] = useState(false);
   const [ocultarModal, setOcultarModal] = useState("false");
@@ -52,6 +64,29 @@ export default function ModalInformacion({
 
     return edad;
   }
+  const [valor, setValor] = useState("");
+  const [habilitado, setHabilitado] = useState();
+  const [opcion, setOpcion] = useState(1);
+  const [listaTutores, setListaTutores] = useState([]);
+  const [listaEstudiantes, setListaEstudiantes] = useState([]);
+
+  useEffect(() => {
+    setValor(datos.HABILITADO);
+    setHabilitado(datos.HABILITADO === "Habilitado" ? faToggleOn : faToggleOff);
+    if (tipo === "Estudiante") {
+      axios
+        .get(url + "obtenerTutores/" + datos.CODESTUDIANTE)
+        .then((response) => {
+          setListaTutores(response.data);
+        });
+    } else {
+      axios
+        .get(url + "obtenerEstudiantes/" + datos.CODTUTOR)
+        .then((response) => {
+          setListaEstudiantes(response.data);
+        });
+    }
+  }, [datos]);
   return (
     <>
       {estado && (
@@ -60,7 +95,7 @@ export default function ModalInformacion({
             <EncabezadoModal>
               <Titulo>
                 {tipo === "Estudiante"
-                  ? "Lista de estudiantes"
+                  ? datos.CODESTUDIANTE
                   : "Lista de tutores"}
               </Titulo>
             </EncabezadoModal>
@@ -76,11 +111,9 @@ export default function ModalInformacion({
             <DetalleUsuario>
               {tipo === "Estudiante" && (
                 <>
-                  <ContainerTituloNombre>
-                    <TituloNombre>
-                      {datos.NOMBREESTUDIANTE + " " + datos.APELLIDOESTUDIANTE}{" "}
-                    </TituloNombre>
-                  </ContainerTituloNombre>
+                  <TituloNombre>
+                    {datos.NOMBREESTUDIANTE + " " + datos.APELLIDOESTUDIANTE}{" "}
+                  </TituloNombre>
                   <ContainerImgIcon
                     onClick={() => {
                       setOcultarModal("true");
@@ -89,10 +122,6 @@ export default function ModalInformacion({
                   >
                     <ImgIcon tabla={"true"} icon={faPenToSquare} />
                   </ContainerImgIcon>
-                  <BoxCampo>
-                    <Texto>Edad:</Texto>
-                    {calcularEdad(datos.FECHANACIMIENTOESTUDIANTE) + " Años"}
-                  </BoxCampo>
                   <BoxCampo>
                     <Texto>Fecha de nacimiento:</Texto>
                     {datos.FECHANACIMIENTOESTUDIANTE}
@@ -108,10 +137,108 @@ export default function ModalInformacion({
                     <Texto>Direccion:</Texto> {datos.DIRECCION} {datos.PAIS}{" "}
                     {datos.DEPARTAMENTO} {datos.CIUDAD}
                   </BoxCampo>
-                  <BoxCampo>
-                    <Texto>Estado:</Texto> {datos.HABILITADO}
-                  </BoxCampo>
-                  <BoxCampo></BoxCampo>
+                  <ContainerImgIcon habilitar={"true"}>
+                    <ImgIcon
+                      habilitar={"true"}
+                      icon={habilitado}
+                      onClick={() => {
+                        alerta
+                          .fire({
+                            title: "¿Esta seguro?",
+                            icon: "question",
+                            showCancelButton: true,
+                            confirmButtonColor: "#000",
+                            cancelButtonColor: "#d33",
+                            reverseButtons: true,
+                            confirmButtonText: "Si",
+                            cancelButtonText: "No",
+                            background: "#d6d6d6",
+                            iconColor: "#000",
+                            color: "#000",
+                          })
+                          .then((result) => {
+                            if (result.isConfirmed) {
+                              alerta.fire({
+                                title: "Cambio realizado",
+                                icon: "success",
+                                confirmButtonColor: "#000",
+                                background: "#d6d6d6",
+                                iconColor: "#000",
+                                color: "#000",
+                              });
+                              const cambiar = {
+                                HABILITADO:
+                                  valor === "Habilitado"
+                                    ? "Deshabilitado"
+                                    : "Habilitado",
+                              };
+                              setHabilitado(
+                                cambiar.HABILITADO === "Habilitado"
+                                  ? faToggleOn
+                                  : faToggleOff
+                              );
+                              setValor(cambiar.HABILITADO);
+                              axios
+                                .put(
+                                  url +
+                                    "actualizarEstadoEstudiante/" +
+                                    datos.CODESTUDIANTE,
+                                  cambiar
+                                )
+                                .then((response) => {
+                                  actualizo(true);
+                                });
+                            }
+                          });
+                      }}
+                    />
+                  </ContainerImgIcon>
+                  <ContainerTutores>
+                    <ContainerBoton>
+                      <BotonTutores
+                        seleccionado={opcion == 1 ? "true" : "false"}
+                        onClick={() => {
+                          setOpcion(1);
+                        }}
+                      >
+                        Tutores
+                      </BotonTutores>
+                      <BotonTutores
+                        segundo={"true"}
+                        seleccionado={opcion == 2 ? "true" : "false"}
+                        onClick={() => {
+                          setOpcion(2);
+                        }}
+                      >
+                        Horario
+                      </BotonTutores>
+                    </ContainerBoton>
+                    {opcion === 1 && (
+                      <ContainerVerTutores>
+                        {listaTutores.map((tutor) => {
+                          return (
+                            <>
+                              <TituloNombre primero={"true"} centro={"true"}>
+                                {tutor.NOMBRETUTOR + " " + tutor.APELLIDOTUTOR}{" "}
+                              </TituloNombre>
+                              <BoxCampo>
+                                <Texto espacio={"true"}>
+                                  Relacion con el estudiante:
+                                </Texto>
+                                {tutor.RELACION}
+                              </BoxCampo>
+                              <BoxCampo>
+                                <Texto espacio={"true"}>
+                                  Numero de celular:
+                                </Texto>
+                                {tutor.CELULARTUTOR}
+                              </BoxCampo>
+                            </>
+                          );
+                        })}
+                      </ContainerVerTutores>
+                    )}
+                  </ContainerTutores>
                 </>
               )}
               {tipo === "Tutor" && (
@@ -162,16 +289,6 @@ export default function ModalInformacion({
                   </BoxCampo>
                 </>
               )}
-              <ContainerBoton>
-                <BotonTutores
-                  onClick={() => {
-                    setOcultarModal("true");
-                    setModalVerMas(true);
-                  }}
-                >
-                  {tipo === "Estudiante"? "Ver tutores" : "Ver Estudiantes"}
-                </BotonTutores>
-              </ContainerBoton>
             </DetalleUsuario>
           </ContenedorModal>
           <ModalVerMas
@@ -192,3 +309,13 @@ export default function ModalInformacion({
     </>
   );
 }
+/*<ContainerBoton>
+                <BotonTutores
+                  onClick={() => {
+                    setOcultarModal("true");
+                    setModalVerMas(true);
+                  }}
+                >
+                  {tipo === "Estudiante" ? "Ver tutores" : "Ver Estudiantes"}
+                </BotonTutores>
+              </ContainerBoton>*/
