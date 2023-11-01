@@ -24,16 +24,6 @@ export const ContenedorModal = styled.div`
   box-shadow: rgba(100, 100, 111, 0.2) 8px 7px 29px 8px;
   padding: 20px;
   top: 15px;
-  ${(props) =>
-    props.ocultar === "true" &&
-    css`
-      opacity: 0.5;
-    `}
-  ${(props) =>
-    props.tipo === "Tutor" &&
-    css`
-      height: 90%;
-    `}
 `;
 export const EncabezadoModal = styled.div`
   display: flex;
@@ -67,6 +57,8 @@ export const DetalleUsuario = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 90%;
+  overflow-y: auto;
 `;
 export const BoxCampo = styled.div`
   margin: 15px 10px 0px 10px;
@@ -76,6 +68,12 @@ export const BoxCampo = styled.div`
   font-family: "bold";
   font-size: 15px;
   align-items: center;
+  ${(props) =>
+    props.editar === "true" &&
+    css`
+      gap: 10px;
+      margin: 15px 10px 0px 0px;
+    `}
 `;
 export const BotonTutores = styled.button`
   width: 30%;
@@ -83,7 +81,7 @@ export const BotonTutores = styled.button`
   border: none;
   background: #a09fa2;
   color: black;
-    ${(props) =>
+  ${(props) =>
     props.seleccionado === "true" &&
     css`
       color: #d6d6d6;
@@ -98,33 +96,38 @@ export const ContainerBoton = styled.div`
   display: flex;
 `;
 export const ContainerTutores = styled.div`
-margin-top: 20px;
+  margin-top: 20px;
   width: 100%;
   height: 250px;
-  overflow-y: auto;
 `;
 export const ContainerVerTutores = styled.div`
   border: 1px solid black;
-  border-top: none;
-`
+`;
 export const Texto = styled.div`
   width: 25%;
   ${(props) =>
     props.espacio === "true" &&
     css`
-      width:45%;
+      width: 45%;
+    `}
+  ${(props) =>
+    props.sub === "true" &&
+    css`
+      font-size: 18px;
+      font-weight: 1000;
+      width: 28.5%;
+    `}
+    ${(props) =>
+    props.sub === "false" &&
+    css`
+      font-size: 18px;
+      font-weight: 1000;
+      width: 21.5%;
     `}
 `;
 export const ContainerIcon = styled.div`
   display: flex;
   width: 100%;
-`;
-export const ContainerTituloNombre = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
 `;
 export const TituloNombre = styled.div`
   font-size: 18px;
@@ -137,7 +140,7 @@ export const TituloNombre = styled.div`
     css`
       text-align: center;
     `}
-    ${(props) =>
+  ${(props) =>
     props.primero === "true" &&
     css`
       border-top: 1px solid black;
@@ -182,4 +185,16 @@ export const ImgIcon = styled(FontAwesomeIcon)`
     css`
       transform: scale(2.5);
     `}
+`;
+export const TituloNombreEdit = styled.input`
+  font-size: 16px;
+  position: relative;
+  width: 50%;
+  font-family: "bold";
+`;
+
+export const ContainerEdit = styled.div``;
+export const ContainerTabla = styled.div`
+  width: 100%;
+  z-index: 1;
 `;

@@ -256,6 +256,23 @@ export const ContainerImgIcon = styled.div`
         background: #a09fa2;
       }
     `}
+  ${(props) =>
+    props.precio === "true" &&
+    css`
+      position: absolute;
+      right: 12px;
+      z-index: 100;
+      font-size: 20px;
+      top: -3px;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      border: 2px solid black;
+      &:hover {
+        color: #d6d6d6;
+        background: black;
+      }
+    `}
 `;
 export const ImgIcon = styled(FontAwesomeIcon)`
   ${(props) =>
@@ -279,13 +296,20 @@ export const ImgIcon = styled(FontAwesomeIcon)`
     css`
       transform: scale(2);
     `}
+    ${(props) =>
+    props.tabla === "false" &&
+    css`
+      transform: scale(1.2);
+    `}
 `;
 export const ContainerDatos = styled.div`
   width: 100%;
-  margin-bottom: -10px;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
   flex-direction: column;
+  height: 530px;
+  
 `;
 
 export const Category = styled.div`
@@ -319,40 +343,73 @@ export const ContainerTodo = styled.div`
   background: #d6d6d6;
   border-radius: 25px;
   width: 70%;
-  height: 100%;
   ${(props) =>
     props.lista === "true" &&
     css`
       width: 80%;
-      height: 565px;
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
     `}
   ${(props) =>
     props.cursos === "true" &&
     css`
-      height: 500px;
+      height: 550px;
+    `}
+    ${(props) =>
+    props.cursos === "false" &&
+    css`
+      height: 840px;
+      margin-bottom: 10px;
+    `}
+    ${(props) =>
+    props.cursos === "tutor" &&
+    css`
+      height: 750px;
+      margin-bottom: 10px;
     `}
 `;
 export const ContainerTabla = styled.div`
   width: 90%;
   z-index: 1;
-  margin-top: 20px;
+  margin-top: 35px;
+  height: 450px;
+  overflow-y: auto;
+  ${(props) =>
+    props.cursos === "registro" &&
+    css`
+      
+    `}
+  ${(props) =>
+    props.cursos === "true" &&
+    css`
+    margin-top: 60px;
+      height: 300px;
+    `}
+     ${(props) =>
+    props.cursos === "false" &&
+    css`
+     margin-top: 80px;
+    `}
 `;
 export const ContainerBotonBusqueda = styled.div`
   width: 80px;
   height: 60px;
   z-index: 1;
   display: flex;
-  position: relative;
+  position: absolute;
   align-items: center;
-  justify-content: end;
+  left: 15%;
+  top: 20%;
+  ${(props) =>
+    props.add === "true" &&
+    css`
+      left: 45%;
+      margin-top: 20px;
+    `}
 `;
 export const BotonBuscar = styled.button`
+  position: absolute;
   height: 80%;
-  margin-right: 20px;
-  margin-top: 20px;
   width: 70%;
   display: flex;
   align-items: center;
@@ -366,6 +423,11 @@ export const BotonBuscar = styled.button`
     color: #d6d6d6;
     box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.4);
   }
+  ${(props) =>
+    props.visible === "true" &&
+    css`
+      opacity: 0;
+    `}
 `;
 
 export const BotonAbrirExe = styled.button`
@@ -440,7 +502,7 @@ export const ContainerBotonLista = styled.div`
 export const ContainerTituloBusqueda = styled.div`
   display: flex;
   width: 100%;
-  justify-content: center;
+  justify-content: end;
 `;
 
 export const Texto = styled.span`
@@ -449,3 +511,23 @@ export const Texto = styled.span`
   width: 50%;
   text-align: center;
 `;
+export const InputBusqueda = styled.input`
+  height: 40px;
+  width: 100%;
+  outline: none;
+  border-radius: 25px;
+  border: 2px solid #000000;
+  padding: 0 15px 0 16%;
+  font-size: 16px;
+  border-bottom-width: 2px;
+  transition: all 0.1s ease;
+  line-height: 45px;
+`;
+export const IconoBuscar = styled(FontAwesomeIcon)`
+  position: absolute;
+  left: 5%;
+  bottom: 11px;
+  top: 10px;
+  font-size: 20px;
+`;
+export const BotonDescuento = styled.button``;

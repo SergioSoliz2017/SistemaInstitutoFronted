@@ -16,9 +16,8 @@ export default function SelectGrupo({
   const [listaGrupos, setListaGrupos] = useState([]);
 
   useEffect(() => {
-    if (dato != "") {
+    if (dato !== "") {
       axios.get(url + "obtenerGrupo/" + dato).then((grupo) => {
-        
         setListaGrupos(grupo.data);
       });
     }

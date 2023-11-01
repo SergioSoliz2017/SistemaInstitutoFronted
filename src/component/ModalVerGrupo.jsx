@@ -51,10 +51,12 @@ export default function ModalVerGrupo({
   };
   var cantidad = 0;
   useEffect(() => {
-    axios.get(url + "obtenerGrupo/" + datos.CODCURSO).then((resp) => {
-      setListaGrupos(resp.data);
-      setActualizo(false);
-    });
+    if (estado) {
+      axios.get(url + "obtenerGrupo/" + datos.CODCURSO).then((resp) => {
+        setListaGrupos(resp.data);
+        setActualizo(false);
+      });
+    }
   }, [actualizo, datos]);
 
   const agregarGrupo = () => {

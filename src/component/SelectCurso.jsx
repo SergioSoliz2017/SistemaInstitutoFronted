@@ -9,7 +9,7 @@ export default function SelectCurso({
   label,
   name,
   dato,
-  sub
+  sub,
 }) {
   const [listaCursos, setListaCursos] = useState([]);
 
@@ -33,7 +33,9 @@ export default function SelectCurso({
         value={estado.campo}
         valido={estado.valido}
         onChange={(e) => {
-          cambiarEstado({ ...estado, campo: e.target.value });
+          const selectedOption = e.target.options[e.target.selectedIndex];
+          const textoSeleccionado = selectedOption.text;
+          cambiarEstado({ ...estado, campo: e.target.value,texto: textoSeleccionado});
         }}
         onKeyUp={validacion}
         onBlur={validacion}

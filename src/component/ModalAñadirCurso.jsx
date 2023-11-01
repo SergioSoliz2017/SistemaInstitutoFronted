@@ -10,6 +10,7 @@ import {
   ContenedorModal,
   DetalleUsuario,
   EncabezadoModal,
+  MultiSelect,
   Overlay,
   TextBox,
   Titulo,
@@ -26,17 +27,24 @@ import {
   TableRow,
 } from "@material-ui/core";
 import axios from "axios";
-export default function ModalAñadirCurso({ estado, cambiarEstado, ocultar, actualizar}) {
+
+
+export default function ModalAñadirCurso({
+  estado,
+  cambiarEstado,
+  ocultar,
+  actualizar,
+}) {
   const [curso, setCurso] = useState({ campo: "", valido: null });
   const [grupo, setGrupo] = useState({ campo: "", valido: null });
   const [cantidadGrupo, setCantidadGrupo] = useState({
     campo: "",
     valido: null,
   });
-  const [duracion, setDuracion] = useState({ campo: "", valido: null });
+  const [precio, setPrecio] = useState({ campo: "", valido: null });
   const expresiones = {
     nombre: /^(?=\S)(?!.*\s{2})[a-zA-ZÀ-ÿ\s-]{3,40}$/, // Letras y espacios, pueden llevar acentos.
-    letra : /^(?=\S)(?!.*\s{2})(?!.*\s$)[a-zA-Z0-9\-: ]{3,40}$/,
+    letra: /^(?=\S)(?!.*\s{2})(?!.*\s$)[a-zA-Z0-9\-: ]{3,40}$/,
     numero: /^\d{1,3}$/,
   };
   const [listaGrupos, setListaGrupos] = useState([]);
@@ -64,7 +72,7 @@ export default function ModalAñadirCurso({ estado, cambiarEstado, ocultar, actu
         var crearCurso = {
           CODSEDE: "QUILLACOLLO",
           CODCURSO: codigoCurso.toUpperCase(),
-          DURACIONCURSO: parseInt(duracion.campo),
+          DURACIONCURSO: parseInt(precio.campo),
           CURSO: curso.campo,
           LISTAGRUPOS: listaGrupos,
         };
@@ -72,7 +80,7 @@ export default function ModalAñadirCurso({ estado, cambiarEstado, ocultar, actu
           cambiarEstado(false);
           borrarDatos();
           ocultar("false");
-          actualizar(true)
+          actualizar(true);
         });
       } else {
         console.log("ya existe");
@@ -82,10 +90,13 @@ export default function ModalAñadirCurso({ estado, cambiarEstado, ocultar, actu
   const borrarDatos = () => {
     setCurso("");
     setGrupo("");
-    setDuracion("");
+    setPrecio("");
     setCantidadGrupo("");
     setListaGrupos([]);
   };
+
+  const [diaSelec, setDiaSelec] = useState([]);
+
   return (
     <>
       {estado && (
@@ -115,12 +126,12 @@ export default function ModalAñadirCurso({ estado, cambiarEstado, ocultar, actu
                 expresionRegular={expresiones.nombre}
               />
               <InputValidar
-                estado={duracion}
-                cambiarEstado={setDuracion}
+                estado={precio}
+                cambiarEstado={setPrecio}
                 tipo="number"
-                label="Duracion:"
-                placeholder="Duracion"
-                name="Duracion"
+                label="Precio:"
+                placeholder="Precio"
+                name="precio"
                 expresionRegular={expresiones.numero}
               />
               <TextBox>Grupo:</TextBox>
@@ -142,6 +153,24 @@ export default function ModalAñadirCurso({ estado, cambiarEstado, ocultar, actu
                 name="Cantidad"
                 expresionRegular={expresiones.numero}
               />
+              <BoxCampo campo ={"true"}>
+                <TextBox>Dias:</TextBox>
+                <MultiSelect
+                options={["Lunes","Martes","Miercoles","Jueves","Viernes"]}
+                isObject={false}
+                onRemove={(event)=>{setDiaSelec(event)}}
+                onSelect={(event)=>{setDiaSelec(event)}}
+                />
+              </BoxCampo>
+              <BoxCampo campo ={"true"}>
+                <TextBox>Dias:</TextBox>
+                <MultiSelect
+                options={["Lunes","Martes","Miercoles","Jueves","Viernes"]}
+                isObject={false}
+                onRemove={(event)=>{setDiaSelec(event)}}
+                onSelect={(event)=>{setDiaSelec(event)}}
+                />
+              </BoxCampo>
               <BoxCampo>
                 <BotonGrupo onClick={añadirGrupo}>Añadir</BotonGrupo>
               </BoxCampo>

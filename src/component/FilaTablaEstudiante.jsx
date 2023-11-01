@@ -4,6 +4,7 @@ import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { ContainerImgIcon, ImgIcon } from "./DiseñoPantallaPrincipal";
 import {
+  faAdd,
   faFolder,
   faFolderOpen,
   faToggleOff,
@@ -71,7 +72,7 @@ export default function FilaTabla({
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          <ImgIcon icon={hovered ? faFolderOpen : faFolder} />
+          <ImgIcon tabla={"false"} icon={hovered ? faFolderOpen : faFolder} />
         </ContainerImgIcon>
         <ContainerImgIcon
           switch={"true"}
@@ -126,6 +127,9 @@ export default function FilaTabla({
               estudiante.HABILITADO === "Habilitado" ? faToggleOn : faToggleOff
             }
           />
+        </ContainerImgIcon>
+        <ContainerImgIcon>
+          <ImgIcon tabla={"false"} icon={faAdd} />
         </ContainerImgIcon>
       </TableCell>
     </TableRow>

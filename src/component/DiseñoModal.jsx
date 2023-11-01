@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled, { css } from "styled-components";
 
 export const Overlay = styled.div`
@@ -13,16 +14,26 @@ export const Overlay = styled.div`
   transition: all 2s ease-in-out;
 `;
 export const ContenedorModal = styled.div`
-  transition: all 2s ease-in-out;
-  width: 50%;
-  height: 75%;
+  transition: all 0.5s ease-in-out;
+  width: 30%;
+  height: 35%;
   min-height: 100px;
   background: #d6d6d6;
   position: relative;
   border-radius: 5px;
   box-shadow: rgba(100, 100, 111, 0.2) 8px 7px 29px 8px;
-  padding: 20px;
-  top: 50px;
+  padding: 30px;
+  top: 10px;
+  ${(props) =>
+    props.respuesta === "Existe" &&
+    css`
+      height: 55%;
+    `}
+    ${(props) =>
+    props.respuesta === "false" &&
+    css`
+      height: 60%;
+    `}
 `;
 export const EncabezadoModal = styled.div`
   display: flex;
@@ -36,15 +47,7 @@ export const Titulo = styled.div`
   font-weight: 1000;
   position: relative;
   width: 100%;
-  &::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 3px;
-    width: 100%;
-    background: linear-gradient(135deg, #000000, #d6d6d6);
-  }
+  text-align: center;
 `;
 export const BotonCerrar = styled.button`
   position: absolute;
@@ -63,61 +66,66 @@ export const BotonCerrar = styled.button`
   }
 `;
 export const DetalleUsuario = styled.div`
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  align-content: center;
   width: 100%;
 `;
-export const ContainerTabla = styled.div`
+export const ContainerBotonesOpciones = styled.div`
   width: 90%;
-  height: 78%;
-  z-index: 1;
-  margin-top: 50px;
-  overflow-y: auto;
-`;
-
-export const ContainerBusqueda = styled.div`
-  width: 100%;
+  height: 90%;
   display: flex;
+  justify-content: center;
   gap: 20px;
 `;
-export const InputBusqueda = styled.input`
-  height: 45px;
-  width: 50%;
-  outline: none;
-  margin-left: 20px;
-  border-radius: 5px;
-  border: 2px solid #000000;
-  padding: 0 40px 0 10px;
-  font-size: 16px;
-  border-bottom-width: 2px;
-  transition: all 0.1s ease;
-  line-height: 45px;
+export const BotonOpciones = styled.button`
+  width: calc(30% - 20px);
+  border-radius: 15px;
+  border: 2px solid black;
   &:hover {
-    border: 2px solid black;
-    outline: none;
-    box-shadow: 3px 0px 30px rgba(163, 163, 163, 0.4);
-  }
-  &:focus {
-    border: 2px solid black;
-    outline: none;
-    box-shadow: 3px 0px 30px rgba(163, 163, 163, 0.4);
-  }
-`;
-export const BotonBuscar = styled.button`
-  padding: 2px;
-  height: 50px;
-  width: 7%;
-  border: 4px solid black;
-  background: transparent;
-  border-radius: 50%;
-  &:hover {
-    outline: none;
     background: black;
-    color: #d6d6d6;
-    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.4);
+    color: white;
   }
+  ${(props) =>
+    props.texto === "true" &&
+    css`
+      width: 50%;
+    `}
+`;
+export const ContainerIcon = styled.div`
+  width: 90%;
+  margin-top: 15px;
+  display: flex;
+  position: relative;
+  justify-content: center;
+  margin-bottom: 50px;
+`;
+export const Icono = styled(FontAwesomeIcon)`
+  height: 100%;
+  transform: scale(5);
+`;
+export const BoxCampo = styled.div`
+
+  margin: 25px 10px 5px 10px;
+  width: 100%;
+  position: relative;
+  z-index: 90;
+  height: 75px;
+  gap: 15px;
+  display: flex;
+  justify-content: center;
+`;
+export const TextBox = styled.span`
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+  ${(props) =>
+    props.centro === "true" &&
+    css`
+      text-align: center;
+    `}
 `;
 export const Select = styled.select`
   height: 45px;
@@ -137,3 +145,9 @@ export const Select = styled.select`
     box-shadow: 3px 0px 30px rgba(163, 163, 163, 0.4);
   }
 `;
+export const ContainerTexto = styled.div `
+width: 100%;
+height: 200px;
+text-align: center;
+overflow-y: auto;
+`

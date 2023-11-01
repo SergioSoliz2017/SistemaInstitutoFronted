@@ -4,7 +4,7 @@ import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { ContainerImgIcon, ImgIcon } from "./DiseñoPantallaPrincipal";
 import {
-          fa0,
+  fa0,
   faFolder,
   faFolderOpen,
   faToggleOff,
@@ -43,15 +43,13 @@ export default function FilaTablaTutor({
   tutorElegido,
   tipo,
   actualizo,
-  modalTutor
+  modalTutor,
 }) {
   const [hovered, setHovered] = useState(false);
   const classes = styles();
   return (
     <TableRow className={classes.fila}>
-      <TableCell className={classes.texto}>
-        {cantidad}
-      </TableCell>
+      <TableCell className={classes.texto}>{cantidad}</TableCell>
       <TableCell className={classes.texto}>{tutor.CODTUTOR}</TableCell>
       <TableCell className={classes.texto}>{tutor.NOMBRETUTOR}</TableCell>
       <TableCell className={classes.texto}>{tutor.APELLIDOTUTOR}</TableCell>
@@ -66,21 +64,19 @@ export default function FilaTablaTutor({
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          <ImgIcon icon={hovered ? faFolderOpen : faFolder} />
+          <ImgIcon tabla={"false"} icon={hovered ? faFolderOpen : faFolder} />
         </ContainerImgIcon>
         <ContainerImgIcon
           switch={"true"}
           onClick={() => {
-                    modalTutor(true);
-                   tutorElegido(tutor);
-                    ocultar("true");
+            modalTutor(true);
+            tutorElegido(tutor);
+            ocultar("true");
           }}
         >
           <ImgIcon
             tabla={"true"}
-            icon={
-              tutor.ESTADO === "Activo" ? faToggleOn : faToggleOff
-            }
+            icon={tutor.ESTADO === "Activo" ? faToggleOn : faToggleOff}
           />
         </ContainerImgIcon>
       </TableCell>

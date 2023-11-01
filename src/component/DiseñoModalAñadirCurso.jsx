@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import Multiselect from "multiselect-react-dropdown";
 
 export const Overlay = styled.div`
   width: 100vw;
@@ -76,6 +77,15 @@ export const BoxCampo = styled.div`
   z-index: 90;
   height: 75px;
   width: 15%;
+  ${(props) =>
+    props.campo === "true" &&
+    css`
+      margin: 00px 10px 5px 10px;
+      width: calc(31% - 20px);
+      position: relative;
+      z-index: 90;
+      height: 75px;
+    `}
 `;
 export const BotonGrupo = styled.button`
   height: 45px;
@@ -89,7 +99,7 @@ export const BotonGrupo = styled.button`
     border: 2px solid black;
     outline: none;
     background: #000000;
-    color: #d6d6d6;  
+    color: #d6d6d6;
     border: 2px solid #d6d6d6;
     box-shadow: 3px 0px 30px rgba(163, 163, 163, 0.4);
   }
@@ -98,11 +108,11 @@ export const TextBox = styled.span`
   width: 100%;
   font-weight: 500;
 `;
-export const ContainerTabla = styled.div `
-          width: 80%;
-          height: 150px;
-          overflow-y: auto;
-`
+export const ContainerTabla = styled.div`
+  width: 80%;
+  height: 150px;
+  overflow-y: auto;
+`;
 export const ContainerBoton = styled.div`
   margin: 25px 10px 0px 10px;
   position: relative;
@@ -122,8 +132,16 @@ export const BotonGuardar = styled.button`
     border: 2px solid black;
     outline: none;
     background: #d6d6d6;
-    color: black;  
+    color: black;
     border: 2px solid black;
     box-shadow: 3px 0px 30px rgba(163, 163, 163, 0.4);
   }
+`;
+
+export const MultiSelect = styled(Multiselect)`
+  color: black;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 2px solid #000000;
+  background: white;
 `;

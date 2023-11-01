@@ -1,7 +1,7 @@
 import React from "react";
 import { url } from "./VariableEntornos";
-import toast, { Toaster } from "react-hot-toast";
 import { GlobalStyle } from "./DiseñosInicio";
+import toast, { Toaster } from "react-hot-toast";
 import {
   Nav,
   ImagenLogo,
@@ -13,15 +13,10 @@ import {
   ContainerLateral,
   ContainerRegistro,
   TituloLateral,
-  TituloRegistro,
   PasosLateral,
-  ContainerBotonSiguientePasos,
   BotonSiguientePasos,
   ImgIcon,
   ContainerDatos,
-  Category,
-  Label,
-  Radio,
   Titulo,
   ContainerTodo,
   ContainerPasosLateral,
@@ -33,7 +28,6 @@ import {
   ContainerImgIcon,
   ContainerBotonBusqueda,
   BotonBuscar,
-  BotonAbrirExe,
   ContainerLogo,
   ContainerTitulo,
   TituloDasboard,
@@ -45,6 +39,8 @@ import {
   LineaLista,
   ContainerTituloBusqueda,
   Texto,
+  InputBusqueda,
+  IconoBuscar,
 } from "./DiseñoPantallaPrincipal";
 import InputValidar from "./InputValidar";
 import { useState } from "react";
@@ -59,11 +55,12 @@ import {
   fa4,
   faXmark,
   faAdd,
-  faQuestion,
   faFilePen,
   faListSquares,
   faGraduationCap,
   faListCheck,
+  faPercent,
+  faMoneyBill,
 } from "@fortawesome/free-solid-svg-icons";
 import alerta from "sweetalert2";
 import SelectInput from "./SelectValidar";
@@ -75,22 +72,28 @@ import {
   TableCell,
   TableRow,
   TablePagination,
-  TableContainer,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useEffect } from "react";
-import ModalBuscar from "./ModalBuscar";
 import SelectCurso from "./SelectCurso";
 import SelectGrupo from "./SelectGrupo";
 import ModalTutor from "./ModalTutor";
 import ModalAñadirTutor from "./ModalAñadirTutor";
 import ModalInformacion from "./ModalInformacion";
-import { BoxCampo, TextBox } from "./DiseñoInputValidar";
+import {
+  BoxCampo,
+  IconoDescuento,
+  InputBox,
+  TextBox,
+  TextPrecio,
+} from "./DiseñoInputValidar";
 import ModalAñadirCurso from "./ModalAñadirCurso";
 import ModalVerGrupo from "./ModalVerGrupo";
 import { DetalleUsuario } from "./DiseñoModalEdit";
 import FilaTabla from "./FilaTablaEstudiante";
 import FilaTablaTutor from "./FilaTablaTutor";
+import { Select } from "./DiseñoSelectDescuento";
+import Modal from "./Modal";
 const styles = makeStyles({
   celdas: {
     fontFamily: "bold",
@@ -183,7 +186,7 @@ export default function PantallaPrincipal() {
   const [sede, setSede] = useState("QUILLACOLLO");
 
   function esValido() {
-    var esValido = true;
+    var esValido = true; 
     if (opcionPasos === 1) {
       if (nombre.campo === "") {
         esValido = false;
@@ -498,27 +501,9 @@ export default function PantallaPrincipal() {
       }
     }
     if (opcionPasos === 3) {
-      if (cursoRegistrados.campo === "") {
+      if (listaCursosRes.length === 0) {
         esValido = false;
-        setCursoRegistrados({ ...cursoRegistrados, valido: "false" });
-        toast("Seleccionar curso", {
-          icon: "⚠️",
-          duration: 3000,
-          style: {
-            border: "2px solid #000",
-            padding: "10px",
-            color: "#000",
-            background: "#d6d6d6",
-            borderRadius: "20px",
-            fontFamily: "bold",
-            fontWeight: "1000",
-          },
-        });
-      }
-      if (grupo.campo === "") {
-        esValido = false;
-        setGrupo({ ...grupo, valido: "false" });
-        toast("Ingresar nombre del tutor", {
+        toast("Agregar curso", {
           icon: "⚠️",
           duration: 3000,
           style: {
@@ -553,48 +538,26 @@ export default function PantallaPrincipal() {
     }
     return esValido;
   }
+  const [respuesta, setRespuesta] = useState("");
   const siguientePasoRegistro = () => {
     if (opcionPasos + 1 < 5) {
       if (esValido()) {
         if (opcionPasos + 1 == 2) {
           if (!tutorSi) {
-            alerta
-              .fire({
-                title: "¿Tiene tutor?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#000",
-                cancelButtonColor: "#d33",
-                reverseButtons: true,
-                confirmButtonText: "Si",
-                cancelButtonText: "No",
-                background: "#d6d6d6",
-                iconColor: "#000",
-                color: "#000",
-              })
-              .then((result) => {
-                if (result.isDismissed) {
-                  setRelacion({ campo: "No tiene", valido: "true" });
-                  setNombreTutor(nombre);
-                  setApellidoTutor(apellido);
-                  setFechaNacimientoTutor(fechaNacimientoEstudiante);
-                  setGeneroTutor(generoEstudiante);
-                }
-                if (result.isConfirmed) {
-                  setNombreTutor({ campo: "", valido: null });
-                  setApellidoTutor({ campo: "", valido: null });
-                  setFechaNacimientoTutor({ campo: "", valido: null });
-                  setGeneroTutor("");
-                }
-                setTutorSi(true);
-                setOpcionPasos(opcionPasos + 1);
-              });
+            setModal(true);
+            setOcultar("true");
           } else {
-            setOpcionPasos(opcionPasos + 1);
+            if (respuesta === "Existe") {
+              setActualizo(true);
+              setOpcionPasos(opcionPasos + 2);
+            } else {
+              setOpcionPasos(opcionPasos + 1);
+            }
           }
         } else {
           if (opcionPasos + 1 == 3) {
             obtenerCursos();
+            obtenerDescuento();
           }
           setOpcionPasos(opcionPasos + 1);
         }
@@ -606,6 +569,7 @@ export default function PantallaPrincipal() {
       }
     }
   };
+  const [horarios, setHorarios] = useState([]);
   const obtenerCursos = () => {
     axios.get(url + "obtenerCursos").then((response) => {
       setListaCursos(response.data);
@@ -614,7 +578,11 @@ export default function PantallaPrincipal() {
   };
   const atrasPasoRegistro = () => {
     if (opcionPasos - 1 > 0) {
-      setOpcionPasos(opcionPasos - 1);
+      if (opcionPasos - 1 === 2 && respuesta === "Existe") {
+        setOpcionPasos(1);
+      } else {
+        setOpcionPasos(opcionPasos - 1);
+      }
     }
   };
   function generarCodigoEstudiante() {
@@ -640,51 +608,31 @@ export default function PantallaPrincipal() {
 
   const agregarTodo = (estudiante, EstudianteTutor) => {
     axios.post(url + "asignar-tutor", EstudianteTutor).then((response) => {
-      axios
-        .get(url + "obtenerCurso/" + cursoRegistrados.campo)
-        .then((curso) => {
-          const CursoInscrito = {
-            CODCURSOINSCRITO: cursoRegistrados.campo,
-            CODESTUDIANTE: estudiante.CODESTUDIANTE,
-            CURSOINSCRITO: curso.data[0].CURSO,
-            DURACIONCURSO: curso.data[0].DURACIONCURSO,
-          };
-          axios.get(url + "obtenerGrupoNombre/" + grupo.campo).then((grupo) => {
-            var i = 0;
-            var grupoEncontrado = "";
-            while (i < grupo.data.length) {
-              if (grupo.data[i].CODCURSO == cursoRegistrados.campo) {
-                grupoEncontrado = grupo.data[i];
-              }
-              i = i + 1;
-            }
-            const GrupoInscrito = {
-              CODESTUDIANTE: estudiante.CODESTUDIANTE,
-              CODCURSOINSCRITO: grupoEncontrado.CODCURSO,
-              CANTIDADMAXIMA: grupoEncontrado.CANTIDADMAXIMA,
-              NOMBREGRUPO: grupoEncontrado.NOMBREGRUPO,
-            };
-            axios
-              .post(url + "agregarCursoInscrito", CursoInscrito)
-              .then((respose) => {
-                axios
-                  .post(url + "agregarGrupoInscrito", GrupoInscrito)
-                  .then((response) => {
-                    setSeSubio(false);
-                    borrarDatos();
-                    setImagenHuella(require("../Imagenes/EscanearHuella.png"));
-                  });
-              });
-          });
-        });
+      const dataCurso = {
+        CODESTUDIANTE: estudiante.CODESTUDIANTE,
+        LISTACURSOS: listaCursosRes,
+      };
+      axios.post(url + "agregarCursoInscrito", dataCurso).then((response) => {
+        setSeSubio(false);
+        borrarDatos();
+        setImagenHuella(require("../Imagenes/EscanearHuella.png"));
+        setRegistro("registrado");
+        setModal(true);
+        setOcultar("true");
+      });
     });
   };
-
+  function sumar () {
+    const suma = listaCursosRes.reduce((total, curso) => total + parseFloat(curso.PRECIO), 0);
+    return suma
+  } 
   function subirBaseDatos() {
     var codigoEstudiante = generarCodigoEstudiante();
     var codigoTutor = generarCodigoTutor();
     var codigoInscripcion = generarCodInscripcion();
     const hoy = new Date().toLocaleDateString();
+    var precioTotal = sumar()
+    console.log(precioTotal)
     const estudiante = {
       CODESTUDIANTE: codigoEstudiante,
       CODINSCRIPCION: codigoInscripcion,
@@ -703,8 +651,8 @@ export default function PantallaPrincipal() {
       TIPOCOLEGIO: tipoColegio.campo,
       HABILITADO: "Habilitado",
       FECHAINSCRIPCION: hoy,
-      COSTOINSCRIPCION: 50,
-      SEDE: "COCHABAMBA",
+      COSTOINSCRIPCION:precioTotal,
+      SEDE: sede,
     };
     const tutor = {
       CODTUTOR: codigoTutor,
@@ -712,6 +660,7 @@ export default function PantallaPrincipal() {
       FECHANACIMIENTOTUTOR: fechaNacimientoTutor.campo,
       CELULARTUTOR: celularTutor.campo,
       APELLIDOTUTOR: apellidoTutor.campo,
+      CELULARALTERNATIVO: celularTutor2.campo,
       GENEROTUTOR: generoTutor.campo,
       OCUPACION: ocupacionTutor.campo,
       CORREO: correoTutor.campo,
@@ -720,18 +669,16 @@ export default function PantallaPrincipal() {
     };
     const EstudianteTutor = {
       estudiante_id: codigoEstudiante,
-      tutor_id: codigoTutor,
+      tutor_id: respuesta !== "Existe"? codigoTutor : tutorSeleccionado.CODTUTOR,
     };
     axios.post(url + "agregarEstudiante", estudiante).then((response) => {
-      axios.get(url + "obtenerTutor/" + codigoTutor).then((response) => {
-        if (response.data.length > 0) {
-          agregarTodo(estudiante, EstudianteTutor);
-        } else {
-          axios.post(url + "agregarTutor", tutor).then((response) => {
+      if (respuesta === "Existe"){
+        agregarTodo(estudiante,EstudianteTutor );
+      }else{
+        axios.post(url + "agregarTutor", tutor).then((response) => {
             agregarTodo(estudiante, EstudianteTutor);
           });
-        }
-      });
+      }
     });
   }
   function borrarDatos() {
@@ -761,6 +708,7 @@ export default function PantallaPrincipal() {
     setGrupo({ campo: "", valido: null });
     setHabilitarHuella(false);
     setTutorSi(false);
+    setListaCursosRes([])
   }
   function generarCodInscripcion() {
     var codigo = "";
@@ -775,7 +723,7 @@ export default function PantallaPrincipal() {
   const [carga, setCarga] = useState(false);
   const [listaEstudiantes, setListaEstudiantes] = useState([]);
   const [listaTutores, setListaTutores] = useState([]);
-
+  const [precio, setPrecio] = useState("");
   const obtenerListaEstudiantes = () => {
     setLista(1);
     setCarga(true);
@@ -805,11 +753,15 @@ export default function PantallaPrincipal() {
   const classes = styles();
   const [editEstudiante, setEditEstudiante] = useState(false);
   const [elegido, setElegido] = useState([]);
-  const [modalBuscar, setModalBuscar] = useState(false);
+  const [buscar, setBuscar] = useState("");
+  const [buscarTutor, setBuscarTutor] = useState("");
   const [modalTutor, setModalTutor] = useState(false);
   const [modalAñadirCurso, setModalAñadirCurso] = useState(false);
   const [seActualizo, setActualizo] = useState(false);
   const [modalAñadirTutor, setAñadirTutor] = useState(false);
+  const [descuento, setDescuento] = useState("");
+  const [modal, setModal] = useState(false);
+
   useEffect(() => {
     if (opcion === 2) {
       if (lista === 1) {
@@ -838,13 +790,42 @@ export default function PantallaPrincipal() {
     if (opcion === 3 && seActualizo) {
       obtenerCursos();
     }
+    if (opcion === 1 && !modal) {
+      if (respuesta === "Si") {
+        setNombreTutor({ campo: "", valido: null });
+        setApellidoTutor({ campo: "", valido: null });
+        setFechaNacimientoTutor({ campo: "", valido: null });
+        setGeneroTutor("");
+        setOpcionPasos(opcionPasos + 1);
+        setTutorSi(true);
+      }
+      if (respuesta === "No") {
+        setRelacion({ campo: "No tiene", valido: "true" });
+        setNombreTutor(nombre);
+        setApellidoTutor(apellido);
+        setFechaNacimientoTutor(fechaNacimientoEstudiante);
+        setGeneroTutor(generoEstudiante);
+        setOpcionPasos(opcionPasos + 1);
+        setTutorSi(true);
+      }
+      if (respuesta === "Existe") {
+        setOpcionPasos(opcionPasos + 2);
+        setTutorSi(true);
+      }
+    }
+    if (opcion === 1 && respuesta === "Existe") {
+      obtenerCursos();
+      obtenerDescuento();
+    }
   }, [
     editEstudiante,
     modalTutor,
     modalAñadirCurso,
     seActualizo,
     modalAñadirTutor,
+    modal,
   ]);
+  const [listaDescuento, setListaDescuento] = useState([]);
   const [ocultar, setOcultar] = useState("false");
 
   const [modalInformacion, setModalInformacion] = useState(false);
@@ -854,12 +835,20 @@ export default function PantallaPrincipal() {
   const [huellaEscaneada, setHuellaEscaneada] = useState(false);
   const abrirExe = () => {
     try {
-      axios.post(url + "ejecutar-exe").then((response) => {
-        setHabilitarHuella(false);
-        setEscaneando(false);
-        setHuellaEscaneada(true);
-        setImagenHuella(require("../Imagenes/HuellaRegistrada.png"));
-      });
+      axios
+        .post(url + "ejecutar-exe", {
+          CODESTUDIANTE: generarCodigoEstudiante(),
+        })
+        .then((response) => {
+          if (response.data == "Existe") {
+            setHuellaEscaneada(true);
+            setImagenHuella(require("../Imagenes/HuellaRegistrada.png"));
+          } else {
+            setHabilitarHuella(false);
+            setImagenHuella(require("../Imagenes/HuellaNoRegistrada.png"));
+          }
+          setEscaneando(false);
+        });
     } catch (error) {
       console.error("Error de red", error);
     }
@@ -880,6 +869,7 @@ export default function PantallaPrincipal() {
   );
   const [escaneando, setEscaneando] = useState(false);
   let cantidad = 0;
+
   function calcularEdad(fecha) {
     const fechaNacimiento = new Date(fecha);
     const fechaActual = new Date();
@@ -923,6 +913,135 @@ export default function PantallaPrincipal() {
     setRowPerPageTutor(+event.target.value);
     setPaginaTutor(0);
   };
+
+  let listaResTutor = [];
+  if (!buscarTutor) {
+    listaResTutor = listaTutores;
+  } else {
+    const searchWords = buscarTutor.trim().toLowerCase().split(" ");
+    listaResTutor = listaTutores.filter((dato) => {
+      const campos = [
+        dato.NOMBRETUTOR,
+        dato.APELLIDOTUTOR,
+        dato.RELACION,
+        dato.OCUPACION,
+        dato.GENEROTUTOR,
+      ]
+        .join(" ")
+        .toLowerCase();
+      return searchWords.every((word) => campos.includes(word));
+    });
+  }
+
+  let listaRes = [];
+  if (!buscar) {
+    listaRes = listaEstudiantes;
+  } else {
+    const searchWords = buscar.trim().toLowerCase().split(" ");
+    listaRes = listaEstudiantes.filter((dato) => {
+      const campos = [
+        dato.CODESTUDIANTE,
+        dato.NOMBREESTUDIANTE,
+        dato.APELLIDOESTUDIANTE,
+        dato.COLEGIO,
+        dato.TIPOCOLEGIO,
+        dato.GENEROESTUDIANTE
+      ]
+        .join(" ")
+        .toLowerCase();
+      return searchWords.every((word) => campos.includes(word));
+    });
+  }
+
+  const obtenerDescuento = () => {
+    axios.get(url + "obtenerDescuento").then((des) => {
+      setListaDescuento(des.data);
+    });
+  };
+  const [listaCursosRes, setListaCursosRes] = useState([]);
+
+  const [precioConDescuento, setPrecioConDescuento] = useState(null);
+
+  const handleDescuentoChange = (valor, porcentaje, cantidad) => {
+    setDescuento(valor);
+    setPrecio(
+      listaCursos.find((curso) => curso.CODCURSO === cursoRegistrados.campo)
+        ?.PRECIO
+    );
+    if (hayDescuento) {
+      if (!isNaN(cantidad) && cantidad !== "" && cantidad >= 0) {
+        const descuentoNumerico = parseFloat(cantidad);
+        const precioOriginal = listaCursos.find(
+          (curso) => curso.CODCURSO === cursoRegistrados.campo
+        )?.PRECIO;
+        if (porcentaje) {
+          const nuevoPrecioConDescuento =
+            precioOriginal - (precioOriginal * descuentoNumerico) / 100;
+          setPrecioConDescuento(nuevoPrecioConDescuento);
+        } else {
+          const nuevoPrecioConDescuento = precioOriginal - descuentoNumerico;
+          setPrecioConDescuento(nuevoPrecioConDescuento);
+        }
+      } else {
+        setPrecioConDescuento(null);
+      }
+    } else {
+      if (!isNaN(valor) && valor !== "" && valor >= 0) {
+        const descuentoNumerico = parseFloat(valor);
+        const precioOriginal = listaCursos.find(
+          (curso) => curso.CODCURSO === cursoRegistrados.campo
+        )?.PRECIO;
+        if (porcentaje) {
+          const nuevoPrecioConDescuento =
+            precioOriginal - (precioOriginal * descuentoNumerico) / 100;
+          setPrecioConDescuento(nuevoPrecioConDescuento);
+        } else {
+          const nuevoPrecioConDescuento = precioOriginal - descuentoNumerico;
+          setPrecioConDescuento(nuevoPrecioConDescuento);
+        }
+      } else {
+        setPrecioConDescuento(null);
+      }
+    }
+  };
+  const [esPorcentaje, setEsPorcentaje] = useState(true);
+  const [hayDescuento, setHayDescuento] = useState(true);
+  const [tutorSeleccionado, setTutorSeleccionado] = useState(null);
+  const [registro, setRegistro] = useState("tutor");
+
+  const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+
+  // Utiliza un objeto para almacenar un array de cursos por cada hora
+  const cursosPorHora = {};
+  horarios.forEach((horario) => {
+    if (!cursosPorHora[horario.HORA]) {
+      cursosPorHora[horario.HORA] = [];
+    }
+    cursosPorHora[horario.HORA].push({
+      dia: horario.DIA,
+      curso: horario.CURSO,
+      grupo: horario.GRUPO,
+    });
+  });
+
+  const filas = Object.entries(cursosPorHora).map(([hora, cursos]) => (
+    <TableRow className={classes.fila} key={hora}>
+      <TableCell className={classes.texto}>{hora.slice(0, 5)}</TableCell>
+      {diasSemana.map((dia) => (
+        <TableCell className={classes.texto} key={dia}>
+          {/* Muestra todos los cursos para la misma hora y día */}
+          {cursos
+            .filter((curso) => curso.dia === dia)
+            .map((curso, index) => (
+              <div key={index}>
+                {curso.curso} {curso.grupo}
+              </div>
+            ))}
+        </TableCell>
+      ))}
+    </TableRow>
+  ));
+
   return (
     <GlobalStyle>
       <Nav>
@@ -1031,7 +1150,7 @@ export default function PantallaPrincipal() {
                   </CircleProgress>
                 </ContainerPasosLateral>
                 <Rectangulo
-                  seleccionado={opcionPasos >= 3 ? "true" : "false"}
+                  seleccionado={opcionPasos >= 4 ? "true" : "false"}
                 />
                 <ContainerPasosLateral>
                   <CircleProgress
@@ -1054,7 +1173,7 @@ export default function PantallaPrincipal() {
                     <ImgIcon icon={faAngleLeft} />
                   </BotonSiguientePasos>
                   {opcionPasos == 1 && (
-                    <ContainerTodo>
+                    <ContainerTodo cursos={"false"}>
                       <Titulo>Datos del estudiante</Titulo>
                       <ContainerDatos>
                         <InputValidar
@@ -1183,7 +1302,7 @@ export default function PantallaPrincipal() {
                     </ContainerTodo>
                   )}
                   {opcionPasos == 2 && (
-                    <ContainerTodo>
+                    <ContainerTodo cursos={"tutor"}>
                       <Titulo>Datos del tutor</Titulo>
                       <ContainerDatos>
                         <InputValidar
@@ -1274,7 +1393,6 @@ export default function PantallaPrincipal() {
                       <ContainerDatos>
                         <DetalleUsuario>
                           <SelectCurso
-                            sub={"true"}
                             estado={cursoRegistrados}
                             cambiarEstado={setCursoRegistrados}
                             label="Cursos:"
@@ -1282,13 +1400,185 @@ export default function PantallaPrincipal() {
                             dato={listaCursos}
                           />
                           <SelectGrupo
-                            sub={"true"}
                             estado={grupo}
                             cambiarEstado={setGrupo}
                             label="Grupos:"
                             name="grupos"
                             dato={cursoRegistrados.campo}
                           />
+                          <BoxCampo precio={"true"} precioT={"true"}>
+                            <TextBox>Precio</TextBox>
+                            <TextPrecio>
+                              {precioConDescuento !== null
+                                ? precioConDescuento
+                                : listaCursos.find(
+                                    (curso) =>
+                                      curso.CODCURSO === cursoRegistrados.campo
+                                  )?.PRECIO}{" "}
+                              {" Bs."}
+                            </TextPrecio>
+                          </BoxCampo>
+                          {hayDescuento && (
+                            <BoxCampo curso={"true"}>
+                              <TextBox>Descuento</TextBox>
+                              <Select
+                                id={descuento}
+                                value={descuento}
+                                onChange={(e) => {
+                                  if (e.target.value !== "Otro") {
+                                    const descuentoSeleccionado =
+                                      listaDescuento.find(
+                                        (descuento) =>
+                                          descuento.CODDESCUENTO ===
+                                          e.target.value
+                                      );
+                                    handleDescuentoChange(
+                                      e.target.value,
+                                      descuentoSeleccionado.TIPO ===
+                                        "Porcentaje"
+                                        ? true
+                                        : false,
+                                      descuentoSeleccionado.CANTIDAD
+                                    );
+                                  } else {
+                                    setHayDescuento(false);
+                                  }
+                                }}
+                              >
+                                <option value="">Seleccionar descuento</option>
+                                {listaDescuento.map((descuento) => (
+                                  <option
+                                    key={descuento.CODDESCUENTO}
+                                    value={descuento.CODDESCUENTO}
+                                  >
+                                    {descuento.NOMBREDESCUENTO}{" "}
+                                    {descuento.TIPO === "Porcentaje"
+                                      ? descuento.CANTIDAD + " %"
+                                      : descuento.CANTIDAD + " Bs."}
+                                  </option>
+                                ))}
+                                <option value="Otro">Otro</option>
+                              </Select>
+                            </BoxCampo>
+                          )}
+                          {!hayDescuento && (
+                            <BoxCampo precio={"true"}>
+                              <TextBox>
+                                Descuento{" "}
+                                <ContainerImgIcon precio={"true"}>
+                                  <IconoDescuento
+                                    onClick={() => {
+                                      handleDescuentoChange(
+                                        descuento,
+                                        !esPorcentaje
+                                      );
+                                      setEsPorcentaje(!esPorcentaje);
+                                    }}
+                                    icon={
+                                      esPorcentaje ? faPercent : faMoneyBill
+                                    }
+                                  />
+                                </ContainerImgIcon>
+                              </TextBox>
+                              <InputBox
+                                type="number"
+                                placeholder="Descuento"
+                                value={descuento}
+                                onChange={(e) =>
+                                  handleDescuentoChange(
+                                    e.target.value,
+                                    esPorcentaje
+                                  )
+                                }
+                              />
+                            </BoxCampo>
+                          )}
+                          <BoxCampo boton={"true"}>
+                            <ContainerBotonBusqueda add={"true"}>
+                              <BotonBuscar
+                                onClick={() => {
+                                  if (cursoRegistrados.campo !== "" && grupo.campo !== ""){
+                                    var cursoTemp = {
+                                      NOMBRECURSO: cursoRegistrados.texto,
+                                      GRUPOCURSO: grupo.campo,
+                                      CODCURSO: cursoRegistrados.campo,
+                                      SEDE: sede,
+                                      PRECIO:
+                                        precioConDescuento !== null
+                                          ? precioConDescuento
+                                          : listaCursos.find(
+                                              (curso) =>
+                                                curso.CODCURSO ===
+                                                cursoRegistrados.campo
+                                            )?.PRECIO,
+                                    };
+                                    setListaCursosRes((prevLista) => [
+                                      ...prevLista,
+                                      cursoTemp,
+                                    ]);
+                                    axios
+                                      .get(url + "obtenerHorario")
+                                      .then((response) => {
+                                        // Asegúrate de que los datos estén en response.data
+                                        setHorarios((prevHorarios) => [
+                                          ...prevHorarios,
+                                          ...response.data.filter(
+                                            (item) =>
+                                              item.CODSEDE === cursoTemp.SEDE &&
+                                              item.GRUPO ===
+                                                cursoTemp.GRUPOCURSO &&
+                                              item.CODCURSO === cursoTemp.CODCURSO
+                                          ),
+                                        ]);
+                                      });
+                                      setCursoRegistrados({
+                                        campo: "",
+                                        valido: null,
+                                      })
+                                      setGrupo({ campo: "", valido: null })
+                                      setDescuento("")
+                                      setPrecioConDescuento(null)
+                                  }else{
+                                    toast(cursoRegistrados.campo === "" ? "Seleccionar curso":"Seleccionar grupo" , {
+                                      icon: "⚠️",
+                                      duration: 3000,
+                                      style: {
+                                        border: "2px solid #000",
+                                        padding: "10px",
+                                        color: "#000",
+                                        background: "#d6d6d6",
+                                        borderRadius: "20px",
+                                        fontFamily: "bold",
+                                        fontWeight: "1000",
+                                      },
+                                    });
+                                  }
+                                }}
+                              >
+                                <ImgIcon buscar={"true"} icon={faAdd} />
+                              </BotonBuscar>
+                            </ContainerBotonBusqueda>
+                          </BoxCampo>
+                          <ContainerTabla cursos={"true"}>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell className={classes.celdas}>
+                                    Hora
+                                  </TableCell>
+                                  {diasSemana.map((dia) => (
+                                    <TableCell
+                                      className={classes.celdas}
+                                      key={dia}
+                                    >
+                                      {dia}
+                                    </TableCell>
+                                  ))}
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>{filas}</TableBody>
+                            </Table>
+                          </ContainerTabla>
                         </DetalleUsuario>
                       </ContainerDatos>
                     </ContainerTodo>
@@ -1376,81 +1666,81 @@ export default function PantallaPrincipal() {
                 <>
                   {lista == 1 && (
                     <>
-                      <ContainerTodo
-                        lista={"true"}
-                        cantidad={listaEstudiantes.length}
-                      >
+                      <ContainerTodo lista={"true"}>
                         <ContainerTituloBusqueda>
-                          <Titulo>Listas de estudiantes</Titulo>
-                          <ContainerBotonBusqueda>
-                            <BotonBuscar
-                              onClick={() => {
-                                setModalBuscar(true);
-                                setOcultar("true");
+                          <BoxCampo buscar={"true"}>
+                            <InputBusqueda
+                              value={buscar}
+                              onChange={(e) => {
+                                setBuscar(e.target.value);
                               }}
-                            >
-                              <ImgIcon buscar={"true"} icon={faSearch} />
-                            </BotonBuscar>
-                          </ContainerBotonBusqueda>
+                            />
+                            <IconoBuscar icon={faSearch} />
+                          </BoxCampo>
                         </ContainerTituloBusqueda>
                         <ContainerDatos>
-                          <ContainerTabla>
-                            <Table>
-                              <TableHead>
-                                <TableRow>
-                                  <TableCell className={classes.celdas}>
-                                    Nº
-                                  </TableCell>
-                                  <TableCell className={classes.celdas}>
-                                    CODIGO
-                                  </TableCell>
-                                  <TableCell className={classes.celdas}>
-                                    NOMBRE
-                                  </TableCell>
-                                  <TableCell className={classes.celdas}>
-                                    APELLIDO
-                                  </TableCell>
-                                  <TableCell
-                                    align="center"
-                                    className={classes.celdas}
-                                  >
-                                    OPCIONES
-                                  </TableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {listaEstudiantes
-                                  .slice(
-                                    pagina * rowPerPage,
-                                    pagina * rowPerPage + rowPerPage
-                                  )
-                                  .map((estudiante, index) => {
-                                    const rowNum =
-                                      pagina * rowPerPage + index + 1;
-                                    return (
-                                      <FilaTabla
-                                        key={estudiante.CODESTUDIANTE}
-                                        estudiante={estudiante}
-                                        modalInformacion={setModalInformacion}
-                                        ocultar={setOcultar}
-                                        estudianteElegido={setElegido}
-                                        tipo={setTipo}
-                                        actualizo={setActualizo}
-                                        cantidad={rowNum}
-                                      />
-                                    );
-                                  })}
-                              </TableBody>
-                            </Table>
+                          <>
+                            <ContainerTabla>
+                              <Table>
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell className={classes.celdas}>
+                                      Nº
+                                    </TableCell>
+                                    <TableCell className={classes.celdas}>
+                                      CODIGO
+                                    </TableCell>
+                                    <TableCell className={classes.celdas}>
+                                      NOMBRE
+                                    </TableCell>
+                                    <TableCell className={classes.celdas}>
+                                      APELLIDO
+                                    </TableCell>
+                                    <TableCell
+                                      align="center"
+                                      className={classes.celdas}
+                                    >
+                                      OPCIONES
+                                    </TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {listaRes
+                                    .slice(
+                                      pagina * rowPerPage,
+                                      pagina * rowPerPage + rowPerPage
+                                    )
+                                    .map((estudiante, index) => {
+                                      const rowNum =
+                                        pagina * rowPerPage + index + 1;
+                                      return (
+                                        <FilaTabla
+                                          key={estudiante.CODESTUDIANTE}
+                                          estudiante={estudiante}
+                                          modalInformacion={setModalInformacion}
+                                          ocultar={setOcultar}
+                                          estudianteElegido={setElegido}
+                                          tipo={setTipo}
+                                          actualizo={setActualizo}
+                                          cantidad={rowNum}
+                                        />
+                                      );
+                                    })}
+                                </TableBody>
+                              </Table>
+                            </ContainerTabla>
                             <TablePagination
-                              rowsPerPageOptions={[2]}
+                              rowsPerPageOptions={[5, 10, 15, 20]}
                               rowsPerPage={rowPerPage}
                               page={pagina}
                               count={listaEstudiantes.length}
                               component="div"
                               onPageChange={cambiarPagina}
                               onRowsPerPageChange={cambiarPerPage}
-                              labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+                              labelRowsPerPage="Filas por página:"
+                              labelDisplayedRows={({ from, to, count }) =>
+                                `${from}-${to} de ${count}`
+                              }
                               style={{
                                 display: "flex",
                                 position: "absolute",
@@ -1459,19 +1749,15 @@ export default function PantallaPrincipal() {
                                 width: "72%",
                               }}
                             />
-                          </ContainerTabla>
+                          </>
                         </ContainerDatos>
                       </ContainerTodo>
                     </>
                   )}
                   {lista == 2 && (
                     <>
-                      <ContainerTodo
-                        lista={"true"}
-                        cantidad={listaTutores.length}
-                      >
+                      <ContainerTodo lista={"true"}>
                         <ContainerTituloBusqueda>
-                          <Titulo>Listas de estudiantes</Titulo>
                           <ContainerBotonBusqueda>
                             <BotonBuscar
                               onClick={() => {
@@ -1482,66 +1768,82 @@ export default function PantallaPrincipal() {
                               <ImgIcon buscar={"true"} icon={faAdd} />
                             </BotonBuscar>
                           </ContainerBotonBusqueda>
+                          <BoxCampo buscar={"true"}>
+                            <InputBusqueda
+                              value={buscarTutor}
+                              onChange={(e) => {
+                                setBuscarTutor(e.target.value);
+                              }}
+                            />
+                            <IconoBuscar icon={faSearch} />
+                          </BoxCampo>
                         </ContainerTituloBusqueda>
                         <ContainerDatos>
-                          <ContainerTabla>
-                            <Table>
-                              <TableHead>
-                                <TableRow>
-                                  <TableCell className={classes.celdas}>
-                                    Nº
-                                  </TableCell>
-                                  <TableCell className={classes.celdas}>
-                                    CODIGO
-                                  </TableCell>
-                                  <TableCell className={classes.celdas}>
-                                    NOMBRE
-                                  </TableCell>
-                                  <TableCell className={classes.celdas}>
-                                    APELLIDO
-                                  </TableCell>
-                                  <TableCell
-                                    align="center"
-                                    className={classes.celdas}
-                                  >
-                                    OPCIONES
-                                  </TableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {listaTutores
-                                  .slice(
-                                    paginaTutor * rowPerPageTutor,
-                                    paginaTutor * rowPerPageTutor +
-                                      rowPerPageTutor
-                                  )
-                                  .map((tutor, index) => {
-                                    const rowNumTutor =
-                                      paginaTutor * rowPerPageTutor + index + 1;
-                                    return (
-                                      <FilaTablaTutor
-                                        tutor={tutor}
-                                        modalInformacion={setModalInformacion}
-                                        ocultar={setOcultar}
-                                        tutorElegido={setElegido}
-                                        tipo={setTipo}
-                                        actualizo={setActualizo}
-                                        cantidad={rowNumTutor}
-                                        modalTutor={setModalTutor}
-                                      />
-                                    );
-                                  })}
-                              </TableBody>
-                            </Table>
+                          <>
+                            <ContainerTabla>
+                              <Table>
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell className={classes.celdas}>
+                                      Nº
+                                    </TableCell>
+                                    <TableCell className={classes.celdas}>
+                                      CODIGO
+                                    </TableCell>
+                                    <TableCell className={classes.celdas}>
+                                      NOMBRE
+                                    </TableCell>
+                                    <TableCell className={classes.celdas}>
+                                      APELLIDO
+                                    </TableCell>
+                                    <TableCell
+                                      align="center"
+                                      className={classes.celdas}
+                                    >
+                                      OPCIONES
+                                    </TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {listaResTutor
+                                    .slice(
+                                      paginaTutor * rowPerPageTutor,
+                                      paginaTutor * rowPerPageTutor +
+                                        rowPerPageTutor
+                                    )
+                                    .map((tutor, index) => {
+                                      const rowNumTutor =
+                                        paginaTutor * rowPerPageTutor +
+                                        index +
+                                        1;
+                                      return (
+                                        <FilaTablaTutor
+                                          tutor={tutor}
+                                          modalInformacion={setModalInformacion}
+                                          ocultar={setOcultar}
+                                          tutorElegido={setElegido}
+                                          tipo={setTipo}
+                                          actualizo={setActualizo}
+                                          cantidad={rowNumTutor}
+                                          modalTutor={setModalTutor}
+                                        />
+                                      );
+                                    })}
+                                </TableBody>
+                              </Table>
+                            </ContainerTabla>
                             <TablePagination
-                              rowsPerPageOptions={[]}
+                              rowsPerPageOptions={[5, 10, 15, 20]}
                               rowsPerPage={rowPerPageTutor}
                               page={paginaTutor}
                               count={listaTutores.length}
                               component="div"
+                              labelRowsPerPage="Filas por página:"
                               onPageChange={cambiarPaginaTutor}
                               onRowsPerPageChange={cambiarPerPageTutor}
-                              labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+                              labelDisplayedRows={({ from, to, count }) =>
+                                `${from}-${to} de ${count}`
+                              }
                               style={{
                                 display: "flex",
                                 position: "absolute",
@@ -1550,7 +1852,7 @@ export default function PantallaPrincipal() {
                                 width: "72%",
                               }}
                             />
-                          </ContainerTabla>
+                          </>
                         </ContainerDatos>
                       </ContainerTodo>
                     </>
@@ -1584,7 +1886,7 @@ export default function PantallaPrincipal() {
                   </ContainerBotonBusqueda>
                 </ContainerTituloBusqueda>
                 <ContainerDatos>
-                  <ContainerTabla>
+                  <ContainerTabla cursos={"false"}>
                     <Table>
                       <TableHead>
                         <TableRow>
@@ -1630,10 +1932,7 @@ export default function PantallaPrincipal() {
                                     setGrupoEscogido(curso);
                                   }}
                                 >
-                                  <ImgIcon
-                                    tabla={"true"}
-                                    icon={faGraduationCap}
-                                  />
+                                  <ImgIcon icon={faGraduationCap} />
                                 </ContainerImgIcon>
                               </TableCell>
                               <TableCell className={classes.texto}>
@@ -1679,7 +1978,7 @@ export default function PantallaPrincipal() {
                                       });
                                   }}
                                 >
-                                  <ImgIcon tabla={"true"} icon={faXmark} />
+                                  <ImgIcon icon={faXmark} />
                                 </ContainerImgIcon>
                               </TableCell>
                             </TableRow>
@@ -1694,12 +1993,6 @@ export default function PantallaPrincipal() {
           </ContainerContenido>
         )}
       </ContainerPrincipal>
-      <ModalBuscar
-        estado={modalBuscar}
-        cambiarEstado={setModalBuscar}
-        ocultar={setOcultar}
-        datos={listaEstudiantes}
-      />
       <ModalTutor
         estado={modalTutor}
         cambiarEstado={setModalTutor}
@@ -1731,6 +2024,18 @@ export default function PantallaPrincipal() {
         cambiarEstado={setModalVerGrupo}
         ocultar={setOcultar}
         datos={grupoEscogido}
+      />
+      <Modal
+        estado={modal}
+        cambiarEstado={setModal}
+        ocultar={setOcultar}
+        respuesta={respuesta}
+        setRespuesta={setRespuesta}
+        actualizo={setActualizo}
+        tutorDatos={setTutorSeleccionado}
+        tipo={registro}
+        setTipo={setRegistro}
+        data={listaCursosRes}
       />
     </GlobalStyle>
   );
