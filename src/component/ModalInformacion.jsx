@@ -17,6 +17,7 @@ import {
   ContainerVerTutores,
   TituloNombreEdit,
   ContainerTabla,
+  ContainerGrupo,
 } from "./DiseñoModalInformacion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import alerta from "sweetalert2";
@@ -155,7 +156,11 @@ export default function ModalInformacion({
     setCelular("");
     setFechaNacimientoEstudiante("");
     setFechaNacimientoTutor("");
+    setPresente("");
+    setFalta("");
+    setLicencia("");
   };
+  const [horarios, setHorarios] = useState([]);
 
   useEffect(() => {
     setValor(datos.HABILITADO);
@@ -235,11 +240,20 @@ export default function ModalInformacion({
               valido: null,
             });
       }
-      axios
-        .get(url + "obtenerTutores/" + datos.CODESTUDIANTE)
-        .then((response) => {
-          setListaTutores(response.data);
-        });
+      if (opcion === 1) {
+        axios
+          .get(url + "obtenerTutores/" + datos.CODESTUDIANTE)
+          .then((response) => {
+            setListaTutores(response.data);
+          });
+      }
+      if (opcion === 2) {
+        axios
+          .get(url + "obtenerHorarioEstudiante/" + datos.CODESTUDIANTE)
+          .then((response) => {
+            setHorarios(response.data);
+          });
+      }
     } else {
       if (tipo == "Tutor") {
         if (editarTutor) {
@@ -287,7 +301,7 @@ export default function ModalInformacion({
           });
       }
     }
-  }, [datos, editarEstudiante, editarTutor]);
+  }, [datos, editarEstudiante, editarTutor, opcion]);
   const classes = styles();
   const guardarTutor = () => {
     const tutor = {
@@ -337,6 +351,72 @@ export default function ModalInformacion({
     campo: datos.FECHANACIMIENTOTUTOR,
     valido: null,
   });
+
+  const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+
+  const cursosPorHora = {};
+  horarios.forEach((horario) => {
+    if (!cursosPorHora[horario.HORA]) {
+      cursosPorHora[horario.HORA] = [];
+    }
+    cursosPorHora[horario.HORA].push({
+      dia: horario.DIA,
+      curso: horario.CURSOINSCRITO + " " + horario.GRUPO,
+    });
+  });
+
+  const filas = Object.entries(cursosPorHora).map(([hora, cursos]) => (
+    <TableRow className={classes.fila} key={hora}>
+      {/* Utiliza slice(0, 5) para obtener solo los primeros 5 caracteres de la hora */}
+      <TableCell className={classes.texto}>{hora.slice(0, 5)}</TableCell>
+      {diasSemana.map((dia) => (
+        <TableCell className={classes.texto} key={dia}>
+          {cursos
+            .filter((curso) => curso.dia === dia)
+            .map((curso, index) => (
+              <div key={index}>{curso.curso}</div>
+            ))}
+        </TableCell>
+      ))}
+    </TableRow>
+  ));
+
+  const handleItemClick = (selectedItem) => {
+    const selectedGroup = horarios.find(
+      (grupo) => grupo.CURSOINSCRITO + " " + grupo.GRUPO === selectedItem
+    );
+
+    if (selectedGroup) {
+      const { CODESTUDIANTE, CODCURSOINSCRITO } = selectedGroup;
+      axios
+        .get(
+          url + "obtenerAsistencia/" + CODESTUDIANTE + "/" + CODCURSOINSCRITO
+        )
+        .then((response) => {
+          setAsistencia(response.data);
+          setOculto(true);
+          setGrupoAsistencia(
+            response.data[0].CURSOINSCRITO + " " + response.data[0].GRUPO
+          );
+          setPresente(contarEstados(response.data, "Presente"));
+          setFalta(contarEstados(response.data, "Falta"));
+          setLicencia(contarEstados(response.data, "Licencia"));
+        });
+    }
+  };
+
+  const contarEstados = (lista, estado) => {
+    return lista.reduce((contador, elemento) => {
+      return elemento.ESTADO === estado ? contador + 1 : contador;
+    }, 0);
+  };
+
+  const [asistencia, setAsistencia] = useState([]);
+  const [oculto, setOculto] = useState(false);
+  const [grupoAsistencia, setGrupoAsistencia] = useState("");
+  const [presente, setPresente] = useState("");
+  const [falta, setFalta] = useState("");
+  const [licencia, setLicencia] = useState("");
   return (
     <>
       {estado && (
@@ -355,6 +435,8 @@ export default function ModalInformacion({
                 setEditarTutor(false);
                 borrar();
                 actualizo(true);
+                setOpcion(1);
+                setOculto(false);
               }}
             >
               <FontAwesomeIcon icon={faXmark} />
@@ -624,6 +706,127 @@ export default function ModalInformacion({
                         </ContainerTabla>
                       </ContainerVerTutores>
                     )}
+                    {opcion === 2 && (
+                      <>
+                        {!oculto && (
+                          <ContainerVerTutores>
+                            <ContainerGrupo>
+                              <TituloNombre grupo={"true"}>
+                                Grupos:
+                              </TituloNombre>
+                              {Array.from(
+                                new Set(
+                                  horarios.map(
+                                    (grupo) =>
+                                      grupo.CURSOINSCRITO + " " + grupo.GRUPO
+                                  )
+                                )
+                              ).map((item, index) => (
+                                <BoxCampo
+                                  grupo={"true"}
+                                  key={index}
+                                  onClick={() => handleItemClick(item)}
+                                >
+                                  <Texto grupo={"true"}>{item}</Texto>
+                                </BoxCampo>
+                              ))}
+                            </ContainerGrupo>
+                            <ContainerTabla>
+                              <Table>
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell className={classes.celdas}>
+                                      Hora
+                                    </TableCell>
+                                    {diasSemana.map((dia) => (
+                                      <TableCell
+                                        className={classes.celdas}
+                                        key={dia}
+                                      >
+                                        {dia}
+                                      </TableCell>
+                                    ))}
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>{filas}</TableBody>
+                              </Table>
+                            </ContainerTabla>
+                          </ContainerVerTutores>
+                        )}
+                        {oculto && (
+                          <ContainerVerTutores>
+                            <ContainerGrupo asistencia={"false"}>
+                              <ContainerGrupo asistencia={"true"}>
+                                <TituloNombre
+                                  asistencia={"true"}
+                                  onClick={() => {
+                                    setOculto(false);
+                                    setPresente("");
+                                    setFalta("");
+                                    setLicencia("");
+                                  }}
+                                >
+                                  Horario
+                                </TituloNombre>
+                                <TituloNombre asistencia={"false"}>
+                                  {" > "}
+                                </TituloNombre>
+                                <TituloNombre asistencia={"true"}>
+                                  {grupoAsistencia}
+                                </TituloNombre>
+                              </ContainerGrupo>
+                              <ContainerGrupo asistencia={"true"}>
+                                <TituloNombre asistencia={"si"}>
+                                  Asistencia: {presente}
+                                </TituloNombre>
+                                <TituloNombre asistencia={"si"}>
+                                  Falta: {falta}
+                                </TituloNombre>
+                                <TituloNombre asistencia={"si"}>
+                                  Licencia: {licencia}
+                                </TituloNombre>
+                              </ContainerGrupo>
+                            </ContainerGrupo>
+                            <ContainerTabla>
+                              <Table>
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell className={classes.celdas}>
+                                      Fecha
+                                    </TableCell>
+                                    <TableCell className={classes.celdas}>
+                                      Estado
+                                    </TableCell>
+                                    <TableCell className={classes.celdas}>
+                                      Observaciones
+                                    </TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {asistencia.map((asis) => {
+                                    return (
+                                      <>
+                                        <TableRow className={classes.fila}>
+                                          <TableCell className={classes.texto}>
+                                            {asis.FECHA}
+                                          </TableCell>
+                                          <TableCell className={classes.texto}>
+                                            {asis.ESTADO}{" "}
+                                          </TableCell>
+                                          <TableCell className={classes.texto}>
+                                            {asis.OBSERVACION}
+                                          </TableCell>
+                                        </TableRow>
+                                      </>
+                                    );
+                                  })}
+                                </TableBody>
+                              </Table>
+                            </ContainerTabla>
+                          </ContainerVerTutores>
+                        )}
+                      </>
+                    )}
                   </ContainerTutores>
                 </>
               )}
@@ -802,4 +1005,18 @@ export default function ModalInformacion({
                 >
                   {tipo === "Estudiante" ? "Ver tutores" : "Ver Estudiantes"}
                 </BotonTutores>
-              </ContainerBoton>*/
+              </ContainerBoton>
+              
+              
+              
+              {Array.from(
+                            new Set(
+                              horarios.map(
+                                (grupo) => grupo.CURSOINSCRITO + grupo.GRUPO
+                              )
+                            )
+                          ).map((item, index) => (
+                            <BoxCampo key={index}>
+                              <Texto>{item}</Texto>
+                            </BoxCampo>
+                          ))}*/

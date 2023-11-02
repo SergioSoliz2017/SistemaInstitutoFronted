@@ -74,6 +74,15 @@ export const BoxCampo = styled.div`
       gap: 10px;
       margin: 15px 10px 0px 0px;
     `}
+  ${(props) =>
+    props.grupo === "true" &&
+    css`
+    
+      width: calc(25% - 30px);
+      position: relative;
+      z-index: 90;
+      cursor: pointer;
+    `}
 `;
 export const BotonTutores = styled.button`
   width: 30%;
@@ -124,6 +133,12 @@ export const Texto = styled.div`
       font-weight: 1000;
       width: 21.5%;
     `}
+    ${(props) =>
+    props.grupo === "true" &&
+    css`
+      width: 100%;
+    `}
+    
 `;
 export const ContainerIcon = styled.div`
   display: flex;
@@ -141,9 +156,39 @@ export const TituloNombre = styled.div`
       text-align: center;
     `}
   ${(props) =>
+    props.grupo === "true" &&
+    css`
+      margin: 10px 0px 0px 20px;
+    `}
+  ${(props) =>
     props.primero === "true" &&
     css`
       border-top: 1px solid black;
+    `}
+    ${(props) =>
+    props.asistencia === "true" &&
+    css`
+      cursor: pointer;
+      width: max-content;
+      height: 25px;
+      &:hover {
+        border-bottom: 1px solid black;
+      }
+    `}
+     ${(props) =>
+    props.asistencia === "false" &&
+    css`
+      cursor: pointer;
+      width: max-content;
+      height: 25px;
+    `}
+    ${(props) =>
+    props.asistencia === "si" &&
+    css`
+      cursor: pointer;
+      width: max-content;
+      height: 25px;
+      margin-right: 5px;
     `}
 `;
 export const ContainerImgIcon = styled.div`
@@ -197,4 +242,27 @@ export const ContainerEdit = styled.div``;
 export const ContainerTabla = styled.div`
   width: 100%;
   z-index: 1;
+  overflow-x: auto;
+`;
+export const ContainerGrupo = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+  ${(props) =>
+    props.asistencia === "true" &&
+    css`
+      width: 50%;
+      flex-wrap: nowrap;
+      justify-content: start;
+      margin-left: 10px;
+      gap: 5px;
+    `}
+  ${(props) =>
+    props.asistencia === "false" &&
+    css`
+      width: 100%;
+      flex-wrap: nowrap;
+    `}
 `;
