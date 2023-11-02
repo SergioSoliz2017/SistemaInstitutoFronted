@@ -733,7 +733,6 @@ export default function PantallaPrincipal() {
         setListaEstudiantes(response.data);
       } else {
         setCarga(false);
-        alert("algo paso");
       }
     });
   };
@@ -746,7 +745,6 @@ export default function PantallaPrincipal() {
         setListaTutores(response.data);
       } else {
         setCarga(false);
-        alert("algo paso");
       }
     });
   };
