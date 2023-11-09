@@ -61,6 +61,7 @@ import {
   faListCheck,
   faPercent,
   faMoneyBill,
+  faFileExcel,
 } from "@fortawesome/free-solid-svg-icons";
 import alerta from "sweetalert2";
 import SelectInput from "./SelectValidar";
@@ -184,7 +185,6 @@ export default function PantallaPrincipal() {
   const [listaCursos, setListaCursos] = useState([]);
   const [tutorSi, setTutorSi] = useState(false);
   const [sede, setSede] = useState("QUILLACOLLO");
-
   function esValido() {
     var esValido = true; 
     if (opcionPasos === 1) {
@@ -558,8 +558,14 @@ export default function PantallaPrincipal() {
           if (opcionPasos + 1 == 3) {
             obtenerCursos();
             obtenerDescuento();
+            setOpcionPasos(opcionPasos + 1);
+          } else {
+            if (opcionPasos + 1 == 4) {
+              setRegistro("huella");
+              setModal(true);
+              setOcultar("true");
+            }
           }
-          setOpcionPasos(opcionPasos + 1);
         }
       }
     } else {
@@ -605,7 +611,6 @@ export default function PantallaPrincipal() {
     codigo = año + "" + mes + "" + dia + "" + subNombre + subApellido;
     return codigo.toUpperCase();
   }
-
   const agregarTodo = (estudiante, EstudianteTutor) => {
     axios.post(url + "asignar-tutor", EstudianteTutor).then((response) => {
       const dataCurso = {
@@ -614,25 +619,30 @@ export default function PantallaPrincipal() {
       };
       axios.post(url + "agregarCursoInscrito", dataCurso).then((response) => {
         setSeSubio(false);
-        borrarDatos();
         setImagenHuella(require("../Imagenes/EscanearHuella.png"));
         setRegistro("registrado");
+        setListaCursosRespaldo(listaCursosRes);
         setModal(true);
         setOcultar("true");
+        borrarDatos();
       });
     });
   };
-  function sumar () {
-    const suma = listaCursosRes.reduce((total, curso) => total + parseFloat(curso.PRECIO), 0);
-    return suma
-  } 
+  const [listaCursosRespaldo, setListaCursosRespaldo] = useState([]);
+  function sumar() {
+    const suma = listaCursosRes.reduce(
+      (total, curso) => total + parseFloat(curso.PRECIO),
+      0
+    );
+    return suma;
+  }
   function subirBaseDatos() {
     var codigoEstudiante = generarCodigoEstudiante();
     var codigoTutor = generarCodigoTutor();
     var codigoInscripcion = generarCodInscripcion();
     const hoy = new Date().toLocaleDateString();
-    var precioTotal = sumar()
-    console.log(precioTotal)
+    var precioTotal = sumar();
+    console.log(respuestaHuella)
     const estudiante = {
       CODESTUDIANTE: codigoEstudiante,
       CODINSCRIPCION: codigoInscripcion,
@@ -651,8 +661,10 @@ export default function PantallaPrincipal() {
       TIPOCOLEGIO: tipoColegio.campo,
       HABILITADO: "Habilitado",
       FECHAINSCRIPCION: hoy,
-      COSTOINSCRIPCION:precioTotal,
+      COSTOINSCRIPCION: precioTotal,
+      SALDO:saldoTotal,
       SEDE: sede,
+      HUELLA: respuestaHuella
     };
     const tutor = {
       CODTUTOR: codigoTutor,
@@ -669,15 +681,17 @@ export default function PantallaPrincipal() {
     };
     const EstudianteTutor = {
       estudiante_id: codigoEstudiante,
-      tutor_id: respuesta !== "Existe"? codigoTutor : tutorSeleccionado.CODTUTOR,
+      tutor_id:
+        respuesta !== "Existe" ? codigoTutor : tutorSeleccionado.CODTUTOR,
     };
     axios.post(url + "agregarEstudiante", estudiante).then((response) => {
-      if (respuesta === "Existe"){
-        agregarTodo(estudiante,EstudianteTutor );
-      }else{
+      console.log(response.data)
+      if (respuesta === "Existe") {
+        agregarTodo(estudiante, EstudianteTutor);
+      } else {
         axios.post(url + "agregarTutor", tutor).then((response) => {
-            agregarTodo(estudiante, EstudianteTutor);
-          });
+          agregarTodo(estudiante, EstudianteTutor);
+        });
       }
     });
   }
@@ -708,7 +722,12 @@ export default function PantallaPrincipal() {
     setGrupo({ campo: "", valido: null });
     setHabilitarHuella(false);
     setTutorSi(false);
-    setListaCursosRes([])
+    setListaCursosRes([]);
+    setHorarios([]);
+    setRespuesta("");
+    setRespuestaHuella("")
+    setSaldoTotal("")
+    setMontoPagado("")
   }
   function generarCodInscripcion() {
     var codigo = "";
@@ -809,6 +828,15 @@ export default function PantallaPrincipal() {
       if (respuesta === "Existe") {
         setOpcionPasos(opcionPasos + 2);
         setTutorSi(true);
+      }
+      if (respuestaHuella === "SiVirtual") {
+        if (esValido()) {
+          setSeSubio(true);
+          subirBaseDatos();
+        }
+      }
+      if (respuestaHuella === "NoVirtual") {
+        setOpcionPasos(opcionPasos + 1);
       }
     }
     if (opcion === 1 && respuesta === "Existe") {
@@ -943,7 +971,7 @@ export default function PantallaPrincipal() {
         dato.APELLIDOESTUDIANTE,
         dato.COLEGIO,
         dato.TIPOCOLEGIO,
-        dato.GENEROESTUDIANTE
+        dato.GENEROESTUDIANTE,
       ]
         .join(" ")
         .toLowerCase();
@@ -966,50 +994,27 @@ export default function PantallaPrincipal() {
       listaCursos.find((curso) => curso.CODCURSO === cursoRegistrados.campo)
         ?.PRECIO
     );
-    if (hayDescuento) {
-      if (!isNaN(cantidad) && cantidad !== "" && cantidad >= 0) {
-        const descuentoNumerico = parseFloat(cantidad);
-        const precioOriginal = listaCursos.find(
-          (curso) => curso.CODCURSO === cursoRegistrados.campo
-        )?.PRECIO;
-        if (porcentaje) {
-          const nuevoPrecioConDescuento =
-            precioOriginal - (precioOriginal * descuentoNumerico) / 100;
-          setPrecioConDescuento(nuevoPrecioConDescuento);
-        } else {
-          const nuevoPrecioConDescuento = precioOriginal - descuentoNumerico;
-          setPrecioConDescuento(nuevoPrecioConDescuento);
-        }
+    if (!isNaN(valor) && valor !== "" && valor >= 0) {
+      const descuentoNumerico = parseFloat(valor);
+      const precioOriginal = listaCursos.find(
+        (curso) => curso.CODCURSO === cursoRegistrados.campo
+      )?.PRECIO;
+      if (porcentaje) {
+        const nuevoPrecioConDescuento =
+          precioOriginal - (precioOriginal * descuentoNumerico) / 100;
+        setPrecioConDescuento(nuevoPrecioConDescuento);
       } else {
-        setPrecioConDescuento(null);
+        const nuevoPrecioConDescuento = precioOriginal - descuentoNumerico;
+        setPrecioConDescuento(nuevoPrecioConDescuento);
       }
     } else {
-      if (!isNaN(valor) && valor !== "" && valor >= 0) {
-        const descuentoNumerico = parseFloat(valor);
-        const precioOriginal = listaCursos.find(
-          (curso) => curso.CODCURSO === cursoRegistrados.campo
-        )?.PRECIO;
-        if (porcentaje) {
-          const nuevoPrecioConDescuento =
-            precioOriginal - (precioOriginal * descuentoNumerico) / 100;
-          setPrecioConDescuento(nuevoPrecioConDescuento);
-        } else {
-          const nuevoPrecioConDescuento = precioOriginal - descuentoNumerico;
-          setPrecioConDescuento(nuevoPrecioConDescuento);
-        }
-      } else {
-        setPrecioConDescuento(null);
-      }
+      setPrecioConDescuento(null);
     }
   };
   const [esPorcentaje, setEsPorcentaje] = useState(true);
-  const [hayDescuento, setHayDescuento] = useState(true);
   const [tutorSeleccionado, setTutorSeleccionado] = useState(null);
   const [registro, setRegistro] = useState("tutor");
-
-  const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
-
-  // Utiliza un objeto para almacenar un array de cursos por cada hora
+  const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"];
   const cursosPorHora = {};
   horarios.forEach((horario) => {
     if (!cursosPorHora[horario.HORA]) {
@@ -1021,7 +1026,6 @@ export default function PantallaPrincipal() {
       grupo: horario.GRUPO,
     });
   });
-
   const filas = Object.entries(cursosPorHora).map(([hora, cursos]) => (
     <TableRow className={classes.fila} key={hora}>
       <TableCell className={classes.texto}>{hora.slice(0, 5)}</TableCell>
@@ -1039,7 +1043,9 @@ export default function PantallaPrincipal() {
       ))}
     </TableRow>
   ));
-
+  const [montoPagado, setMontoPagado] = useState("");
+  const [saldoTotal, setSaldoTotal] = useState(0);
+  const [respuestaHuella,setRespuestaHuella] = useState()
   return (
     <GlobalStyle>
       <Nav>
@@ -1065,6 +1071,15 @@ export default function PantallaPrincipal() {
             seleccionado={opcion == 1 ? "true" : "false"}
           >
             <ImgIcon menu={"true"} icon={faFilePen} />
+            Registro de estudiantes
+          </BotonNav>
+          <BotonNav
+            onClick={() => {
+              setOpcion(5);
+            }}
+            seleccionado={opcion == 5 ? "true" : "false"}
+          >
+            <ImgIcon menu={"true"} icon={faFileExcel} />
             Registro de estudiantes
           </BotonNav>
           <BotonNav
@@ -1405,7 +1420,7 @@ export default function PantallaPrincipal() {
                             dato={cursoRegistrados.campo}
                           />
                           <BoxCampo precio={"true"} precioT={"true"}>
-                            <TextBox>Precio</TextBox>
+                            <TextBox>Precio:</TextBox>
                             <TextPrecio>
                               {precioConDescuento !== null
                                 ? precioConDescuento
@@ -1416,91 +1431,90 @@ export default function PantallaPrincipal() {
                               {" Bs."}
                             </TextPrecio>
                           </BoxCampo>
-                          {hayDescuento && (
-                            <BoxCampo curso={"true"}>
-                              <TextBox>Descuento</TextBox>
-                              <Select
-                                id={descuento}
-                                value={descuento}
-                                onChange={(e) => {
-                                  if (e.target.value !== "Otro") {
-                                    const descuentoSeleccionado =
-                                      listaDescuento.find(
-                                        (descuento) =>
-                                          descuento.CODDESCUENTO ===
-                                          e.target.value
-                                      );
+                          <BoxCampo precio={"true"}>
+                            <TextBox>
+                              Descuento:{" "}
+                              <ContainerImgIcon precio={"true"}>
+                                <IconoDescuento
+                                  onClick={() => {
                                     handleDescuentoChange(
-                                      e.target.value,
-                                      descuentoSeleccionado.TIPO ===
-                                        "Porcentaje"
-                                        ? true
-                                        : false,
-                                      descuentoSeleccionado.CANTIDAD
+                                      descuento,
+                                      !esPorcentaje
                                     );
-                                  } else {
-                                    setHayDescuento(false);
-                                  }
-                                }}
-                              >
-                                <option value="">Seleccionar descuento</option>
-                                {listaDescuento.map((descuento) => (
-                                  <option
-                                    key={descuento.CODDESCUENTO}
-                                    value={descuento.CODDESCUENTO}
-                                  >
-                                    {descuento.NOMBREDESCUENTO}{" "}
-                                    {descuento.TIPO === "Porcentaje"
-                                      ? descuento.CANTIDAD + " %"
-                                      : descuento.CANTIDAD + " Bs."}
-                                  </option>
-                                ))}
-                                <option value="Otro">Otro</option>
-                              </Select>
-                            </BoxCampo>
-                          )}
-                          {!hayDescuento && (
-                            <BoxCampo precio={"true"}>
-                              <TextBox>
-                                Descuento{" "}
-                                <ContainerImgIcon precio={"true"}>
-                                  <IconoDescuento
-                                    onClick={() => {
-                                      handleDescuentoChange(
-                                        descuento,
-                                        !esPorcentaje
-                                      );
-                                      setEsPorcentaje(!esPorcentaje);
-                                    }}
-                                    icon={
-                                      esPorcentaje ? faPercent : faMoneyBill
-                                    }
-                                  />
-                                </ContainerImgIcon>
-                              </TextBox>
-                              <InputBox
-                                type="number"
-                                placeholder="Descuento"
-                                value={descuento}
-                                onChange={(e) =>
-                                  handleDescuentoChange(
-                                    e.target.value,
-                                    esPorcentaje
+                                    setEsPorcentaje(!esPorcentaje);
+                                  }}
+                                  icon={esPorcentaje ? faPercent : faMoneyBill}
+                                />
+                              </ContainerImgIcon>
+                            </TextBox>
+                            <InputBox
+                              type="number"
+                              placeholder="Descuento"
+                              value={descuento}
+                              onChange={(e) =>
+                                handleDescuentoChange(
+                                  e.target.value,
+                                  esPorcentaje
+                                )
+                              }
+                            />
+                          </BoxCampo>
+                          <BoxCampo precio={"true"}>
+                            <TextBox>Pago:</TextBox>
+                            <InputBox
+                              type="number"
+                              placeholder="Monto"
+                              value={montoPagado}
+                              onChange={(e) => {
+                                setMontoPagado(e.target.value);
+                              }}
+                            />
+                          </BoxCampo>
+                          <BoxCampo saldo={"true"}>
+                            <TextBox saldo={"true"}>
+                              Saldo :{" "}
+                              {precioConDescuento !== null
+                                ? isNaN(precioConDescuento - montoPagado)
+                                  ? "0"
+                                  : precioConDescuento - montoPagado
+                                : isNaN(
+                                    listaCursos.find(
+                                      (curso) =>
+                                        curso.CODCURSO ===
+                                        cursoRegistrados.campo
+                                    )?.PRECIO - montoPagado
                                   )
-                                }
-                              />
-                            </BoxCampo>
-                          )}
+                                ? "0"
+                                : listaCursos.find(
+                                    (curso) =>
+                                      curso.CODCURSO === cursoRegistrados.campo
+                                  )?.PRECIO - montoPagado}
+                            </TextBox>
+                            <TextBox saldo={"true"}>
+                              Saldo Total: {saldoTotal}
+                            </TextBox>
+                          </BoxCampo>
                           <BoxCampo boton={"true"}>
                             <ContainerBotonBusqueda add={"true"}>
                               <BotonBuscar
                                 onClick={() => {
-                                  if (cursoRegistrados.campo !== "" && grupo.campo !== ""){
+                                  if (
+                                    cursoRegistrados.campo !== "" &&
+                                    grupo.campo !== ""
+                                  ) {
                                     var cursoTemp = {
                                       NOMBRECURSO: cursoRegistrados.texto,
                                       GRUPOCURSO: grupo.campo,
                                       CODCURSO: cursoRegistrados.campo,
                                       SEDE: sede,
+                                      SALDO:
+                                        precioConDescuento !== null
+                                          ? precioConDescuento - montoPagado
+                                          : listaCursos.find(
+                                              (curso) =>
+                                                curso.CODCURSO ===
+                                                cursoRegistrados.campo
+                                            )?.PRECIO - montoPagado,
                                       PRECIO:
                                         precioConDescuento !== null
                                           ? precioConDescuento
@@ -1514,6 +1528,14 @@ export default function PantallaPrincipal() {
                                       ...prevLista,
                                       cursoTemp,
                                     ]);
+                                  
+                                    // Almacena el estado actualizado en una variable
+                                    const updatedLista = [...listaCursosRes, cursoTemp];
+                                  
+                                    // Utiliza la función de callback para asegurar que estás utilizando el estado más reciente
+                                    setSaldoTotal(() => {
+                                      return updatedLista.reduce((total, curso) => total + parseFloat(curso.SALDO), 0);
+                                    });
                                     axios
                                       .get(url + "obtenerHorario")
                                       .then((response) => {
@@ -1525,31 +1547,38 @@ export default function PantallaPrincipal() {
                                               item.CODSEDE === cursoTemp.SEDE &&
                                               item.GRUPO ===
                                                 cursoTemp.GRUPOCURSO &&
-                                              item.CODCURSO === cursoTemp.CODCURSO
+                                              item.CODCURSO ===
+                                                cursoTemp.CODCURSO
                                           ),
                                         ]);
+                                        setCursoRegistrados({
+                                          campo: "",
+                                          valido: null,
+                                        });
+                                        setGrupo({ campo: "", valido: null });
+                                        setDescuento("");
+                                        setPrecioConDescuento(null);
+                                        setMontoPagado("")
                                       });
-                                      setCursoRegistrados({
-                                        campo: "",
-                                        valido: null,
-                                      })
-                                      setGrupo({ campo: "", valido: null })
-                                      setDescuento("")
-                                      setPrecioConDescuento(null)
-                                  }else{
-                                    toast(cursoRegistrados.campo === "" ? "Seleccionar curso":"Seleccionar grupo" , {
-                                      icon: "⚠️",
-                                      duration: 3000,
-                                      style: {
-                                        border: "2px solid #000",
-                                        padding: "10px",
-                                        color: "#000",
-                                        background: "#d6d6d6",
-                                        borderRadius: "20px",
-                                        fontFamily: "bold",
-                                        fontWeight: "1000",
-                                      },
-                                    });
+                                  } else {
+                                    toast(
+                                      cursoRegistrados.campo === ""
+                                        ? "Seleccionar curso"
+                                        : "Seleccionar grupo",
+                                      {
+                                        icon: "⚠️",
+                                        duration: 3000,
+                                        style: {
+                                          border: "2px solid #000",
+                                          padding: "10px",
+                                          color: "#000",
+                                          background: "#d6d6d6",
+                                          borderRadius: "20px",
+                                          fontFamily: "bold",
+                                          fontWeight: "1000",
+                                        },
+                                      }
+                                    );
                                   }
                                 }}
                               >
@@ -2029,11 +2058,13 @@ export default function PantallaPrincipal() {
         ocultar={setOcultar}
         respuesta={respuesta}
         setRespuesta={setRespuesta}
+        respuestaHuella= {respuestaHuella}
+        setRespuestaHuella={setRespuestaHuella}
         actualizo={setActualizo}
         tutorDatos={setTutorSeleccionado}
         tipo={registro}
         setTipo={setRegistro}
-        data={listaCursosRes}
+        data={listaCursosRespaldo}
       />
     </GlobalStyle>
   );

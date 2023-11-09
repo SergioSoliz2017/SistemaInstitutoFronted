@@ -352,7 +352,7 @@ export default function ModalInformacion({
     valido: null,
   });
 
-  const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+  const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"];
 
   const cursosPorHora = {};
   horarios.forEach((horario) => {
@@ -382,10 +382,11 @@ export default function ModalInformacion({
   ));
 
   const handleItemClick = (selectedItem) => {
+    console.log(selectedItem)
     const selectedGroup = horarios.find(
       (grupo) => grupo.CURSOINSCRITO + " " + grupo.GRUPO === selectedItem
     );
-
+      console.log(selectedGroup)
     if (selectedGroup) {
       const { CODESTUDIANTE, CODCURSOINSCRITO } = selectedGroup;
       axios
@@ -396,7 +397,7 @@ export default function ModalInformacion({
           setAsistencia(response.data);
           setOculto(true);
           setGrupoAsistencia(
-            response.data[0].CURSOINSCRITO + " " + response.data[0].GRUPO
+            selectedItem
           );
           setPresente(contarEstados(response.data, "Presente"));
           setFalta(contarEstados(response.data, "Falta"));
@@ -771,7 +772,7 @@ export default function ModalInformacion({
                                 <TituloNombre asistencia={"false"}>
                                   {" > "}
                                 </TituloNombre>
-                                <TituloNombre asistencia={"true"}>
+                                <TituloNombre asistencia={"false"}>
                                   {grupoAsistencia}
                                 </TituloNombre>
                               </ContainerGrupo>
@@ -865,13 +866,6 @@ export default function ModalInformacion({
                           ? datos.CELULARTUTOR
                           : celular.campo}
                       </BoxCampo>
-                      <ContainerImgIcon habilitar={"true"}>
-                        <ImgIcon
-                          habilitar={"true"}
-                          icon={habilitado}
-                          onClick={() => {}}
-                        />
-                      </ContainerImgIcon>
                     </>
                   )}
                   {editarTutor && (

@@ -11,6 +11,15 @@ export const BoxCampo = styled.div`
     css`
       margin: 0px 10px 5px 10px;
     `}
+    ${(props) =>
+    props.saldo === "true" &&
+    css`
+      margin: 15px 30px 5px 10px;
+      width: 100%;
+      display: flex;
+      justify-content: end;
+      position: relative;
+    `}
   ${(props) =>
     props.sub === "true" &&
     css`
@@ -26,8 +35,8 @@ export const BoxCampo = styled.div`
     ${(props) =>
     props.curso === "true" &&
     css`
-      margin: 00px 10px 5px 10px;
-      width: calc(25% - 20px);
+      margin: 00px 10px 5px 19.1px;
+      width: calc(20% - 20px);
       position: relative;
       z-index: 90;
       height: 75px;
@@ -42,8 +51,9 @@ export const BoxCampo = styled.div`
     ${(props) =>
     props.precio === "true" &&
     css`
-      width: calc(25% - 20px);
+      width: calc(20% - 20px);
       position: relative;
+      margin-right: 20px;
       z-index: 90;
     `}
     ${(props) =>
@@ -150,6 +160,12 @@ export const TextBox = styled.span`
     props.titulo === "true" &&
     css`
       width: auto;
+    `}
+    ${(props) =>
+    props.saldo === "true" &&
+    css`
+      margin-left: 80px;
+      margin-right: 80px;
     `}
 `;
 export const Select = styled.select`

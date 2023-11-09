@@ -36,9 +36,24 @@ export default function Modal({
   tipo,
   setTipo,
   data,
+  setRespuestaHuella,
+  relacion,
+  setRelacion,
 }) {
   const [listaTutores, setListaTutores] = useState([]);
+  const [listaCursos, setListaCursos] = useState([]);
+  const listaRelacion = [
+    "Padre",
+    "Madre",
+    "Tio",
+    "Tia",
+    "Abuelo",
+    "Abuela",
+    "Tutor legal",
+    "No tiene",
+  ];
   useEffect(() => {
+    setListaCursos(data);
     if (respuesta === "Existe" && tipo === "tutor") {
       axios.get(url + "obtenerTutores").then((response) => {
         setListaTutores(response.data);
@@ -46,6 +61,7 @@ export default function Modal({
     }
   }, [respuesta]);
   const [tutor, setTutor] = useState("");
+
   return (
     <>
       {estado && (
@@ -118,7 +134,21 @@ export default function Modal({
                         ))}
                       </Select>
                     </BoxCampo>
-                    <ContainerBotonesOpciones>
+                    <BoxCampo ultimo={"true"}>
+                      <TextBox>Relacion:</TextBox>
+                      <Select
+                        value={relacion}
+                        onChange={(e) => {
+                          setRelacion(e.target.value);
+                        }}
+                      >
+                        <option value="">Seleccione relacion</option>
+                        {listaRelacion.map((datos) => {
+                          return <option value={datos}>{datos}</option>;
+                        })}
+                      </Select>
+                    </BoxCampo>
+                    <ContainerBotonesOpciones ultimo={"true"}>
                       <BotonOpciones
                         texto={"true"}
                         onClick={() => {
@@ -147,7 +177,7 @@ export default function Modal({
                 onClick={() => {
                   cambiarEstado(false);
                   ocultar("false");
-                  setTipo ("tutor")
+                  setTipo("tutor");
                 }}
               >
                 <FontAwesomeIcon icon={faXmark} />
@@ -157,16 +187,59 @@ export default function Modal({
                   <Icono icon={faCheckCircle} />
                 </ContainerIcon>
                 <ContainerTexto>
-                  {data.map((dat) => {
+                  {listaCursos.map((dato) => {
                     return (
                       <>
-                        <TextBox>Clase: {dat.NOMBRECURSO}</TextBox>
-                        <TextBox>Grupo: {dat.GRUPOCURSO}</TextBox>
-                        <TextBox>Codigo: {dat.CODCURSO}</TextBox>
+                        <TextBox>Clase: {dato.NOMBRECURSO}</TextBox>
+                        <TextBox>Grupo: {dato.GRUPOCURSO}</TextBox>
+                        <TextBox>Codigo: {dato.CODCURSO}</TextBox>
                       </>
                     );
                   })}
                 </ContainerTexto>
+              </DetalleUsuario>
+            </ContenedorModal>
+          )}
+          {tipo === "huella" && (
+            <ContenedorModal>
+              <EncabezadoModal>
+                <Titulo>¿Registro online?</Titulo>
+              </EncabezadoModal>
+              <BotonCerrar
+                onClick={() => {
+                  cambiarEstado(false);
+                  ocultar("false");
+                  setRespuesta("");
+                  setRespuestaHuella("");
+                  setTutor("");
+                }}
+              >
+                <FontAwesomeIcon icon={faXmark} />
+              </BotonCerrar>
+              <DetalleUsuario>
+                <ContainerIcon>
+                  <Icono icon={faQuestion} />
+                </ContainerIcon>
+                <ContainerBotonesOpciones>
+                  <BotonOpciones
+                    onClick={() => {
+                      setRespuestaHuella("NoVirtual");
+                      cambiarEstado(false);
+                      ocultar("false");
+                    }}
+                  >
+                    No
+                  </BotonOpciones>
+                  <BotonOpciones
+                    onClick={() => {
+                      setRespuestaHuella("SiVirtual");
+                      cambiarEstado(false);
+                      ocultar("false");
+                    }}
+                  >
+                    SI
+                  </BotonOpciones>
+                </ContainerBotonesOpciones>
               </DetalleUsuario>
             </ContenedorModal>
           )}

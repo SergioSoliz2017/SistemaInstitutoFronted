@@ -383,7 +383,7 @@ export const ContainerTabla = styled.div`
     props.cursos === "true" &&
     css`
     margin-top: 60px;
-      height: 300px;
+      height: 285px;
     `}
      ${(props) =>
     props.cursos === "false" &&

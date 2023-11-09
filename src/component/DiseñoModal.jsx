@@ -27,7 +27,7 @@ export const ContenedorModal = styled.div`
   ${(props) =>
     props.respuesta === "Existe" &&
     css`
-      height: 55%;
+      height: 65%;
     `}
     ${(props) =>
     props.respuesta === "false" &&
@@ -79,6 +79,11 @@ export const ContainerBotonesOpciones = styled.div`
   display: flex;
   justify-content: center;
   gap: 20px;
+  margin-top: 5px;
+  ${(props) =>
+    props.ultimo === "true" &&
+    css`
+    `}
 `;
 export const BotonOpciones = styled.button`
   width: calc(30% - 20px);
@@ -108,19 +113,27 @@ export const Icono = styled(FontAwesomeIcon)`
 `;
 export const BoxCampo = styled.div`
 
-  margin: 25px 10px 5px 10px;
+  margin: 25px 10px 0px 10px;
   width: 100%;
   position: relative;
   z-index: 90;
   height: 75px;
   gap: 15px;
   display: flex;
-  justify-content: center;
+  justify-content: start;
+  ${(props) =>
+    props.ultimo === "true" &&
+    css`
+      margin-top: 0px;
+      margin-bottom: 0px;
+      height: 58px;
+    `}
 `;
 export const TextBox = styled.span`
   display: block;
   font-weight: 500;
   margin-bottom: 5px;
+  width: 15%;
   ${(props) =>
     props.centro === "true" &&
     css`
@@ -138,7 +151,6 @@ export const Select = styled.select`
   font-size: 18px;
   border-bottom-width: 2px;
   transition: all 0.3s ease;
-
   &:focus {
     border: 2px solid black;
     outline: none;
