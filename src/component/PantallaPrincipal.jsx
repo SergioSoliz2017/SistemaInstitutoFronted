@@ -41,6 +41,7 @@ import {
   Texto,
   InputBusqueda,
   IconoBuscar,
+  ContainerCurso,
 } from "./DiseñoPantallaPrincipal";
 import InputValidar from "./InputValidar";
 import { useState } from "react";
@@ -62,6 +63,7 @@ import {
   faPercent,
   faMoneyBill,
   faFileExcel,
+  faArrowDownWideShort,
 } from "@fortawesome/free-solid-svg-icons";
 import alerta from "sweetalert2";
 import SelectInput from "./SelectValidar";
@@ -93,8 +95,9 @@ import ModalVerGrupo from "./ModalVerGrupo";
 import { DetalleUsuario } from "./DiseñoModalEdit";
 import FilaTabla from "./FilaTablaEstudiante";
 import FilaTablaTutor from "./FilaTablaTutor";
-import { Select } from "./DiseñoSelectDescuento";
 import Modal from "./Modal";
+import Filtro from "./Filtro";
+import ModalAgregarEstudiante from "./ModalAgregarEstudiante";
 const styles = makeStyles({
   celdas: {
     fontFamily: "bold",
@@ -106,6 +109,7 @@ const styles = makeStyles({
   },
   fila: {
     borderBottom: "2px solid white",
+    cursor: "pointer",
     "&:hover": {
       backgroundColor: "#a09fa2",
     },
@@ -186,7 +190,7 @@ export default function PantallaPrincipal() {
   const [tutorSi, setTutorSi] = useState(false);
   const [sede, setSede] = useState("QUILLACOLLO");
   function esValido() {
-    var esValido = true; 
+    var esValido = true;
     if (opcionPasos === 1) {
       if (nombre.campo === "") {
         esValido = false;
@@ -557,7 +561,6 @@ export default function PantallaPrincipal() {
         } else {
           if (opcionPasos + 1 == 3) {
             obtenerCursos();
-            obtenerDescuento();
             setOpcionPasos(opcionPasos + 1);
           } else {
             if (opcionPasos + 1 == 4) {
@@ -642,7 +645,6 @@ export default function PantallaPrincipal() {
     var codigoInscripcion = generarCodInscripcion();
     const hoy = new Date().toLocaleDateString();
     var precioTotal = sumar();
-    console.log(respuestaHuella)
     const estudiante = {
       CODESTUDIANTE: codigoEstudiante,
       CODINSCRIPCION: codigoInscripcion,
@@ -662,9 +664,9 @@ export default function PantallaPrincipal() {
       HABILITADO: "Habilitado",
       FECHAINSCRIPCION: hoy,
       COSTOINSCRIPCION: precioTotal,
-      SALDO:saldoTotal,
+      SALDO: saldoTotal,
       SEDE: sede,
-      HUELLA: respuestaHuella
+      HUELLA: respuestaHuella,
     };
     const tutor = {
       CODTUTOR: codigoTutor,
@@ -685,7 +687,6 @@ export default function PantallaPrincipal() {
         respuesta !== "Existe" ? codigoTutor : tutorSeleccionado.CODTUTOR,
     };
     axios.post(url + "agregarEstudiante", estudiante).then((response) => {
-      console.log(response.data)
       if (respuesta === "Existe") {
         agregarTodo(estudiante, EstudianteTutor);
       } else {
@@ -725,9 +726,9 @@ export default function PantallaPrincipal() {
     setListaCursosRes([]);
     setHorarios([]);
     setRespuesta("");
-    setRespuestaHuella("")
-    setSaldoTotal("")
-    setMontoPagado("")
+    setRespuestaHuella("");
+    setSaldoTotal("");
+    setMontoPagado("");
   }
   function generarCodInscripcion() {
     var codigo = "";
@@ -771,6 +772,10 @@ export default function PantallaPrincipal() {
   const [editEstudiante, setEditEstudiante] = useState(false);
   const [elegido, setElegido] = useState([]);
   const [buscar, setBuscar] = useState("");
+  const [generoFiltro, setGeneroFiltro] = useState("");
+  const [generoTutorFiltro, setGeneroTutorFiltro] = useState("");
+  const [relacionFiltro, setRelacionFiltro] = useState("");
+  const [colegioFiltro, setColegioFiltro] = useState("");
   const [buscarTutor, setBuscarTutor] = useState("");
   const [modalTutor, setModalTutor] = useState(false);
   const [modalAñadirCurso, setModalAñadirCurso] = useState(false);
@@ -778,6 +783,7 @@ export default function PantallaPrincipal() {
   const [modalAñadirTutor, setAñadirTutor] = useState(false);
   const [descuento, setDescuento] = useState("");
   const [modal, setModal] = useState(false);
+  const [listaCursosRes, setListaCursosRes] = useState([]);
 
   useEffect(() => {
     if (opcion === 2) {
@@ -807,7 +813,7 @@ export default function PantallaPrincipal() {
     if (opcion === 3 && seActualizo) {
       obtenerCursos();
     }
-    if (opcion === 1 && !modal) {
+    if (opcion === 1 && !modal && opcionPasos === 1) {
       if (respuesta === "Si") {
         setNombreTutor({ campo: "", valido: null });
         setApellidoTutor({ campo: "", valido: null });
@@ -829,6 +835,8 @@ export default function PantallaPrincipal() {
         setOpcionPasos(opcionPasos + 2);
         setTutorSi(true);
       }
+    }
+    if (opcion === 1 && !modal && opcionPasos === 3) {
       if (respuestaHuella === "SiVirtual") {
         if (esValido()) {
           setSeSubio(true);
@@ -841,7 +849,6 @@ export default function PantallaPrincipal() {
     }
     if (opcion === 1 && respuesta === "Existe") {
       obtenerCursos();
-      obtenerDescuento();
     }
   }, [
     editEstudiante,
@@ -851,12 +858,9 @@ export default function PantallaPrincipal() {
     modalAñadirTutor,
     modal,
   ]);
-  const [listaDescuento, setListaDescuento] = useState([]);
   const [ocultar, setOcultar] = useState("false");
-
   const [modalInformacion, setModalInformacion] = useState(false);
   const [tipo, setTipo] = useState("");
-
   const [habilitarHuella, setHabilitarHuella] = useState(false);
   const [huellaEscaneada, setHuellaEscaneada] = useState(false);
   const abrirExe = () => {
@@ -879,7 +883,6 @@ export default function PantallaPrincipal() {
       console.error("Error de red", error);
     }
   };
-
   const abrirExeVerificar = () => {
     try {
       setOpcion(0);
@@ -895,7 +898,6 @@ export default function PantallaPrincipal() {
   );
   const [escaneando, setEscaneando] = useState(false);
   let cantidad = 0;
-
   function calcularEdad(fecha) {
     const fechaNacimiento = new Date(fecha);
     const fechaActual = new Date();
@@ -924,7 +926,6 @@ export default function PantallaPrincipal() {
   const [rowPerPage, setRowPerPage] = useState(5);
   const [paginaTutor, setPaginaTutor] = useState(0);
   const [rowPerPageTutor, setRowPerPageTutor] = useState(5);
-
   const cambiarPagina = (event, newpage) => {
     setPagina(newpage);
   };
@@ -939,12 +940,28 @@ export default function PantallaPrincipal() {
     setRowPerPageTutor(+event.target.value);
     setPaginaTutor(0);
   };
-
+  const [fechaIniFiltroTutor, setFechaIniFiltroTutor] = useState("");
+  const [fechaFinFiltroTutor, setFechaFinFiltroTutor] = useState("");
   let listaResTutor = [];
-  if (!buscarTutor) {
+  if (
+    !buscarTutor &&
+    !generoTutorFiltro &&
+    !relacionFiltro &&
+    !fechaIniFiltroTutor &&
+    !fechaFinFiltroTutor
+  ) {
     listaResTutor = listaTutores;
   } else {
-    const searchWords = buscarTutor.trim().toLowerCase().split(" ");
+    const searchWords = (
+      buscarTutor +
+      " " +
+      generoTutorFiltro +
+      " " +
+      relacionFiltro
+    )
+      .trim()
+      .toLowerCase()
+      .split(" ");
     listaResTutor = listaTutores.filter((dato) => {
       const campos = [
         dato.NOMBRETUTOR,
@@ -952,18 +969,36 @@ export default function PantallaPrincipal() {
         dato.RELACION,
         dato.OCUPACION,
         dato.GENEROTUTOR,
+        dato.FECHANACIMIENTOTUTOR,
       ]
         .join(" ")
         .toLowerCase();
-      return searchWords.every((word) => campos.includes(word));
+      const fechaNacimiento = dato.FECHANACIMIENTOTUTOR;
+      const fechaDentroIntervalo =
+        (!fechaIniFiltroTutor || fechaNacimiento >= fechaIniFiltroTutor) &&
+        (!fechaFinFiltroTutor || fechaNacimiento <= fechaFinFiltroTutor);
+      return (
+        searchWords.every((word) => campos.includes(word)) &&
+        fechaDentroIntervalo
+      );
     });
   }
-
+  const [fechaIniFiltro, setFechaIniFiltro] = useState("");
+  const [fechaFinFiltro, setFechaFinFiltro] = useState("");
   let listaRes = [];
-  if (!buscar) {
+  if (
+    !buscar &&
+    !generoFiltro &&
+    !colegioFiltro &&
+    !fechaIniFiltro &&
+    !fechaFinFiltro
+  ) {
     listaRes = listaEstudiantes;
   } else {
-    const searchWords = buscar.trim().toLowerCase().split(" ");
+    const searchWords = (buscar + " " + generoFiltro + " " + colegioFiltro)
+      .trim()
+      .toLowerCase()
+      .split(" ");
     listaRes = listaEstudiantes.filter((dato) => {
       const campos = [
         dato.CODESTUDIANTE,
@@ -975,19 +1010,17 @@ export default function PantallaPrincipal() {
       ]
         .join(" ")
         .toLowerCase();
-      return searchWords.every((word) => campos.includes(word));
+      const fechaNacimiento = dato.FECHANACIMIENTOESTUDIANTE;
+      const fechaDentroIntervalo =
+        (!fechaIniFiltro || fechaNacimiento >= fechaIniFiltro) &&
+        (!fechaFinFiltro || fechaNacimiento <= fechaFinFiltro);
+      return (
+        searchWords.every((word) => campos.includes(word)) &&
+        fechaDentroIntervalo
+      );
     });
   }
-
-  const obtenerDescuento = () => {
-    axios.get(url + "obtenerDescuento").then((des) => {
-      setListaDescuento(des.data);
-    });
-  };
-  const [listaCursosRes, setListaCursosRes] = useState([]);
-
   const [precioConDescuento, setPrecioConDescuento] = useState(null);
-
   const handleDescuentoChange = (valor, porcentaje, cantidad) => {
     setDescuento(valor);
     setPrecio(
@@ -1015,29 +1048,87 @@ export default function PantallaPrincipal() {
   const [tutorSeleccionado, setTutorSeleccionado] = useState(null);
   const [registro, setRegistro] = useState("tutor");
   const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"];
-  const cursosPorHora = {};
+  const cursosPorHora = {
+    "12:00": [],
+    "13:00": [],
+    "14:00": [],
+    "15:00": [],
+    "16:00": [],
+    "17:00": [],
+    "18:00": [],
+  };
   horarios.forEach((horario) => {
-    if (!cursosPorHora[horario.HORA]) {
-      cursosPorHora[horario.HORA] = [];
+    const hora = horario.HORA.split(":").slice(0, 2).join(":");
+    if (!cursosPorHora.hasOwnProperty(hora)) {
+      cursosPorHora[hora] = [];
     }
-    cursosPorHora[horario.HORA].push({
-      dia: horario.DIA,
-      curso: horario.CURSO,
-      grupo: horario.GRUPO,
-    });
+    const cursosEnHoraYDia = cursosPorHora[hora].filter(
+      (c) => c.dia === horario.DIA
+    );
+    if (cursosEnHoraYDia.length > 0) {
+      const cursoExistente = cursosEnHoraYDia.find(
+        (c) => c.curso === horario.CURSO && c.grupo === horario.GRUPO
+      );
+      if (cursoExistente) {
+        cursoExistente.grupo = horario.GRUPO;
+      } else {
+        cursosPorHora[hora].push({
+          dia: horario.DIA,
+          curso: horario.CURSO,
+          grupo: horario.GRUPO,
+        });
+      }
+    } else {
+      cursosPorHora[hora].push({
+        dia: horario.DIA,
+        curso: horario.CURSO,
+        grupo: horario.GRUPO,
+      });
+    }
   });
   const filas = Object.entries(cursosPorHora).map(([hora, cursos]) => (
-    <TableRow className={classes.fila} key={hora}>
+    <TableRow key={hora}>
       <TableCell className={classes.texto}>{hora.slice(0, 5)}</TableCell>
       {diasSemana.map((dia) => (
         <TableCell className={classes.texto} key={dia}>
-          {/* Muestra todos los cursos para la misma hora y día */}
           {cursos
             .filter((curso) => curso.dia === dia)
             .map((curso, index) => (
-              <div key={index}>
+              <ContainerCurso
+                onClick={() => {
+                  console.log(listaCursosRes.length);
+                  const nuevoHorario = horarios.filter((horario) => {
+                    return (
+                      horario.CURSO !== curso.curso ||
+                      horario.GRUPO !== curso.grupo
+                    );
+                  });
+                  setHorarios(nuevoHorario);
+                  const cursoEncontrado = listaCursosRes.find((curs) => {
+                    return (
+                      curs.NOMBRECURSO === curso.curso &&
+                      curs.GRUPOCURSO === curso.grupo
+                    );
+                  });
+                  const nuevaLista = listaCursosRes.filter((curs) => {
+                    return !(
+                      curs.NOMBRECURSO === curso.curso &&
+                      curs.GRUPOCURSO === curso.grupo
+                    );
+                  });
+                  const nuevoSaldo = cursoEncontrado
+                    ? cursoEncontrado.SALDO
+                    : null;
+                  setSaldoTotal(saldoTotal - nuevoSaldo);
+                  setListaCursosRes((prev) => {
+                    return nuevaLista;
+                  });
+                  setCantidadCursos((prevCantidad) => prevCantidad - 1);
+                }}
+                key={index}
+              >
                 {curso.curso} {curso.grupo}
-              </div>
+              </ContainerCurso>
             ))}
         </TableCell>
       ))}
@@ -1045,7 +1136,11 @@ export default function PantallaPrincipal() {
   ));
   const [montoPagado, setMontoPagado] = useState("");
   const [saldoTotal, setSaldoTotal] = useState(0);
-  const [respuestaHuella,setRespuestaHuella] = useState()
+  const [respuestaHuella, setRespuestaHuella] = useState();
+  const [filtro, setFiltro] = useState(false);
+  const [tipoFiltro, setTipoFiltro] = useState("");
+  const [cantidadCursos, setCantidadCursos] = useState(0);
+  const [modalAgregar,setModalAgregar] = useState(false)
   return (
     <GlobalStyle>
       <Nav>
@@ -1472,6 +1567,9 @@ export default function PantallaPrincipal() {
                           </BoxCampo>
                           <BoxCampo saldo={"true"}>
                             <TextBox saldo={"true"}>
+                              Cantidad cursos: {cantidadCursos}
+                            </TextBox>
+                            <TextBox saldo={"true"}>
                               Saldo :{" "}
                               {precioConDescuento !== null
                                 ? isNaN(precioConDescuento - montoPagado)
@@ -1491,7 +1589,7 @@ export default function PantallaPrincipal() {
                                   )?.PRECIO - montoPagado}
                             </TextBox>
                             <TextBox saldo={"true"}>
-                              Saldo Total: {saldoTotal}
+                              Saldo total: {saldoTotal}
                             </TextBox>
                           </BoxCampo>
                           <BoxCampo boton={"true"}>
@@ -1528,18 +1626,20 @@ export default function PantallaPrincipal() {
                                       ...prevLista,
                                       cursoTemp,
                                     ]);
-                                  
-                                    // Almacena el estado actualizado en una variable
-                                    const updatedLista = [...listaCursosRes, cursoTemp];
-                                  
-                                    // Utiliza la función de callback para asegurar que estás utilizando el estado más reciente
+                                    const updatedLista = [
+                                      ...listaCursosRes,
+                                      cursoTemp,
+                                    ];
                                     setSaldoTotal(() => {
-                                      return updatedLista.reduce((total, curso) => total + parseFloat(curso.SALDO), 0);
+                                      return updatedLista.reduce(
+                                        (total, curso) =>
+                                          total + parseFloat(curso.SALDO),
+                                        0
+                                      );
                                     });
                                     axios
                                       .get(url + "obtenerHorario")
                                       .then((response) => {
-                                        // Asegúrate de que los datos estén en response.data
                                         setHorarios((prevHorarios) => [
                                           ...prevHorarios,
                                           ...response.data.filter(
@@ -1558,7 +1658,10 @@ export default function PantallaPrincipal() {
                                         setGrupo({ campo: "", valido: null });
                                         setDescuento("");
                                         setPrecioConDescuento(null);
-                                        setMontoPagado("")
+                                        setMontoPagado("");
+                                        setCantidadCursos(
+                                          (prevCantidad) => prevCantidad + 1
+                                        );
                                       });
                                   } else {
                                     toast(
@@ -1595,6 +1698,7 @@ export default function PantallaPrincipal() {
                                   </TableCell>
                                   {diasSemana.map((dia) => (
                                     <TableCell
+                                      align="center"
                                       className={classes.celdas}
                                       key={dia}
                                     >
@@ -1703,6 +1807,14 @@ export default function PantallaPrincipal() {
                               }}
                             />
                             <IconoBuscar icon={faSearch} />
+                            <IconoBuscar
+                              filtro={"true"}
+                              icon={faArrowDownWideShort}
+                              onClick={() => {
+                                setFiltro(!filtro);
+                                setTipoFiltro("Estudiante");
+                              }}
+                            />
                           </BoxCampo>
                         </ContainerTituloBusqueda>
                         <ContainerDatos>
@@ -1750,6 +1862,7 @@ export default function PantallaPrincipal() {
                                           tipo={setTipo}
                                           actualizo={setActualizo}
                                           cantidad={rowNum}
+                                          setAgregar = {setModalAgregar}
                                         />
                                       );
                                     })}
@@ -1760,7 +1873,7 @@ export default function PantallaPrincipal() {
                               rowsPerPageOptions={[5, 10, 15, 20]}
                               rowsPerPage={rowPerPage}
                               page={pagina}
-                              count={listaEstudiantes.length}
+                              count={listaRes.length}
                               component="div"
                               onPageChange={cambiarPagina}
                               onRowsPerPageChange={cambiarPerPage}
@@ -1803,6 +1916,14 @@ export default function PantallaPrincipal() {
                               }}
                             />
                             <IconoBuscar icon={faSearch} />
+                            <IconoBuscar
+                              filtro={"true"}
+                              icon={faArrowDownWideShort}
+                              onClick={() => {
+                                setFiltro(!filtro);
+                                setTipoFiltro("Tutor");
+                              }}
+                            />
                           </BoxCampo>
                         </ContainerTituloBusqueda>
                         <ContainerDatos>
@@ -1863,7 +1984,7 @@ export default function PantallaPrincipal() {
                               rowsPerPageOptions={[5, 10, 15, 20]}
                               rowsPerPage={rowPerPageTutor}
                               page={paginaTutor}
-                              count={listaTutores.length}
+                              count={listaResTutor.length}
                               component="div"
                               labelRowsPerPage="Filas por página:"
                               onPageChange={cambiarPaginaTutor}
@@ -2038,7 +2159,9 @@ export default function PantallaPrincipal() {
         ocultar={setOcultar}
         datos={elegido}
         tipo={tipo}
+        setTipo={setTipo}
         actualizo={setActualizo}
+        setDatos={setElegido}
       />
       <ModalAñadirCurso
         estado={modalAñadirCurso}
@@ -2058,13 +2181,49 @@ export default function PantallaPrincipal() {
         ocultar={setOcultar}
         respuesta={respuesta}
         setRespuesta={setRespuesta}
-        respuestaHuella= {respuestaHuella}
+        respuestaHuella={respuestaHuella}
         setRespuestaHuella={setRespuestaHuella}
         actualizo={setActualizo}
         tutorDatos={setTutorSeleccionado}
         tipo={registro}
         setTipo={setRegistro}
         data={listaCursosRespaldo}
+      />
+      <Filtro
+        estado={filtro}
+        cambiarEstado={setFiltro}
+        genero={tipoFiltro === "Estudiante" ? generoFiltro : generoTutorFiltro}
+        setGenero={
+          tipoFiltro === "Estudiante" ? setGeneroFiltro : setGeneroTutorFiltro
+        }
+        colegio={colegioFiltro}
+        setColegio={setColegioFiltro}
+        fechaIni={
+          tipoFiltro === "Estudiante" ? fechaIniFiltro : fechaIniFiltroTutor
+        }
+        setFechaIni={
+          tipoFiltro === "Estudiante"
+            ? setFechaIniFiltro
+            : setFechaIniFiltroTutor
+        }
+        fechaFin={
+          tipoFiltro === "Estudiante" ? fechaFinFiltro : fechaFinFiltroTutor
+        }
+        setFechaFin={
+          tipoFiltro === "Estudiante"
+            ? setFechaFinFiltro
+            : setFechaFinFiltroTutor
+        }
+        tipo={tipoFiltro}
+        relacion={relacionFiltro}
+        setRelacion={setRelacionFiltro}
+      />
+      <ModalAgregarEstudiante
+       estado={modalAgregar}
+       cambiarEstado={setModalAgregar}
+       ocultar={setOcultar}
+       datos={elegido}
+       sede={sede}
       />
     </GlobalStyle>
   );

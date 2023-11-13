@@ -517,7 +517,7 @@ export const InputBusqueda = styled.input`
   outline: none;
   border-radius: 25px;
   border: 2px solid #000000;
-  padding: 0 15px 0 16%;
+  padding: 0 16% 0 16%;
   font-size: 16px;
   border-bottom-width: 2px;
   transition: all 0.1s ease;
@@ -529,5 +529,22 @@ export const IconoBuscar = styled(FontAwesomeIcon)`
   bottom: 11px;
   top: 10px;
   font-size: 20px;
+  ${(props) =>
+    props.filtro === "true" &&
+    css`
+      left: 85%;
+      cursor: pointer;
+    `}
 `;
 export const BotonDescuento = styled.button``;
+
+export const ContainerCurso = styled.div`
+cursor: pointer;
+text-align: center;
+padding: 5px;
+  &:hover {
+    background: #a09fa2;
+    border-radius: 15px;
+    border: 1px solid black;
+  }
+`

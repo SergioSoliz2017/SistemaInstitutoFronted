@@ -55,7 +55,7 @@ export default function Modal({
   useEffect(() => {
     setListaCursos(data);
     if (respuesta === "Existe" && tipo === "tutor") {
-      axios.get(url + "obtenerTutores").then((response) => {
+      axios.get(url + "obtenerTutoresActivos").then((response) => {
         setListaTutores(response.data);
       });
     }
@@ -126,7 +126,7 @@ export default function Modal({
                           tutorDatos(selectedTutor); // Almacena todos los datos del tutor seleccionado
                         }}
                       >
-                        <option value="">Seleccione turno de colegio</option>
+                        <option value="">Seleccione tutor</option>
                         {listaTutores.map((tutor) => (
                           <option key={tutor.CODTUTOR} value={tutor.CODTUTOR}>
                             {tutor.NOMBRETUTOR} {tutor.APELLIDOTUTOR}

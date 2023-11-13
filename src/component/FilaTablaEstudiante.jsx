@@ -25,6 +25,7 @@ const styles = makeStyles({
   },
   fila: {
     borderBottom: "2px solid white",
+    cursor: "pointer",
     "&:hover": {
       backgroundColor: "#a09fa2",
     },
@@ -46,6 +47,7 @@ export default function FilaTabla({
   estudianteElegido,
   tipo,
   actualizo,
+  setAgregar,
 }) {
   const [hovered, setHovered] = useState(false);
   const classes = styles();
@@ -128,7 +130,13 @@ export default function FilaTabla({
             }
           />
         </ContainerImgIcon>
-        <ContainerImgIcon>
+        <ContainerImgIcon
+          onClick={() => {
+            setAgregar(true);
+            ocultar("true");
+            estudianteElegido(estudiante)
+          }}
+        >
           <ImgIcon tabla={"false"} icon={faAdd} />
         </ContainerImgIcon>
       </TableCell>

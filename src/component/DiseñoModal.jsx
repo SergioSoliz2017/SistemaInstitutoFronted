@@ -112,7 +112,6 @@ export const Icono = styled(FontAwesomeIcon)`
   transform: scale(5);
 `;
 export const BoxCampo = styled.div`
-
   margin: 25px 10px 0px 10px;
   width: 100%;
   position: relative;

@@ -23,6 +23,7 @@ const styles = makeStyles({
   },
   fila: {
     borderBottom: "2px solid white",
+    cursor:"pointer",
     "&:hover": {
       backgroundColor: "#a09fa2",
     },

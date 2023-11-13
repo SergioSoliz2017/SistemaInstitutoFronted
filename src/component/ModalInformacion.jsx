@@ -50,6 +50,7 @@ const styles = makeStyles({
   },
   fila: {
     borderBottom: "2px solid white",
+    cursor:"pointer",
     "&:hover": {
       backgroundColor: "#a09fa2",
     },
@@ -69,7 +70,9 @@ export default function ModalInformacion({
   datos,
   ocultar,
   tipo,
+  setTipo,
   actualizo,
+  setDatos,
 }) {
   function calcularEdad(fecha) {
     const fechaNacimiento = new Date(fecha);
@@ -153,6 +156,7 @@ export default function ModalInformacion({
     setDepartamento("");
     setPais("");
     setNombreTutor("");
+    setApellidoTutor("")
     setCelular("");
     setFechaNacimientoEstudiante("");
     setFechaNacimientoTutor("");
@@ -382,11 +386,11 @@ export default function ModalInformacion({
   ));
 
   const handleItemClick = (selectedItem) => {
-    console.log(selectedItem)
+    console.log(selectedItem);
     const selectedGroup = horarios.find(
       (grupo) => grupo.CURSOINSCRITO + " " + grupo.GRUPO === selectedItem
     );
-      console.log(selectedGroup)
+    console.log(selectedGroup);
     if (selectedGroup) {
       const { CODESTUDIANTE, CODCURSOINSCRITO } = selectedGroup;
       axios
@@ -396,9 +400,7 @@ export default function ModalInformacion({
         .then((response) => {
           setAsistencia(response.data);
           setOculto(true);
-          setGrupoAsistencia(
-            selectedItem
-          );
+          setGrupoAsistencia(selectedItem);
           setPresente(contarEstados(response.data, "Presente"));
           setFalta(contarEstados(response.data, "Falta"));
           setLicencia(contarEstados(response.data, "Licencia"));
@@ -686,7 +688,13 @@ export default function ModalInformacion({
                               {listaTutores.map((tutor) => {
                                 return (
                                   <>
-                                    <TableRow className={classes.fila}>
+                                    <TableRow
+                                      onClick={() => {
+                                        setDatos(tutor);
+                                        setTipo("Tutor");
+                                      }}
+                                      className={classes.fila}
+                                    >
                                       <TableCell className={classes.texto}>
                                         {tutor.NOMBRETUTOR +
                                           " " +
@@ -919,7 +927,7 @@ export default function ModalInformacion({
                         <Texto sub={"false"}>Celular:</Texto>
                         <TituloNombreEdit
                           value={celular.campo}
-                          placeholder="Colegio"
+                          placeholder="Celular"
                           onChange={(e) => {
                             setCelular({ ...celular, campo: e.target.value });
                           }}
@@ -959,7 +967,13 @@ export default function ModalInformacion({
                               {listaEstudiantes.map((estudiante) => {
                                 return (
                                   <>
-                                    <TableRow className={classes.fila}>
+                                    <TableRow
+                                      onClick={() => {
+                                        setDatos(estudiante);
+                                        setTipo("Estudiante");
+                                      }}
+                                      className={classes.fila}
+                                    >
                                       <TableCell className={classes.texto}>
                                         {estudiante.NOMBREESTUDIANTE +
                                           " " +

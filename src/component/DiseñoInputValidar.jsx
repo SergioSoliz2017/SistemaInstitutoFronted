@@ -11,13 +11,14 @@ export const BoxCampo = styled.div`
     css`
       margin: 0px 10px 5px 10px;
     `}
-    ${(props) =>
+  ${(props) =>
     props.saldo === "true" &&
     css`
-      margin: 15px 30px 5px 10px;
-      width: 100%;
+      margin: 15px 0px 5px 0px;
+      width: 90%;
       display: flex;
-      justify-content: end;
+      justify-content: center;
+      gap: 20%;
       position: relative;
     `}
   ${(props) =>
@@ -161,11 +162,10 @@ export const TextBox = styled.span`
     css`
       width: auto;
     `}
-    ${(props) =>
+  ${(props) =>
     props.saldo === "true" &&
     css`
-      margin-left: 80px;
-      margin-right: 80px;
+      width: 30%;
     `}
 `;
 export const Select = styled.select`
@@ -198,6 +198,4 @@ export const Select = styled.select`
       border: 3px solid red;
     `}
 `;
-export const IconoDescuento = styled(FontAwesomeIcon)`
-  
-`
+export const IconoDescuento = styled(FontAwesomeIcon)``;
