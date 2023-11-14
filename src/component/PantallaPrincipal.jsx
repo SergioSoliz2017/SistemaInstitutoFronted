@@ -1140,7 +1140,7 @@ export default function PantallaPrincipal() {
   const [filtro, setFiltro] = useState(false);
   const [tipoFiltro, setTipoFiltro] = useState("");
   const [cantidadCursos, setCantidadCursos] = useState(0);
-  const [modalAgregar,setModalAgregar] = useState(false)
+  const [modalAgregar, setModalAgregar] = useState(false);
   return (
     <GlobalStyle>
       <Nav>
@@ -1166,15 +1166,6 @@ export default function PantallaPrincipal() {
             seleccionado={opcion == 1 ? "true" : "false"}
           >
             <ImgIcon menu={"true"} icon={faFilePen} />
-            Registro de estudiantes
-          </BotonNav>
-          <BotonNav
-            onClick={() => {
-              setOpcion(5);
-            }}
-            seleccionado={opcion == 5 ? "true" : "false"}
-          >
-            <ImgIcon menu={"true"} icon={faFileExcel} />
             Registro de estudiantes
           </BotonNav>
           <BotonNav
@@ -1862,7 +1853,7 @@ export default function PantallaPrincipal() {
                                           tipo={setTipo}
                                           actualizo={setActualizo}
                                           cantidad={rowNum}
-                                          setAgregar = {setModalAgregar}
+                                          setAgregar={setModalAgregar}
                                         />
                                       );
                                     })}
@@ -2188,6 +2179,8 @@ export default function PantallaPrincipal() {
         tipo={registro}
         setTipo={setRegistro}
         data={listaCursosRespaldo}
+        relacion={relacion}
+        setRelacion={setRelacion}
       />
       <Filtro
         estado={filtro}
@@ -2219,12 +2212,21 @@ export default function PantallaPrincipal() {
         setRelacion={setRelacionFiltro}
       />
       <ModalAgregarEstudiante
-       estado={modalAgregar}
-       cambiarEstado={setModalAgregar}
-       ocultar={setOcultar}
-       datos={elegido}
-       sede={sede}
+        estado={modalAgregar}
+        cambiarEstado={setModalAgregar}
+        ocultar={setOcultar}
+        datos={elegido}
+        sede={sede}
       />
     </GlobalStyle>
   );
 }
+/*<BotonNav
+            onClick={() => {
+              setOpcion(5);
+            }}
+            seleccionado={opcion == 5 ? "true" : "false"}
+          >
+            <ImgIcon menu={"true"} icon={faFileExcel} />
+            Registro de estudiantes
+          </BotonNav>*/
