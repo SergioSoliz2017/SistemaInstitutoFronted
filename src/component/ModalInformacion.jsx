@@ -246,7 +246,7 @@ export default function ModalInformacion({
       }
       if (opcion === 1) {
         axios
-          .get(url + "obtenerTutores/" + datos.CODESTUDIANTE)
+          .get(url + "obtenerTutoresEstudiante/" + datos.CODESTUDIANTE)
           .then((response) => {
             setListaTutores(response.data);
           });
@@ -299,7 +299,7 @@ export default function ModalInformacion({
               });
         }
         axios
-          .get(url + "obtenerEstudiantes/" + datos.CODTUTOR)
+          .get(url + "obtenerEstudiantesTutor/" + datos.CODTUTOR)
           .then((response) => {
             setListaEstudiantes(response.data);
           });
@@ -365,7 +365,7 @@ export default function ModalInformacion({
     }
     cursosPorHora[horario.HORA].push({
       dia: horario.DIA,
-      curso: horario.CURSOINSCRITO + " " + horario.GRUPO,
+      curso: horario.NOMBREGRUPO,
     });
   });
 
@@ -386,16 +386,15 @@ export default function ModalInformacion({
   ));
 
   const handleItemClick = (selectedItem) => {
-    console.log(selectedItem);
     const selectedGroup = horarios.find(
-      (grupo) => grupo.CURSOINSCRITO + " " + grupo.GRUPO === selectedItem
+      (grupo) =>grupo.NOMBREGRUPO === selectedItem 
     );
     console.log(selectedGroup);
     if (selectedGroup) {
-      const { CODESTUDIANTE, CODCURSOINSCRITO } = selectedGroup;
+      const { CODESTUDIANTE, CODCURSOINSCRITO , CODGRUPOINSCRITO} = selectedGroup;
       axios
         .get(
-          url + "obtenerAsistencia/" + CODESTUDIANTE + "/" + CODCURSOINSCRITO
+          url + "obtenerAsistencia/" + CODESTUDIANTE + "/" + CODCURSOINSCRITO + "/" + CODGRUPOINSCRITO
         )
         .then((response) => {
           setAsistencia(response.data);
@@ -701,7 +700,7 @@ export default function ModalInformacion({
                                           tutor.APELLIDOTUTOR}{" "}
                                       </TableCell>
                                       <TableCell className={classes.texto}>
-                                        {tutor.RELACION}{" "}
+                                        {tutor.pivot.RELACION}{" "}
                                       </TableCell>
                                       <TableCell className={classes.texto}>
                                         {tutor.CELULARTUTOR}
@@ -727,7 +726,7 @@ export default function ModalInformacion({
                                 new Set(
                                   horarios.map(
                                     (grupo) =>
-                                      grupo.CURSOINSCRITO + " " + grupo.GRUPO
+                                      grupo.NOMBREGRUPO
                                   )
                                 )
                               ).map((item, index) => (

@@ -16,6 +16,8 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { useHistory } from "react-router";
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
+import { url } from "./VariableEntornos";
+import axios from "axios";
 
 export default function Inicio() {
   const [id, setId] = useState("");
@@ -23,51 +25,43 @@ export default function Inicio() {
   const historial = useHistory();
   function ingresar() {
     if (EsValido()) {
-      if (id === "123") {
-        if (contraseña === "123") {
-          toast.success("Inicio Correcto", {
-            duration: 9000,
-            style: {
-              border: "2px solid #000",
-              padding: "10px",
-              color: "#000",
-              background: "#d6d6d6",
-              borderRadius: "20px",
-              fontFamily: "bold",
-              fontWeight: "1000",
-            },
-          });
-          historial.push("/home/" + id);
-        } else {
-          toast("Contraseña Incorrecta", {
-            icon: "⚠️",
-            duration: 3000,
-            style: {
-              border: "2px solid #000",
-              padding: "10px",
-              color: "#000",
-              background: "#d6d6d6",
-              borderRadius: "20px",
-              fontFamily: "bold",
-              fontWeight: "1000",
-            },
-          });
-        }
-      } else {
-        toast("ID Incorrecto", {
-          icon: "⚠️",
-          duration: 3000,
-          style: {
-            border: "2px solid #000",
-            padding: "10px",
-            color: "#000",
-            background: "#d6d6d6",
-            borderRadius: "20px",
-            fontFamily: "bold",
-            fontWeight: "1000",
-          },
+      axios
+        .post(url + "iniciarSesion", { codigo: id, contraseña: contraseña })
+        .then((response) => {
+          if (response.data === "Correcto") {
+            historial.push("/home/" + id);
+          } else {
+            if (response.data === "Incorrecto") {
+              toast("Contraseña Incorrecta", {
+                icon: "⚠️",
+                duration: 3000,
+                style: {
+                  border: "2px solid #000",
+                  padding: "10px",
+                  color: "#000",
+                  background: "#d6d6d6",
+                  borderRadius: "20px",
+                  fontFamily: "bold",
+                  fontWeight: "1000",
+                },
+              });
+            } else {
+              toast("ID Incorrecto", {
+                icon: "⚠️",
+                duration: 3000,
+                style: {
+                  border: "2px solid #000",
+                  padding: "10px",
+                  color: "#000",
+                  background: "#d6d6d6",
+                  borderRadius: "20px",
+                  fontFamily: "bold",
+                  fontWeight: "1000",
+                },
+              });
+            }
+          }
         });
-      }
     }
   }
 

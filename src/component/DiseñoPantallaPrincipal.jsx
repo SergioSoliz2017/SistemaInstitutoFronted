@@ -27,6 +27,7 @@ export const ImagenLogo = styled.img`
 `;
 export const ContainerBotonNav = styled.div`
   width: 100%;
+  height: 74.7vh;
   margin-top: 30%;
   display: flex;
   flex-direction: column;
@@ -63,6 +64,7 @@ export const BotonNav = styled.button`
   cursor: pointer;
   border-radius: 20px;
   padding: 10px;
+  
   &:hover {
     color: #d6d6d6;
     background: black;
@@ -73,6 +75,41 @@ export const BotonNav = styled.button`
       color: #d6d6d6;
       background: black;
       border: 1px solid #d6d6d6;
+    `}
+    ${(props) =>
+    props.cerrar === "true" &&
+    css`
+      position: absolute;
+      bottom: 0px;
+    `}
+`;
+export const BotonNavSelect = styled.select`
+  width: 70%;
+  margin-left: 10px;
+  margin-bottom: 15px;
+  border: none;
+  text-align: start;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 20px;
+  padding: 10px;
+  
+  &:hover {
+    color: #d6d6d6;
+    background: black;
+  }
+  ${(props) =>
+    props.seleccionado === "true" &&
+    css`
+      color: #d6d6d6;
+      background: black;
+      border: 1px solid #d6d6d6;
+    `}
+    ${(props) =>
+    props.cerrar === "true" &&
+    css`
+      position: absolute;
+      bottom: 0px;
     `}
 `;
 export const ContainerImagenCentro = styled.div`

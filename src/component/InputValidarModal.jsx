@@ -17,6 +17,7 @@ export default function InputValidar({
   placeholder,
   name,
   expresionRegular,
+  opcional,
 }) {
   function calcularEdad(fecha_nacimiento) {
     var hoy = new Date();
@@ -31,11 +32,25 @@ export default function InputValidar({
 
   const validacion = () => {
     if (tipo != "date") {
-      if (expresionRegular) {
-        if (expresionRegular.test(estado.campo)) {
-          cambiarEstado({ ...estado, valido: "true" });
-        } else {
-          cambiarEstado({ ...estado, valido: "false" });
+      if (!opcional) {
+        if (expresionRegular) {
+          if (expresionRegular.test(estado.campo)) {
+            cambiarEstado({ ...estado, valido: "true" });
+          } else {
+            cambiarEstado({ ...estado, valido: "false" });
+          }
+        }
+      }else{
+        if (expresionRegular && estado.campo != "") {
+          if (expresionRegular.test(estado.campo)) {
+            cambiarEstado({ ...estado, valido: "true" });
+          } else {
+            cambiarEstado({ ...estado, valido: "false" });
+          }
+        }else{
+          if (estado.campo === ""){
+            cambiarEstado({ ...estado, valido: null });
+          }
         }
       }
     } else {

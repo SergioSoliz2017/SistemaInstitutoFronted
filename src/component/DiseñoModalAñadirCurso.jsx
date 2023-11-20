@@ -15,8 +15,8 @@ export const Overlay = styled.div`
 `;
 export const ContenedorModal = styled.div`
   transition: all 2s ease-in-out;
-  width: 55%;
-  height: 93%;
+  width: 30%;
+  height: 40%;
   min-height: 100px;
   background: #d6d6d6;
   position: relative;
@@ -24,6 +24,17 @@ export const ContenedorModal = styled.div`
   box-shadow: rgba(100, 100, 111, 0.2) 8px 7px 29px 8px;
   padding: 30px;
   top: 10px;
+  ${(props) =>
+    props.tipo === "sede" &&
+    css`
+      height: 50%;
+    `}
+  ${(props) =>
+    props.tipo === "trabajador" &&
+    css`
+      height: 85%;
+      width: 35%;
+    `}
 `;
 export const EncabezadoModal = styled.div`
   display: flex;
@@ -74,7 +85,6 @@ export const DetalleUsuario = styled.div`
 export const BoxCampo = styled.div`
   margin: 00px 10px 5px 10px;
   position: relative;
-  z-index: 90;
   height: 75px;
   width: 15%;
   ${(props) =>
@@ -84,6 +94,14 @@ export const BoxCampo = styled.div`
       width: calc(31% - 20px);
       position: relative;
       z-index: 90;
+      height: 75px;
+    `}
+  ${(props) =>
+    props.campo === "sede" &&
+    css`
+      margin: 00px 10px 5px 10px;
+      width: 70%;
+      position: relative;
       height: 75px;
     `}
 `;
@@ -123,7 +141,6 @@ export const ContainerBoton = styled.div`
   justify-content: center;
 `;
 export const BotonGuardar = styled.button`
-  width: 15%;
   height: 100%;
   border-radius: 25px;
   background: black;
@@ -142,6 +159,9 @@ export const MultiSelect = styled(Multiselect)`
   color: black;
   margin-top: 5px;
   border-radius: 5px;
+  z-index: 200;
+  z-index: 150;
   border: 2px solid #000000;
   background: white;
+  ${(props) => props.sede === "true" && css``}
 `;

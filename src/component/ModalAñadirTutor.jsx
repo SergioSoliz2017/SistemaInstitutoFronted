@@ -34,7 +34,10 @@ export default function ModalAñadirTutor({
     campo: "",
     valido: null,
   });
-  const [generoTutor, setGeneroTutor] = useState("");
+  const [generoTutor, setGeneroTutor] = useState({
+    campo: "",
+    valido: null,
+  });
   const [celularTutor, setCelularTutor] = useState({ campo: "", valido: null });
   const [correoTutor, setCorreoTutor] = useState({ campo: "", valido: null });
   const [ocupacionTutor, setOcupacionTutor] = useState({
@@ -186,40 +189,6 @@ export default function ModalAñadirTutor({
         });
       }
     }
-    if (celularTutor.campo == "") {
-      esValido = false;
-      setCelularTutor({ ...celularTutor, valido: "false" });
-      toast("Ingresar celular del tutor", {
-        icon: "⚠️",
-        duration: 3000,
-        style: {
-          border: "2px solid #000",
-          padding: "10px",
-          color: "#000",
-          background: "#d6d6d6",
-          borderRadius: "20px",
-          fontFamily: "bold",
-          fontWeight: "1000",
-        },
-      });
-    } else {
-      if (celularTutor.valido == "false") {
-        esValido = false;
-        toast("Celular del tutor invalido", {
-          icon: "⚠️",
-          duration: 3000,
-          style: {
-            border: "2px solid #000",
-            padding: "10px",
-            color: "#000",
-            background: "#d6d6d6",
-            borderRadius: "20px",
-            fontFamily: "bold",
-            fontWeight: "1000",
-          },
-        });
-      }
-    }
     if (correoTutor.campo == "") {
       esValido = false;
       setCorreoTutor({ ...correoTutor, valido: "false" });
@@ -256,6 +225,7 @@ export default function ModalAñadirTutor({
     }
     if (generoTutor.campo == "") {
       esValido = false;
+      setGeneroTutor({ ...generoTutor, valido: "false" });
       toast("Ingresar genero del tutor", {
         icon: "⚠️",
         duration: 3000,
@@ -272,6 +242,7 @@ export default function ModalAñadirTutor({
     }
     if (relacion.campo == "") {
       esValido = false;
+      setRelacion({ ...relacion, valido: "false" });
       toast("Selecciones relacion", {
         icon: "⚠️",
         duration: 3000,
@@ -288,6 +259,7 @@ export default function ModalAñadirTutor({
     }
     if (estudiante.campo == "") {
       esValido = false;
+      setEstudiante({ ...estudiante, valido: "false" });
       toast("Seleccione estudiante", {
         icon: "⚠️",
         duration: 3000,
@@ -316,13 +288,12 @@ export default function ModalAñadirTutor({
         GENEROTUTOR: generoTutor.campo,
         OCUPACION: ocupacionTutor.campo,
         CORREO: correoTutor.campo,
-        RELACION: relacion.campo,
         ESTADO: "Activo",
       };
-      console.table(tutor)
       const EstudianteTutor = {
         estudiante_id: estudiante.campo,
         tutor_id: codigoTutor,
+        relacion:  relacion.campo,
       };
       alerta
         .fire({
@@ -419,6 +390,7 @@ export default function ModalAñadirTutor({
                 name="CelularTutor"
                 expresionRegular={expresiones.telefono}
                 crear={"true"}
+                opcional={true}
               />
               <InputValidar
                 estado={correoTutor}
@@ -439,6 +411,7 @@ export default function ModalAñadirTutor({
                 name="ocupacionTutor"
                 expresionRegular={expresiones.nombre}
                 crear={"true"}
+                opcional={true}
               />
               <SelectInput
                 estado={relacion}

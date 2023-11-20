@@ -91,14 +91,14 @@ export default function ModalAgregarEstudiante({
   ];
   const [paso, setPaso] = useState(1);
   useEffect(() => {
-    if (paso === 1) {
+    if (paso === 1 && estado) {
       axios
         .get(url + "obtenerTutores/" + datos.CODESTUDIANTE)
         .then((response) => {
           setListaTutores(response.data);
         });
     }
-    if (paso === 2) {
+    if (paso === 2 && estado) {
       axios.get(url + "obtenerCursos").then((response) => {
         setListaCursos(response.data);
       });
@@ -274,20 +274,7 @@ export default function ModalAgregarEstudiante({
                         ))}
                       </Select>
                     </BoxCampo>
-                    <BoxCampo>
-                      <TextBox>Relacion</TextBox>
-                      <Select
-                        value={relacion}
-                        onChange={(e) => {
-                          setRelacion(e.target.value);
-                        }}
-                      >
-                        <option value="">Seleccione relacion</option>
-                        {listaRelacion.map((datos) => {
-                          return <option value={datos}>{datos}</option>;
-                        })}
-                      </Select>
-                    </BoxCampo>
+                    
                   </ContainerBoton>
                   <ContainerBoton>
                     <BotonSiguiente
@@ -535,3 +522,17 @@ export default function ModalAgregarEstudiante({
     </>
   );
 }
+/*<BoxCampo>
+                      <TextBox>Relacion</TextBox>
+                      <Select
+                        value={relacion}
+                        onChange={(e) => {
+                          setRelacion(e.target.value);
+                        }}
+                      >
+                        <option value="">Seleccione relacion</option>
+                        {listaRelacion.map((datos) => {
+                          return <option value={datos}>{datos}</option>;
+                        })}
+                      </Select>
+                    </BoxCampo> */

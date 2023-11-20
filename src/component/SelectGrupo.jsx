@@ -3,22 +3,25 @@ import { BoxCampo, TextBox, Select } from "./DiseñoInputValidar";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
-import { url
- } from "./VariableEntornos";
+import { url } from "./VariableEntornos";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 export default function SelectGrupo({
   estado,
   cambiarEstado,
   label,
   name,
   dato,
-  sub
+  sub,
+  sede,
 }) {
   const [listaGrupos, setListaGrupos] = useState([]);
 
   useEffect(() => {
     if (dato !== "") {
-      axios.get(url + "obtenerGrupo/" + dato).then((grupo) => {
+      axios.get(url + "obtenerGrupoLimite/" + dato + "/" + sede).then((grupo) => {
         setListaGrupos(grupo.data);
+        console.log(grupo.data)
       });
     }
   }, [dato]);
@@ -38,15 +41,29 @@ export default function SelectGrupo({
         value={estado.campo}
         valido={estado.valido}
         onChange={(e) => {
-          cambiarEstado({ ...estado, campo: e.target.value });
+          const precio =
+            listaGrupos.find((grupo) => grupo.CODGRUPO === e.target.value)
+              ?.PRECIO || "";
+          const texto = listaGrupos.find((grupo) => grupo.CODGRUPO === e.target.value)
+          ?.NOMBREGRUPO || "";
+          cambiarEstado({
+            ...estado,
+            campo: e.target.value,
+            precio: precio,
+            texto : texto
+          });
         }}
         onKeyUp={validacion}
         onBlur={validacion}
       >
         <option value="">Seleccionar Grupo</option>
         {listaGrupos.map((grupo) => {
-          return <option value={grupo.NOMBREGRUPO}>{grupo.NOMBREGRUPO}</option>;
-        })}
+  return (
+    <option key={grupo.CODGRUPO} value={grupo.CODGRUPO}>
+      {grupo.NOMBREGRUPO} {grupo.LIMITE === "HAY" ? "✅" : grupo.LIMITE === "⚠️" ? "E" : "❌"}
+    </option>
+  );
+})}
       </Select>
     </BoxCampo>
   );

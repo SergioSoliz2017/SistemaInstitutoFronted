@@ -15,7 +15,7 @@ export const Overlay = styled.div`
 `;
 export const ContenedorModal = styled.div`
   transition: all 1s ease-in-out;
-  width: 30%;
+  width: 50%;
   height: 65%;
   min-height: 100px;
   background: #d6d6d6;
@@ -28,7 +28,7 @@ export const ContenedorModal = styled.div`
     props.añadir === "true" &&
     css`
       width: 50%;
-      height: 30%;
+      height: 65%;
     `}
 `;
 export const EncabezadoModal = styled.div`
@@ -76,11 +76,11 @@ export const DetalleUsuario = styled.div`
   height: 80%;
   justify-content: center;
 `;
-export const ContainerTabla = styled.div `
-          width: 90%;
-          height: 90%;
-          overflow-y: auto;
-`
+export const ContainerTabla = styled.div`
+  width: 90%;
+  height: 100%;
+  overflow-y: auto;
+`;
 export const ContainerImgIcon = styled.div`
   display: flex;
   justify-content: center;
@@ -120,8 +120,8 @@ export const BotonAñadir = styled.button`
   position: absolute;
   bottom: 18px;
   right: 20px;
-  height: 30px;
-  width: 30px;
+  height: 50px;
+  width: 50px;
   border: none;
   background: none;
   cursor: pointer;
@@ -141,16 +141,28 @@ export const TextBox = styled.span`
 export const BoxCampo = styled.div`
   margin: 00px 10px 5px 10px;
   position: relative;
-  z-index: 90;
   width: 15%;
-  height: 75px;
-  
+  ${(props) =>
+    props.campo === "true" &&
+    css`
+      margin: 00px 10px 5px 10px;
+      width: calc(45% - 20px);
+      position: relative;
+      z-index: 90;
+    `}
+  ${(props) =>
+    props.boton === "true" &&
+    css`
+      margin: 20px 10px 0px 10px;
+      width: 100%;
+      position: relative;
+      height: 45px;
+      display: flex;
+      justify-content: center;
+    `}
 `;
 export const BotonGrupo = styled.button`
-  height: 45px;
-  margin-top: 29px;
-  width: 100%;
-  width: 100%;
+  width: 40%;
   outline: none;
   border-radius: 15px;
   border: 2px solid #000000;
@@ -158,8 +170,38 @@ export const BotonGrupo = styled.button`
     border: 2px solid black;
     outline: none;
     background: #000000;
-    color: #d6d6d6;  
+    color: #d6d6d6;
     border: 2px solid #d6d6d6;
     box-shadow: 3px 0px 30px rgba(163, 163, 163, 0.4);
   }
+`;
+export const Select = styled.select`
+  height: 45px;
+  width: 100%;
+  font-family: bold;
+  outline: none;
+  border-radius: 5px;
+  border: 2px solid #3b256a;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: 18px;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+
+  &:focus {
+    border: 2px solid black;
+    outline: none;
+    box-shadow: 3px 0px 30px rgba(163, 163, 163, 0.4);
+  }
+
+  ${(props) =>
+    props.valido === "true" &&
+    css`
+      border: 3px solid green;
+    `}
+  ${(props) =>
+    props.valido === "false" &&
+    css`
+      border: 3px solid red;
+    `}
 `;

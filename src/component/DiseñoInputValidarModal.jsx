@@ -5,8 +5,17 @@ export const BoxCampo = styled.div`
   margin: 00px 10px 5px 10px;
   width: calc(31% - 20px);
   position: relative;
-  z-index: 90;
   height: 75px;
+  ${(props) =>
+    props.tipo === "Rol:" &&
+    css`
+      width: 70%;
+    `}
+    ${(props) =>
+    props.tipo === "Sede:" &&
+    css`
+      width: 70%;
+    `}
 `;
 export const IconoValidacion = styled(FontAwesomeIcon)`
   position: absolute;
@@ -95,7 +104,6 @@ export const Select = styled.select`
   font-size: 18px;
   border-bottom-width: 2px;
   transition: all 0.3s ease;
-
   &:focus {
     border: 2px solid black;
     outline: none;
@@ -111,5 +119,15 @@ export const Select = styled.select`
     props.valido === "false" &&
     css`
       border: 3px solid red;
+    `}
+    ${(props) =>
+    props.tipo === "Rol:" &&
+    css`
+      width: 100%;
+    `}
+    ${(props) =>
+    props.tipo === "Sede:" &&
+    css`
+      width: 100%;
     `}
 `;

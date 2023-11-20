@@ -11,6 +11,7 @@ import {
   EncabezadoModal,
   ImgIcon,
   Overlay,
+  Select,
   TextBox,
   Titulo,
 } from "./DiseñoModalVerGrupo";
@@ -29,12 +30,14 @@ import axios from "axios";
 import { url } from "./VariableEntornos";
 import { useState } from "react";
 import InputValidar from "./InputValidarModal";
+import { MultiSelect } from "./DiseñoModalAñadirCurso";
 
 export default function ModalVerGrupo({
   estado,
   cambiarEstado,
   datos,
   ocultar,
+  sede,
 }) {
   const [listaGrupos, setListaGrupos] = useState([]);
   const [actualizo, setActualizo] = useState(false);
@@ -52,35 +55,66 @@ export default function ModalVerGrupo({
   var cantidad = 0;
   useEffect(() => {
     if (estado) {
-      axios.get(url + "obtenerGrupo/" + datos.CODCURSO).then((resp) => {
-        setListaGrupos(resp.data);
-        setActualizo(false);
-      });
+      axios
+        .get(url + "obtenerGrupo/" + datos.CODCURSO + "/" + sede)
+        .then((resp) => {
+          setListaGrupos(resp.data);
+          setActualizo(false);
+        });
     }
   }, [actualizo, datos]);
 
   const agregarGrupo = () => {
+    var fechaActual = new Date();
+    var añoActual = fechaActual.getFullYear();
+    var codigoGrupo = añoActual + grupo.campo.replace(/\s/g, ''); 
     const grupoNuevo = {
-      CODSEDE: datos.CODSEDE,
+      CODSEDE: sede,
       CODCURSO: datos.CODCURSO,
-      CANTIDADMAXIMA: parseInt(cantidadGrupo.campo),
+      LIMITE: parseInt(cantidadGrupo.campo),
       NOMBREGRUPO: grupo.campo,
-    };
+      CODGRUPO: codigoGrupo.toUpperCase(),
+      PRECIO: parseFloat(precio.campo),
+      HORA: hora.campo,
+      DIAS: diaSelec,
+    };    
     axios.post(url + "agregarGrupo", grupoNuevo).then((response) => {
       setAñadirGrupo("false");
       setGrupo("");
+      setPrecio("");
+      setHora("")
       setCantidadGrupo("");
       setActualizo(true);
     });
   };
-
+  const [precio, setPrecio] = useState({ campo: "", valido: null });
+  const [diaSelec, setDiaSelec] = useState([]);
+  const [hora, setHora] = useState("");
+  const horas = [
+    "06:00",
+    "07:00",
+    "08:00",
+    "09:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+    "18:00",
+    "19:00",
+    "20:00",
+    "21:00",
+  ];
   return (
     <>
       {estado && (
         <Overlay>
           <ContenedorModal añadir={añadirGrupo}>
             <EncabezadoModal>
-              <Titulo>{"CURSO DE " + datos.CURSO.toUpperCase()}</Titulo>
+              <Titulo>{"MATERIA DE " + datos.CURSO.toUpperCase()}</Titulo>
             </EncabezadoModal>
             <BotonCerrar
               onClick={() => {
@@ -102,6 +136,8 @@ export default function ModalVerGrupo({
                       <TableRow>
                         <TableCell>Nº</TableCell>
                         <TableCell>Curso</TableCell>
+                        <TableCell>Precio</TableCell>
+                        <TableCell>Sede</TableCell>
                         <TableCell align="center">Eliminar</TableCell>
                       </TableRow>
                     </TableHead>
@@ -111,6 +147,8 @@ export default function ModalVerGrupo({
                           <TableRow>
                             <TableCell>{(cantidad = cantidad + 1)}</TableCell>
                             <TableCell>{grupo.NOMBREGRUPO}</TableCell>
+                            <TableCell align="center">{grupo.PRECIO}</TableCell>
+                            <TableCell>{grupo.CODSEDE}</TableCell>
                             <TableCell>
                               <ContainerImgIcon
                                 onClick={() => {
@@ -141,7 +179,7 @@ export default function ModalVerGrupo({
                                         const grupoEliminar = {
                                           CODSEDE: grupo.CODSEDE,
                                           CODCURSO: grupo.CODCURSO,
-                                          NOMBREGRUPO: grupo.NOMBREGRUPO,
+                                          CODGRUPO: grupo.CODGRUPO,
                                         };
                                         axios
                                           .delete(url + "eliminarGrupo", {
@@ -184,6 +222,15 @@ export default function ModalVerGrupo({
                   expresionRegular={expresiones.letra}
                 />
                 <InputValidar
+                  estado={precio}
+                  cambiarEstado={setPrecio}
+                  tipo="number"
+                  label="Precio:"
+                  placeholder="Precio"
+                  name="precio"
+                  expresionRegular={expresiones.numero}
+                />
+                <InputValidar
                   estado={cantidadGrupo}
                   cambiarEstado={setCantidadGrupo}
                   tipo="number"
@@ -192,7 +239,42 @@ export default function ModalVerGrupo({
                   name="Cantidad"
                   expresionRegular={expresiones.numero}
                 />
-                <BoxCampo>
+                <BoxCampo campo={"true"}>
+                  <TextBox>Dias:</TextBox>
+                  <MultiSelect
+                    options={[
+                      "Lunes",
+                      "Martes",
+                      "Miercoles",
+                      "Jueves",
+                      "Viernes",
+                    ]}
+                    isObject={false}
+                    placeholder="Seleccionar dias"
+                    onRemove={(event) => {
+                      setDiaSelec(event);
+                    }}
+                    onSelect={(event) => {
+                      setDiaSelec(event);
+                    }}
+                  />
+                </BoxCampo>
+                <BoxCampo campo={"true"}>
+                  <TextBox>Hora</TextBox>
+                  <Select
+                    value={hora.campo}
+                    valido={hora.valido}
+                    onChange={(e) => {
+                      setHora({ ...hora, campo: e.target.value });
+                    }}
+                  >
+                    <option value="">Seleccione Hora</option>
+                    {horas.map((hor) => {
+                      return <option value={hor}>{hor}</option>;
+                    })}
+                  </Select>
+                </BoxCampo>
+                <BoxCampo boton={"true"}>
                   <BotonGrupo onClick={agregarGrupo}>Añadir</BotonGrupo>
                 </BoxCampo>
               </DetalleUsuario>

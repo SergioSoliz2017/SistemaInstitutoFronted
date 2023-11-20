@@ -1,10 +1,17 @@
 import React from "react";
-import {url} from "./VariableEntornos"
+import { url } from "./VariableEntornos";
 import { BoxCampo, TextBox, Select } from "./DiseñoInputValidarModal";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
-export default function InputValidar({ estado, cambiarEstado, label, name ,obtener}) {
+export default function InputValidar({
+  estado,
+  cambiarEstado,
+  label,
+  name,
+  obtener,
+  sede,rol
+}) {
   const validacion = () => {
     if (estado.campo != "") {
       cambiarEstado({ ...estado, valido: "true" });
@@ -16,23 +23,50 @@ export default function InputValidar({ estado, cambiarEstado, label, name ,obten
 
   const [listaEstudiantes, setListaEstudiantes] = useState([]);
   useEffect(() => {
-    if(obtener){
+    if (obtener) {
       axios.get(url + "obtenerEstudiantes").then((datos) => {
-      setListaEstudiantes(datos.data);
-    });
+        setListaEstudiantes(datos.data);
+      });
     }
-    
+    if(sede){
+      axios.get(url + "obtenerSedes").then((datos) => {
+        setListaSedes(datos.data);
+      });
+    }
   }, []);
 
-  const listaRelacion = ["Padre","Madre","Tio","Tia","Abuelo","Abuela","Tutor legar"]
+  const listaRol = rol === "Director" ? ["Gerente", "Secretaria","Maestro"] : ["Secretaria","Maestro"];
+  const listaRelacion = [
+    "Padre",
+    "Madre",
+    "Tio",
+    "Tia",
+    "Abuelo",
+    "Abuela",
+    "Tutor legar",
+  ];
   const listTipoColegio = ["Fiscal", "Convenio", "Particular"];
+  const [listaSedes,setListaSedes] = useState([])
   const listTurno = ["Mañana", "Tarde", "Noche"];
-  const listCurso = ["1° Primaria", "2° Primaria","3° Primaria","4° Primaria","5° Primaria","6° Primaria",
-   "1° Secundaria","2° Secundaria","3° Secundaria","4° Secundaria","5° Secundaria","6° Secundaria"];
+  const listCurso = [
+    "1° Primaria",
+    "2° Primaria",
+    "3° Primaria",
+    "4° Primaria",
+    "5° Primaria",
+    "6° Primaria",
+    "1° Secundaria",
+    "2° Secundaria",
+    "3° Secundaria",
+    "4° Secundaria",
+    "5° Secundaria",
+    "6° Secundaria",
+  ];
   return (
-    <BoxCampo>
+    <BoxCampo tipo={label}>
       <TextBox>{label}</TextBox>
       <Select
+        tipo={label}
         id={name}
         value={estado.campo}
         valido={estado.valido}
@@ -46,11 +80,7 @@ export default function InputValidar({ estado, cambiarEstado, label, name ,obten
           <>
             <option value="">Seleccione turno de colegio</option>
             {listTurno.map((datos) => {
-              return (
-                <option value={datos}>
-                  {datos}
-                </option>
-              );
+              return <option value={datos}>{datos}</option>;
             })}
           </>
         )}
@@ -58,11 +88,7 @@ export default function InputValidar({ estado, cambiarEstado, label, name ,obten
           <>
             <option value="">Seleccione curso</option>
             {listCurso.map((datos) => {
-              return (
-                <option value={datos}>
-                  {datos}
-                </option>
-              );
+              return <option value={datos}>{datos}</option>;
             })}
           </>
         )}
@@ -70,11 +96,7 @@ export default function InputValidar({ estado, cambiarEstado, label, name ,obten
           <>
             <option value="">Seleccione tipo de colegio</option>
             {listTipoColegio.map((datos) => {
-              return (
-                <option value={datos}>
-                  {datos}
-                </option>
-              );
+              return <option value={datos}>{datos}</option>;
             })}
           </>
         )}
@@ -82,11 +104,7 @@ export default function InputValidar({ estado, cambiarEstado, label, name ,obten
           <>
             <option value="">Seleccione relacion</option>
             {listaRelacion.map((datos) => {
-              return (
-                <option value={datos}>
-                  {datos}
-                </option>
-              );
+              return <option value={datos}>{datos}</option>;
             })}
           </>
         )}
@@ -96,22 +114,33 @@ export default function InputValidar({ estado, cambiarEstado, label, name ,obten
             {listaEstudiantes.map((datos) => {
               return (
                 <option value={datos.CODESTUDIANTE}>
-                  {datos.NOMBREESTUDIANTE}
+                  {datos.NOMBREESTUDIANTE + " " + datos.APELLIDO}
                 </option>
               );
             })}
-            
           </>
         )}
         {label === "Genero:" && (
           <>
             <option value="">Seleccione genero</option>
             {genero.map((datos) => {
-              return (
-                <option value={datos}>
-                  {datos}
-                </option>
-              );
+              return <option value={datos}>{datos}</option>;
+            })}
+          </>
+        )}
+        {label === "Rol:" && (
+          <>
+            <option value="">Seleccione rol</option>
+            {listaRol.map((datos) => {
+              return <option value={datos}>{datos}</option>;
+            })}
+          </>
+        )}
+        {label === "Sede:" && (
+          <>
+            <option value="">Seleccione sede</option>
+            {listaSedes.map((datos) => {
+              return <option value={datos.NOMBRESEDE}>{datos.NOMBRESEDE}</option>;
             })}
           </>
         )}
