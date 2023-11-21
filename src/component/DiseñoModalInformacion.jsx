@@ -243,6 +243,12 @@ export const ContainerTabla = styled.div`
   width: 100%;
   z-index: 1;
   overflow-x: auto;
+  ${(props) =>
+    props.tabla === "true" &&
+    css`
+      display: flex;
+      justify-content: center;
+    `}
 `;
 export const ContainerGrupo = styled.div`
   display: flex;

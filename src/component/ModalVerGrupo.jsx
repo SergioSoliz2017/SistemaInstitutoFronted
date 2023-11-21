@@ -31,6 +31,7 @@ import { url } from "./VariableEntornos";
 import { useState } from "react";
 import InputValidar from "./InputValidarModal";
 import { MultiSelect } from "./DiseñoModalAñadirCurso";
+import { ContainerCarga, ImagenCarga } from "./DiseñoPantallaPrincipal";
 
 export default function ModalVerGrupo({
   estado,
@@ -53,11 +54,14 @@ export default function ModalVerGrupo({
     numero: /^\d{1,3}$/,
   };
   var cantidad = 0;
+  const [carga, setCarga] = useState(null);
   useEffect(() => {
     if (estado) {
+      setCarga(true);
       axios
         .get(url + "obtenerGrupo/" + datos.CODCURSO + "/" + sede)
         .then((resp) => {
+          setCarga(false);
           setListaGrupos(resp.data);
           setActualizo(false);
         });
@@ -67,7 +71,7 @@ export default function ModalVerGrupo({
   const agregarGrupo = () => {
     var fechaActual = new Date();
     var añoActual = fechaActual.getFullYear();
-    var codigoGrupo = añoActual + grupo.campo.replace(/\s/g, ''); 
+    var codigoGrupo = añoActual + grupo.campo.replace(/\s/g, "");
     const grupoNuevo = {
       CODSEDE: sede,
       CODCURSO: datos.CODCURSO,
@@ -77,12 +81,12 @@ export default function ModalVerGrupo({
       PRECIO: parseFloat(precio.campo),
       HORA: hora.campo,
       DIAS: diaSelec,
-    };    
+    };
     axios.post(url + "agregarGrupo", grupoNuevo).then((response) => {
       setAñadirGrupo("false");
       setGrupo("");
       setPrecio("");
-      setHora("")
+      setHora("");
       setCantidadGrupo("");
       setActualizo(true);
     });
@@ -128,156 +132,171 @@ export default function ModalVerGrupo({
             >
               <FontAwesomeIcon icon={faXmark} />
             </BotonCerrar>
-            {añadirGrupo === "false" && (
+            {carga && (
               <DetalleUsuario>
-                <ContainerTabla>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Nº</TableCell>
-                        <TableCell>Curso</TableCell>
-                        <TableCell>Precio</TableCell>
-                        <TableCell>Sede</TableCell>
-                        <TableCell align="center">Eliminar</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {listaGrupos.map((grupo) => {
-                        return (
+                <ContainerCarga>
+                  <ImagenCarga src={require("../Imagenes/Carga.gif")} />
+                </ContainerCarga>
+              </DetalleUsuario>
+            )}
+            {!carga && (
+              <>
+                {añadirGrupo === "false" && (
+                  <DetalleUsuario>
+                    <ContainerTabla>
+                      <Table>
+                        <TableHead>
                           <TableRow>
-                            <TableCell>{(cantidad = cantidad + 1)}</TableCell>
-                            <TableCell>{grupo.NOMBREGRUPO}</TableCell>
-                            <TableCell align="center">{grupo.PRECIO}</TableCell>
-                            <TableCell>{grupo.CODSEDE}</TableCell>
-                            <TableCell>
-                              <ContainerImgIcon
-                                onClick={() => {
-                                  alerta
-                                    .fire({
-                                      title: "¿Esta seguro de eliminar?",
-                                      icon: "question",
-                                      showCancelButton: true,
-                                      confirmButtonColor: "#000",
-                                      cancelButtonColor: "#d33",
-                                      reverseButtons: true,
-                                      confirmButtonText: "Si",
-                                      cancelButtonText: "No",
-                                      background: "#d6d6d6",
-                                      iconColor: "#000",
-                                      color: "#000",
-                                    })
-                                    .then((result) => {
-                                      if (result.isConfirmed) {
-                                        alerta.fire({
-                                          title: "Operacion Exitosa",
-                                          icon: "success",
+                            <TableCell>Nº</TableCell>
+                            <TableCell>Curso</TableCell>
+                            <TableCell>Precio</TableCell>
+                            <TableCell>Sede</TableCell>
+                            <TableCell align="center">Eliminar</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {listaGrupos.map((grupo) => {
+                            return (
+                              <TableRow>
+                                <TableCell>
+                                  {(cantidad = cantidad + 1)}
+                                </TableCell>
+                                <TableCell>{grupo.NOMBREGRUPO}</TableCell>
+                                <TableCell align="center">
+                                  {grupo.PRECIO}
+                                </TableCell>
+                                <TableCell>{grupo.CODSEDE}</TableCell>
+                                <TableCell>
+                                  <ContainerImgIcon
+                                    onClick={() => {
+                                      alerta
+                                        .fire({
+                                          title: "¿Esta seguro de eliminar?",
+                                          icon: "question",
+                                          showCancelButton: true,
                                           confirmButtonColor: "#000",
+                                          cancelButtonColor: "#d33",
+                                          reverseButtons: true,
+                                          confirmButtonText: "Si",
+                                          cancelButtonText: "No",
                                           background: "#d6d6d6",
                                           iconColor: "#000",
                                           color: "#000",
+                                        })
+                                        .then((result) => {
+                                          if (result.isConfirmed) {
+                                            alerta.fire({
+                                              title: "Operacion Exitosa",
+                                              icon: "success",
+                                              confirmButtonColor: "#000",
+                                              background: "#d6d6d6",
+                                              iconColor: "#000",
+                                              color: "#000",
+                                            });
+                                            const grupoEliminar = {
+                                              CODSEDE: grupo.CODSEDE,
+                                              CODCURSO: grupo.CODCURSO,
+                                              CODGRUPO: grupo.CODGRUPO,
+                                            };
+                                            axios
+                                              .delete(url + "eliminarGrupo", {
+                                                data: grupoEliminar,
+                                              })
+                                              .then((response) =>
+                                                setActualizo(true)
+                                              );
+                                          }
                                         });
-                                        const grupoEliminar = {
-                                          CODSEDE: grupo.CODSEDE,
-                                          CODCURSO: grupo.CODCURSO,
-                                          CODGRUPO: grupo.CODGRUPO,
-                                        };
-                                        axios
-                                          .delete(url + "eliminarGrupo", {
-                                            data: grupoEliminar,
-                                          })
-                                          .then((response) =>
-                                            setActualizo(true)
-                                          );
-                                      }
-                                    });
-                                }}
-                              >
-                                <ImgIcon icon={faXmark} />
-                              </ContainerImgIcon>
-                            </TableCell>{" "}
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </ContainerTabla>
-                <BotonAñadir
-                  onClick={() => {
-                    setAñadirGrupo("true");
-                  }}
-                >
-                  <FontAwesomeIcon icon={faAdd} />
-                </BotonAñadir>
-              </DetalleUsuario>
-            )}
-            {añadirGrupo === "true" && (
-              <DetalleUsuario>
-                <InputValidar
-                  estado={grupo}
-                  cambiarEstado={setGrupo}
-                  tipo="text"
-                  label="Grupo:"
-                  placeholder="Grupo"
-                  name="Grupo"
-                  expresionRegular={expresiones.letra}
-                />
-                <InputValidar
-                  estado={precio}
-                  cambiarEstado={setPrecio}
-                  tipo="number"
-                  label="Precio:"
-                  placeholder="Precio"
-                  name="precio"
-                  expresionRegular={expresiones.numero}
-                />
-                <InputValidar
-                  estado={cantidadGrupo}
-                  cambiarEstado={setCantidadGrupo}
-                  tipo="number"
-                  label="Cantidad:"
-                  placeholder="Cantidad"
-                  name="Cantidad"
-                  expresionRegular={expresiones.numero}
-                />
-                <BoxCampo campo={"true"}>
-                  <TextBox>Dias:</TextBox>
-                  <MultiSelect
-                    options={[
-                      "Lunes",
-                      "Martes",
-                      "Miercoles",
-                      "Jueves",
-                      "Viernes",
-                    ]}
-                    isObject={false}
-                    placeholder="Seleccionar dias"
-                    onRemove={(event) => {
-                      setDiaSelec(event);
-                    }}
-                    onSelect={(event) => {
-                      setDiaSelec(event);
-                    }}
-                  />
-                </BoxCampo>
-                <BoxCampo campo={"true"}>
-                  <TextBox>Hora</TextBox>
-                  <Select
-                    value={hora.campo}
-                    valido={hora.valido}
-                    onChange={(e) => {
-                      setHora({ ...hora, campo: e.target.value });
-                    }}
-                  >
-                    <option value="">Seleccione Hora</option>
-                    {horas.map((hor) => {
-                      return <option value={hor}>{hor}</option>;
-                    })}
-                  </Select>
-                </BoxCampo>
-                <BoxCampo boton={"true"}>
-                  <BotonGrupo onClick={agregarGrupo}>Añadir</BotonGrupo>
-                </BoxCampo>
-              </DetalleUsuario>
+                                    }}
+                                  >
+                                    <ImgIcon icon={faXmark} />
+                                  </ContainerImgIcon>
+                                </TableCell>{" "}
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </ContainerTabla>
+                    <BotonAñadir
+                      onClick={() => {
+                        setAñadirGrupo("true");
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faAdd} />
+                    </BotonAñadir>
+                  </DetalleUsuario>
+                )}
+                {añadirGrupo === "true" && (
+                  <DetalleUsuario>
+                    <InputValidar
+                      estado={grupo}
+                      cambiarEstado={setGrupo}
+                      tipo="text"
+                      label="Grupo:"
+                      placeholder="Grupo"
+                      name="Grupo"
+                      expresionRegular={expresiones.letra}
+                    />
+                    <InputValidar
+                      estado={precio}
+                      cambiarEstado={setPrecio}
+                      tipo="number"
+                      label="Precio:"
+                      placeholder="Precio"
+                      name="precio"
+                      expresionRegular={expresiones.numero}
+                    />
+                    <InputValidar
+                      estado={cantidadGrupo}
+                      cambiarEstado={setCantidadGrupo}
+                      tipo="number"
+                      label="Cantidad:"
+                      placeholder="Cantidad"
+                      name="Cantidad"
+                      expresionRegular={expresiones.numero}
+                    />
+                    <BoxCampo campo={"true"}>
+                      <TextBox>Dias:</TextBox>
+                      <MultiSelect
+                        options={[
+                          "Lunes",
+                          "Martes",
+                          "Miercoles",
+                          "Jueves",
+                          "Viernes",
+                        ]}
+                        isObject={false}
+                        placeholder="Seleccionar dias"
+                        onRemove={(event) => {
+                          setDiaSelec(event);
+                        }}
+                        onSelect={(event) => {
+                          setDiaSelec(event);
+                        }}
+                      />
+                    </BoxCampo>
+                    <BoxCampo campo={"true"}>
+                      <TextBox>Hora</TextBox>
+                      <Select
+                        value={hora.campo}
+                        valido={hora.valido}
+                        onChange={(e) => {
+                          setHora({ ...hora, campo: e.target.value });
+                        }}
+                      >
+                        <option value="">Seleccione Hora</option>
+                        {horas.map((hor) => {
+                          return <option value={hor}>{hor}</option>;
+                        })}
+                      </Select>
+                    </BoxCampo>
+                    <BoxCampo boton={"true"}>
+                      <BotonGrupo onClick={agregarGrupo}>Añadir</BotonGrupo>
+                    </BoxCampo>
+                  </DetalleUsuario>
+                )}
+              </>
             )}
           </ContenedorModal>
         </Overlay>

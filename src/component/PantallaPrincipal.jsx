@@ -596,6 +596,7 @@ export default function PantallaPrincipal() {
   const obtenerCursos = () => {
     axios.get(url + "obtenerCursos").then((response) => {
       setListaCursos(response.data);
+      setCarga(false);
       setActualizo(false);
     });
   };
@@ -788,7 +789,6 @@ export default function PantallaPrincipal() {
   const obtenerListaEstudiantes = () => {
     setLista(1);
     setCarga(true);
-    console.log("entr")
     axios.get(url + "obtenerEstudiantes/" + sede).then((response) => {
       if (response.data.length > 0) {
         setCarga(false);
@@ -855,12 +855,23 @@ export default function PantallaPrincipal() {
             .get(url + "obtenerTrabajador/" + codTrabajador)
             .then((response) => {
               setTrabajador((prevTrabajador) => {
-                setSede(response.data.sedes[0].CODSEDE);
+                setSede(response.data.sedes);
                 setRolTrabajador(response.data.ROLTRABAJADOR);
+                if (response.data.ROLTRABAJADOR === "Director") {
+                  setSede(response.data.sedes[0].CODSEDE);
+                  axios.get(url + "obtenerSedes").then((response) => {
+                    setListaSedes(response.data);
+                  });
+                } else {
+                  if (response.data.ROLTRABAJADOR === "Gerente") {
+                    if (response.data.sedes.length > 1) {
+                      setListaSedes(response.data.sedes);
+                    } else {
+                      setSede(response.data.sedes[0].CODSEDE);
+                    }
+                  }
+                }
                 return response.data;
-              });
-              axios.get(url + "obtenerSedes").then((response) => {
-                setListaSedes(response.data);
               });
             });
         }
@@ -868,6 +879,7 @@ export default function PantallaPrincipal() {
     }
     if (opcion === 2) {
       if (lista === 1) {
+        setCarga(true)
         axios.get(url + "obtenerEstudiantes/" + sede).then((response) => {
           if (response.data.length > 0) {
             setCarga(false);
@@ -875,11 +887,12 @@ export default function PantallaPrincipal() {
             setListaEstudiantes((prevEstudiantes) => [...response.data]);
           } else {
             setCarga(false);
-            setListaEstudiantes((prevEstudiantes) => [...response.data])
+            setListaEstudiantes((prevEstudiantes) => [...response.data]);
           }
         });
       }
       if (lista == 2) {
+        setCarga(true)
         axios.get(url + "obtenerTutores/" + sede).then((response) => {
           if (response.data.length > 0) {
             setCarga(false);
@@ -892,7 +905,8 @@ export default function PantallaPrincipal() {
         });
       }
     }
-    if (opcion === 3 && seActualizo || (opcion === 3 && sede)) {
+    if ((opcion === 3 && seActualizo) || (opcion === 3 && sede)) {
+      setCarga(true);
       obtenerCursos();
     }
     if (opcion === 1 && !modal && opcionPasos === 1) {
@@ -950,7 +964,9 @@ export default function PantallaPrincipal() {
     seActualizo,
     modalAñadirTutor,
     modal,
-    opcion,sede,lista
+    opcion,
+    sede,
+    lista,
   ]);
   const [ocultar, setOcultar] = useState("false");
   const [modalInformacion, setModalInformacion] = useState(false);
@@ -1337,15 +1353,40 @@ export default function PantallaPrincipal() {
                       setSede(e.target.value);
                     }}
                   >
-                    {rolTrabajador === "Director" && (
-                      <option value="">Seleccione sede</option>
-                    )}
                     {listaSedes.map((sede) => (
                       <option key={sede.CODSEDE} value={sede.CODSEDE}>
                         {sede.CODSEDE}
                       </option>
                     ))}
                   </BotonNavSelect>
+                </>
+              )}
+              {rolTrabajador === "Gerente" && (
+                <>
+                  <BotonNav
+                    onClick={() => {
+                      setOpcion(6);
+                    }}
+                    seleccionado={opcion == 6 ? "true" : "false"}
+                  >
+                    <ImgIcon menu={"true"} icon={faUserTie} />
+                    Trabajadores
+                  </BotonNav>
+                  {rolTrabajador === "Gerente" && listaSedes.length > 0 && (
+                    <BotonNavSelect
+                      value={sede}
+                      onChange={(e) => {
+                        setSede(e.target.value);
+                      }}
+                    >
+                      <option value="">Seleccione sede</option>
+                      {listaSedes.map((sede) => (
+                        <option key={sede.CODSEDE} value={sede.CODSEDE}>
+                          {sede.CODSEDE}
+                        </option>
+                      ))}
+                    </BotonNavSelect>
+                  )}
                 </>
               )}
               <BotonNav
@@ -1372,1152 +1413,1208 @@ export default function PantallaPrincipal() {
             </ContainerBotonNav>
           </Nav>
           <ContainerPrincipal ocultar={ocultar}>
-            {opcion === 0 && (
-              <ContainerImagenCentro>
-                <ImagenLogoCentro src={require("../Imagenes/Logo.png")} />
-              </ContainerImagenCentro>
+            {carga && (
+              <ContainerRegistro>
+                <ContainerCarga>
+                  <ImagenCarga src={require("../Imagenes/Carga.gif")} />
+                </ContainerCarga>
+              </ContainerRegistro>
             )}
-            {opcion === 1 && (
+            {!carga && (
               <>
-                <ContainerContenido>
-                  <TituloLateral>Registro de estudiantes</TituloLateral>
-                  <ContainerLateral>
-                    <ContainerPasosLateral>
-                      <CircleProgress
-                        seleccionado={opcionPasos >= 1 ? "true" : "false"}
-                      >
-                        {opcionPasos == 1 ? (
-                          <ImgIcon lateral={"true"} icon={fa1} />
-                        ) : (
-                          <ImgIcon lateral={"true"} icon={faCheck} />
-                        )}
-                      </CircleProgress>
-                    </ContainerPasosLateral>
-                    <Rectangulo
-                      seleccionado={opcionPasos >= 2 ? "true" : "false"}
-                    />
-                    <ContainerPasosLateral>
-                      <CircleProgress
-                        seleccionado={opcionPasos >= 2 ? "true" : "false"}
-                      >
-                        {opcionPasos <= 2 ? (
-                          <ImgIcon lateral={"true"} icon={fa2} />
-                        ) : (
-                          <ImgIcon lateral={"true"} icon={faCheck} />
-                        )}
-                      </CircleProgress>
-                    </ContainerPasosLateral>
-                    <Rectangulo
-                      seleccionado={opcionPasos >= 3 ? "true" : "false"}
-                    />
-                    <ContainerPasosLateral>
-                      <CircleProgress
-                        seleccionado={opcionPasos >= 3 ? "true" : "false"}
-                      >
-                        {opcionPasos <= 3 ? (
-                          <ImgIcon lateral={"true"} icon={fa3} />
-                        ) : (
-                          <ImgIcon lateral={"true"} icon={faCheck} />
-                        )}
-                      </CircleProgress>
-                    </ContainerPasosLateral>
-                    <Rectangulo
-                      seleccionado={opcionPasos >= 4 ? "true" : "false"}
-                    />
-                    <ContainerPasosLateral>
-                      <CircleProgress
-                        seleccionado={opcionPasos >= 4 ? "true" : "false"}
-                      >
-                        {opcionPasos <= 4 ? (
-                          <ImgIcon lateral={"true"} icon={fa4} />
-                        ) : (
-                          <ImgIcon lateral={"true"} icon={faCheck} />
-                        )}
-                      </CircleProgress>
-                    </ContainerPasosLateral>
-                  </ContainerLateral>
-                  {!seSubio && (
-                    <ContainerRegistro>
-                      <BotonSiguientePasos
-                        ocultar={opcionPasos === 1 ? "true" : "false"}
-                        onClick={atrasPasoRegistro}
-                      >
-                        <ImgIcon icon={faAngleLeft} />
-                      </BotonSiguientePasos>
-                      {opcionPasos == 1 && (
-                        <ContainerTodo cursos={"false"}>
-                          <Titulo>Datos del estudiante</Titulo>
-                          <ContainerDatos>
-                            <InputValidar
-                              estado={nombre}
-                              cambiarEstado={setNombre}
-                              tipo="text"
-                              label="Nombre:"
-                              placeholder="Nombre"
-                              name="nombreEstudiante"
-                              expresionRegular={expresiones.nombre}
-                            />
-                            <InputValidar
-                              estado={apellido}
-                              cambiarEstado={setApellido}
-                              tipo="text"
-                              label="Apellido:"
-                              placeholder="Apellido"
-                              name="apellidoEstudiante"
-                              expresionRegular={expresiones.nombre}
-                            />
-                            <InputValidar
-                              estado={fechaNacimientoEstudiante}
-                              cambiarEstado={setFechaNacimientoEstudiante}
-                              tipo="date"
-                              label="Fecha nacimiento:"
-                              placeholder="Fecha nacimiento"
-                              name="fechaNacimientoEstudiante"
-                              expresionRegular={{}}
-                            />
-                            <InputValidar
-                              estado={direccion}
-                              cambiarEstado={setDireccion}
-                              tipo="text"
-                              label="Direccion (opcional):"
-                              placeholder="Direccion"
-                              name="Direccion"
-                              expresionRegular={expresiones.lugar}
-                              opcional={true}
-                            />
-                            <BoxCampo>
-                              <TextBox titulo={"true"}>
-                                Residencia (opcional):
-                              </TextBox>
-                            </BoxCampo>
-                            <InputValidar
-                              sub={"true"}
-                              estado={pais}
-                              cambiarEstado={setPais}
-                              tipo="text"
-                              label="Pais:"
-                              placeholder="Pais"
-                              name="Pais"
-                              expresionRegular={expresiones.nombre}
-                              opcional={true}
-                            />
-                            <InputValidar
-                              sub={"true"}
-                              estado={departamento}
-                              cambiarEstado={setDepartamento}
-                              tipo="text"
-                              label="Departamento:"
-                              name="Departamento"
-                              placeholder="Departamento"
-                              expresionRegular={expresiones.nombre}
-                              opcional={true}
-                            />
-                            <InputValidar
-                              sub={"true"}
-                              estado={ciudad}
-                              cambiarEstado={setCiudad}
-                              tipo="text"
-                              label="Cuidad:"
-                              name="Cuidad"
-                              placeholder="Cuidad"
-                              expresionRegular={expresiones.nombre}
-                              opcional={true}
-                            />
-                            <BoxCampo>
-                              <TextBox titulo={"true"}>
-                                Estudios (opcional):
-                              </TextBox>
-                            </BoxCampo>
-                            <InputValidar
-                              sub={"true"}
-                              estado={colegio}
-                              cambiarEstado={setColegio}
-                              tipo="text"
-                              label="Colegio:"
-                              placeholder="Colegio"
-                              name="Colegio"
-                              expresionRegular={expresiones.lugar}
-                              opcional={true}
-                            />
-                            <SelectInput
-                              sub={"true"}
-                              estado={turno}
-                              cambiarEstado={setTurno}
-                              label="Turno:"
-                              name="Turno"
-                              opcional={true}
-                            />
-                            <SelectInput
-                              sub={"true"}
-                              estado={curso}
-                              cambiarEstado={setCurso}
-                              label="Curso:"
-                              name="curso"
-                              opcional={true}
-                            />
-                            <SelectInput
-                              sub={"true"}
-                              estado={tipoColegio}
-                              cambiarEstado={setTipoColegio}
-                              label="Tipo colegio:"
-                              name="tipoColegio"
-                              opcional={true}
-                            />
-                            <SelectInput
-                              estado={generoEstudiante}
-                              cambiarEstado={setGeneroEstudiante}
-                              label="Genero:"
-                              name="genero"
-                              ultimo="true"
-                            />
-                          </ContainerDatos>
-                        </ContainerTodo>
-                      )}
-                      {opcionPasos == 2 && (
-                        <ContainerTodo cursos={"tutor"}>
-                          <Titulo>Datos del tutor</Titulo>
-                          <ContainerDatos>
-                            <InputValidar
-                              estado={nombreTutor}
-                              cambiarEstado={setNombreTutor}
-                              tipo="text"
-                              label="Nombre:"
-                              placeholder="Nombre"
-                              name="nombreTutor"
-                              expresionRegular={expresiones.nombre}
-                            />
-                            <InputValidar
-                              estado={apellidoTutor}
-                              cambiarEstado={setApellidoTutor}
-                              tipo="text"
-                              label="Apellido:"
-                              placeholder="Apellido"
-                              name="apellidoTutor"
-                              expresionRegular={expresiones.nombre}
-                            />
-                            <InputValidar
-                              estado={fechaNacimientoTutor}
-                              cambiarEstado={setFechaNacimientoTutor}
-                              tipo="date"
-                              label="Fecha nacimiento:"
-                              placeholder="Fecha nacimiento"
-                              name="fechaNacimientoTutor"
-                              expresionRegular={{}}
-                            />
-                            <InputValidar
-                              estado={celularTutor}
-                              cambiarEstado={setCelularTutor}
-                              tipo="number"
-                              label="Celular (opcional):"
-                              placeholder="Celular"
-                              name="CelularTutor"
-                              expresionRegular={expresiones.telefono}
-                              opcional={true}
-                            />
-                            <InputValidar
-                              estado={celularTutor2}
-                              cambiarEstado={setCelularTutor2}
-                              tipo="number"
-                              label="Celular (Alternativo):"
-                              placeholder="Celular"
-                              name="CelularTutor"
-                              expresionRegular={expresiones.telefono}
-                              opcional={true}
-                            />
-                            <InputValidar
-                              estado={correoTutor}
-                              cambiarEstado={setCorreoTutor}
-                              tipo="email"
-                              label="Correo electronico:"
-                              placeholder="Correo electronico"
-                              name="Correo electronico del tutor"
-                              expresionRegular={expresiones.correo}
-                            />
-                            <InputValidar
-                              estado={ocupacionTutor}
-                              cambiarEstado={setOcupacionTutor}
-                              tipo="text"
-                              label="Ocupacion (opcional):"
-                              placeholder="Ocupacion"
-                              name="ocupacionTutor"
-                              expresionRegular={expresiones.nombre}
-                              opcional={true}
-                            />
-                            <SelectInput
-                              estado={relacion}
-                              cambiarEstado={setRelacion}
-                              label="Relacion:"
-                              name="curso"
-                            />
-                            <SelectInput
-                              estado={generoTutor}
-                              cambiarEstado={setGeneroTutor}
-                              label="Genero:"
-                              name="genero"
-                              ultimo="true"
-                            />
-                          </ContainerDatos>
-                        </ContainerTodo>
-                      )}
-                      {opcionPasos == 3 && (
-                        <ContainerTodo cursos={"true"}>
-                          <Titulo>Registro de cursos</Titulo>
-                          <ContainerDatos>
-                            <DetalleUsuario>
-                              <SelectCurso
-                                estado={cursoRegistrados}
-                                cambiarEstado={setCursoRegistrados}
-                                label="Cursos:"
-                                name="cursos"
-                                dato={listaCursos}
-                              />
-                              <SelectGrupo
-                                estado={grupo}
-                                cambiarEstado={setGrupo}
-                                label="Grupos:"
-                                name="grupos"
-                                dato={cursoRegistrados.campo}
-                                sede={sede}
-                              />
-                              <BoxCampo precio={"true"} precioT={"true"}>
-                                <TextBox>Precio:</TextBox>
-                                <TextPrecio>
-                                  {precioConDescuento !== null
-                                    ? precioConDescuento
-                                    : grupo.precio}{" "}
-                                  {" Bs."}
-                                </TextPrecio>
-                              </BoxCampo>
-                              <BoxCampo precio={"true"}>
-                                <TextBox>
-                                  Descuento:{" "}
-                                  <ContainerImgIcon precio={"true"}>
-                                    <IconoDescuento
-                                      onClick={() => {
+                {opcion === 0 && (
+                  <ContainerImagenCentro>
+                    <ImagenLogoCentro src={require("../Imagenes/Logo.png")} />
+                  </ContainerImagenCentro>
+                )}
+                {opcion === 1 && (
+                  <>
+                    <ContainerContenido>
+                      <TituloLateral>Registro de estudiantes</TituloLateral>
+                      <ContainerLateral>
+                        <ContainerPasosLateral>
+                          <CircleProgress
+                            seleccionado={opcionPasos >= 1 ? "true" : "false"}
+                          >
+                            {opcionPasos == 1 ? (
+                              <ImgIcon lateral={"true"} icon={fa1} />
+                            ) : (
+                              <ImgIcon lateral={"true"} icon={faCheck} />
+                            )}
+                          </CircleProgress>
+                        </ContainerPasosLateral>
+                        <Rectangulo
+                          seleccionado={opcionPasos >= 2 ? "true" : "false"}
+                        />
+                        <ContainerPasosLateral>
+                          <CircleProgress
+                            seleccionado={opcionPasos >= 2 ? "true" : "false"}
+                          >
+                            {opcionPasos <= 2 ? (
+                              <ImgIcon lateral={"true"} icon={fa2} />
+                            ) : (
+                              <ImgIcon lateral={"true"} icon={faCheck} />
+                            )}
+                          </CircleProgress>
+                        </ContainerPasosLateral>
+                        <Rectangulo
+                          seleccionado={opcionPasos >= 3 ? "true" : "false"}
+                        />
+                        <ContainerPasosLateral>
+                          <CircleProgress
+                            seleccionado={opcionPasos >= 3 ? "true" : "false"}
+                          >
+                            {opcionPasos <= 3 ? (
+                              <ImgIcon lateral={"true"} icon={fa3} />
+                            ) : (
+                              <ImgIcon lateral={"true"} icon={faCheck} />
+                            )}
+                          </CircleProgress>
+                        </ContainerPasosLateral>
+                        <Rectangulo
+                          seleccionado={opcionPasos >= 4 ? "true" : "false"}
+                        />
+                        <ContainerPasosLateral>
+                          <CircleProgress
+                            seleccionado={opcionPasos >= 4 ? "true" : "false"}
+                          >
+                            {opcionPasos <= 4 ? (
+                              <ImgIcon lateral={"true"} icon={fa4} />
+                            ) : (
+                              <ImgIcon lateral={"true"} icon={faCheck} />
+                            )}
+                          </CircleProgress>
+                        </ContainerPasosLateral>
+                      </ContainerLateral>
+                      {!seSubio && (
+                        <ContainerRegistro>
+                          <BotonSiguientePasos
+                            ocultar={opcionPasos === 1 ? "true" : "false"}
+                            onClick={atrasPasoRegistro}
+                          >
+                            <ImgIcon icon={faAngleLeft} />
+                          </BotonSiguientePasos>
+                          {opcionPasos == 1 && (
+                            <ContainerTodo cursos={"false"}>
+                              <Titulo>Datos del estudiante</Titulo>
+                              <ContainerDatos>
+                                <InputValidar
+                                  estado={nombre}
+                                  cambiarEstado={setNombre}
+                                  tipo="text"
+                                  label="Nombre:"
+                                  placeholder="Nombre"
+                                  name="nombreEstudiante"
+                                  expresionRegular={expresiones.nombre}
+                                />
+                                <InputValidar
+                                  estado={apellido}
+                                  cambiarEstado={setApellido}
+                                  tipo="text"
+                                  label="Apellido:"
+                                  placeholder="Apellido"
+                                  name="apellidoEstudiante"
+                                  expresionRegular={expresiones.nombre}
+                                />
+                                <InputValidar
+                                  estado={fechaNacimientoEstudiante}
+                                  cambiarEstado={setFechaNacimientoEstudiante}
+                                  tipo="date"
+                                  label="Fecha nacimiento:"
+                                  placeholder="Fecha nacimiento"
+                                  name="fechaNacimientoEstudiante"
+                                  expresionRegular={{}}
+                                />
+                                <InputValidar
+                                  estado={direccion}
+                                  cambiarEstado={setDireccion}
+                                  tipo="text"
+                                  label="Direccion (opcional):"
+                                  placeholder="Direccion"
+                                  name="Direccion"
+                                  expresionRegular={expresiones.lugar}
+                                  opcional={true}
+                                />
+                                <BoxCampo>
+                                  <TextBox titulo={"true"}>
+                                    Residencia (opcional):
+                                  </TextBox>
+                                </BoxCampo>
+                                <InputValidar
+                                  sub={"true"}
+                                  estado={pais}
+                                  cambiarEstado={setPais}
+                                  tipo="text"
+                                  label="Pais:"
+                                  placeholder="Pais"
+                                  name="Pais"
+                                  expresionRegular={expresiones.nombre}
+                                  opcional={true}
+                                />
+                                <InputValidar
+                                  sub={"true"}
+                                  estado={departamento}
+                                  cambiarEstado={setDepartamento}
+                                  tipo="text"
+                                  label="Departamento:"
+                                  name="Departamento"
+                                  placeholder="Departamento"
+                                  expresionRegular={expresiones.nombre}
+                                  opcional={true}
+                                />
+                                <InputValidar
+                                  sub={"true"}
+                                  estado={ciudad}
+                                  cambiarEstado={setCiudad}
+                                  tipo="text"
+                                  label="Cuidad:"
+                                  name="Cuidad"
+                                  placeholder="Cuidad"
+                                  expresionRegular={expresiones.nombre}
+                                  opcional={true}
+                                />
+                                <BoxCampo>
+                                  <TextBox titulo={"true"}>
+                                    Estudios (opcional):
+                                  </TextBox>
+                                </BoxCampo>
+                                <InputValidar
+                                  sub={"true"}
+                                  estado={colegio}
+                                  cambiarEstado={setColegio}
+                                  tipo="text"
+                                  label="Colegio:"
+                                  placeholder="Colegio"
+                                  name="Colegio"
+                                  expresionRegular={expresiones.lugar}
+                                  opcional={true}
+                                />
+                                <SelectInput
+                                  sub={"true"}
+                                  estado={turno}
+                                  cambiarEstado={setTurno}
+                                  label="Turno:"
+                                  name="Turno"
+                                  opcional={true}
+                                />
+                                <SelectInput
+                                  sub={"true"}
+                                  estado={curso}
+                                  cambiarEstado={setCurso}
+                                  label="Curso:"
+                                  name="curso"
+                                  opcional={true}
+                                />
+                                <SelectInput
+                                  sub={"true"}
+                                  estado={tipoColegio}
+                                  cambiarEstado={setTipoColegio}
+                                  label="Tipo colegio:"
+                                  name="tipoColegio"
+                                  opcional={true}
+                                />
+                                <SelectInput
+                                  estado={generoEstudiante}
+                                  cambiarEstado={setGeneroEstudiante}
+                                  label="Genero:"
+                                  name="genero"
+                                  ultimo="true"
+                                />
+                              </ContainerDatos>
+                            </ContainerTodo>
+                          )}
+                          {opcionPasos == 2 && (
+                            <ContainerTodo cursos={"tutor"}>
+                              <Titulo>Datos del tutor</Titulo>
+                              <ContainerDatos>
+                                <InputValidar
+                                  estado={nombreTutor}
+                                  cambiarEstado={setNombreTutor}
+                                  tipo="text"
+                                  label="Nombre:"
+                                  placeholder="Nombre"
+                                  name="nombreTutor"
+                                  expresionRegular={expresiones.nombre}
+                                />
+                                <InputValidar
+                                  estado={apellidoTutor}
+                                  cambiarEstado={setApellidoTutor}
+                                  tipo="text"
+                                  label="Apellido:"
+                                  placeholder="Apellido"
+                                  name="apellidoTutor"
+                                  expresionRegular={expresiones.nombre}
+                                />
+                                <InputValidar
+                                  estado={fechaNacimientoTutor}
+                                  cambiarEstado={setFechaNacimientoTutor}
+                                  tipo="date"
+                                  label="Fecha nacimiento:"
+                                  placeholder="Fecha nacimiento"
+                                  name="fechaNacimientoTutor"
+                                  expresionRegular={{}}
+                                />
+                                <InputValidar
+                                  estado={celularTutor}
+                                  cambiarEstado={setCelularTutor}
+                                  tipo="number"
+                                  label="Celular (opcional):"
+                                  placeholder="Celular"
+                                  name="CelularTutor"
+                                  expresionRegular={expresiones.telefono}
+                                  opcional={true}
+                                />
+                                <InputValidar
+                                  estado={celularTutor2}
+                                  cambiarEstado={setCelularTutor2}
+                                  tipo="number"
+                                  label="Celular (Alternativo):"
+                                  placeholder="Celular"
+                                  name="CelularTutor"
+                                  expresionRegular={expresiones.telefono}
+                                  opcional={true}
+                                />
+                                <InputValidar
+                                  estado={correoTutor}
+                                  cambiarEstado={setCorreoTutor}
+                                  tipo="email"
+                                  label="Correo electronico:"
+                                  placeholder="Correo electronico"
+                                  name="Correo electronico del tutor"
+                                  expresionRegular={expresiones.correo}
+                                />
+                                <InputValidar
+                                  estado={ocupacionTutor}
+                                  cambiarEstado={setOcupacionTutor}
+                                  tipo="text"
+                                  label="Ocupacion (opcional):"
+                                  placeholder="Ocupacion"
+                                  name="ocupacionTutor"
+                                  expresionRegular={expresiones.nombre}
+                                  opcional={true}
+                                />
+                                <SelectInput
+                                  estado={relacion}
+                                  cambiarEstado={setRelacion}
+                                  label="Relacion:"
+                                  name="curso"
+                                />
+                                <SelectInput
+                                  estado={generoTutor}
+                                  cambiarEstado={setGeneroTutor}
+                                  label="Genero:"
+                                  name="genero"
+                                  ultimo="true"
+                                />
+                              </ContainerDatos>
+                            </ContainerTodo>
+                          )}
+                          {opcionPasos == 3 && (
+                            <ContainerTodo cursos={"true"}>
+                              <Titulo>Registro de cursos</Titulo>
+                              <ContainerDatos>
+                                <DetalleUsuario>
+                                  <SelectCurso
+                                    estado={cursoRegistrados}
+                                    cambiarEstado={setCursoRegistrados}
+                                    label="Cursos:"
+                                    name="cursos"
+                                    dato={listaCursos}
+                                  />
+                                  <SelectGrupo
+                                    estado={grupo}
+                                    cambiarEstado={setGrupo}
+                                    label="Grupos:"
+                                    name="grupos"
+                                    dato={cursoRegistrados.campo}
+                                    sede={sede}
+                                  />
+                                  <BoxCampo precio={"true"} precioT={"true"}>
+                                    <TextBox>Precio:</TextBox>
+                                    <TextPrecio>
+                                      {precioConDescuento !== null
+                                        ? precioConDescuento
+                                        : grupo.precio}{" "}
+                                      {" Bs."}
+                                    </TextPrecio>
+                                  </BoxCampo>
+                                  <BoxCampo precio={"true"}>
+                                    <TextBox>
+                                      Descuento:{" "}
+                                      <ContainerImgIcon precio={"true"}>
+                                        <IconoDescuento
+                                          onClick={() => {
+                                            handleDescuentoChange(
+                                              descuento,
+                                              !esPorcentaje
+                                            );
+                                            setEsPorcentaje(!esPorcentaje);
+                                          }}
+                                          icon={
+                                            esPorcentaje
+                                              ? faPercent
+                                              : faMoneyBill
+                                          }
+                                        />
+                                      </ContainerImgIcon>
+                                    </TextBox>
+                                    <InputBox
+                                      type="number"
+                                      placeholder="Descuento"
+                                      value={descuento}
+                                      onChange={(e) =>
                                         handleDescuentoChange(
-                                          descuento,
-                                          !esPorcentaje
-                                        );
-                                        setEsPorcentaje(!esPorcentaje);
-                                      }}
-                                      icon={
-                                        esPorcentaje ? faPercent : faMoneyBill
+                                          e.target.value,
+                                          esPorcentaje
+                                        )
                                       }
                                     />
-                                  </ContainerImgIcon>
-                                </TextBox>
-                                <InputBox
-                                  type="number"
-                                  placeholder="Descuento"
-                                  value={descuento}
-                                  onChange={(e) =>
-                                    handleDescuentoChange(
-                                      e.target.value,
-                                      esPorcentaje
-                                    )
-                                  }
-                                />
-                              </BoxCampo>
-                              <BoxCampo precio={"true"}>
-                                <TextBox>Pago:</TextBox>
-                                <InputBox
-                                  type="number"
-                                  placeholder="Monto"
-                                  value={montoPagado}
-                                  onChange={(e) => {
-                                    setMontoPagado(e.target.value);
-                                  }}
-                                />
-                              </BoxCampo>
-                              <BoxCampo saldo={"true"}>
-                                <TextBox saldo={"true"}>
-                                  Cantidad dias: {diasHabiles}
-                                </TextBox>
-                                <TextBox id="diasPagados" saldo={"true"}>
-                                  Dia pagados:{" "}
-                                  {precioConDescuento !== null
-                                    ? calcularDiasPagados(
-                                        montoPagado,
-                                        parseFloat(precioConDescuento) /
-                                          diasHabiles
-                                      )
-                                    : calcularDiasPagados(
-                                        montoPagado,
-                                        parseFloat(grupo.precio) / diasHabiles
-                                      )}
-                                </TextBox>
-                              </BoxCampo>
-                              <BoxCampo boton={"true"}>
-                                <ContainerBotonBusqueda add={"true"}>
-                                  <BotonBuscar
-                                    onClick={() => {
-                                      if (
-                                        cursoRegistrados.campo !== "" &&
-                                        grupo.campo !== "" &&
-                                        montoPagado !== ""
-                                      ) {
-                                        var cursoTemp = {
-                                          CODCURSO: cursoRegistrados.campo,
-                                          CURSOINSCRITO: cursoRegistrados.texto,
-                                          CODGRUPO: grupo.campo,
-                                          NOMBREGRUPO: grupo.texto,
-                                          MONTOPAGADO: montoPagado,
-                                          DIAPAGADO:
-                                            precioConDescuento !== null
-                                              ? calcularDiasPagados(
-                                                  montoPagado,
-                                                  parseFloat(
-                                                    precioConDescuento
-                                                  ) / diasHabiles
-                                                )
-                                              : calcularDiasPagados(
-                                                  montoPagado,
-                                                  parseFloat(grupo.precio) /
-                                                    diasHabiles
-                                                ),
-                                        };
-                                        // Verificamos si ya existe un curso con las mismas propiedades en listaCursosRes
-                                        const cursoExistente =
-                                          listaCursosRes.find(
-                                            (curs) =>
-                                              curs.CODCURSO ===
-                                                cursoTemp.CODCURSO &&
-                                              curs.NOMBREGRUPO ===
-                                                cursoTemp.NOMBREGRUPO
-                                          );
-                                        if (!cursoExistente) {
-                                          // El curso no existe, lo agregamos a la lista.
-                                          setListaCursosRes((prevLista) => [
-                                            ...prevLista,
-                                            cursoTemp,
-                                          ]);
-                                          const horarioN = {
-                                            CODCURSO: cursoRegistrados.campo,
-                                            CODSEDE: sede,
-                                            CODGRUPO: grupo.campo,
-                                          };
-                                          axios
-                                            .post(
-                                              url + "obtenerHorario",
-                                              horarioN
-                                            )
-                                            .then((response) => {
-                                              setHorarios((prevHorarios) => [
-                                                ...prevHorarios,
-                                                ...response.data,
-                                              ]);
-                                              setCursoRegistrados({
-                                                campo: "",
-                                                valido: null,
-                                              });
-                                              setGrupo({
-                                                campo: "",
-                                                valido: null,
-                                              });
-                                              setDescuento("");
-                                              setPrecioConDescuento(null);
-                                              setMontoPagado("");
-                                            });
-                                        } else {
-                                          toast("Curso ya agregado", {
-                                            icon: "⚠️",
-                                            duration: 3000,
-                                            style: {
-                                              border: "2px solid #000",
-                                              padding: "10px",
-                                              color: "#000",
-                                              background: "#d6d6d6",
-                                              borderRadius: "20px",
-                                              fontFamily: "bold",
-                                              fontWeight: "1000",
-                                            },
-                                          });
-                                        }
-                                      } else {
-                                        toast(
-                                          cursoRegistrados.campo === ""
-                                            ? "Seleccionar curso"
-                                            : grupo.campo === ""
-                                            ? "Seleccionar grupo"
-                                            : "Ingresar Monto",
-                                          {
-                                            icon: "⚠️",
-                                            duration: 3000,
-                                            style: {
-                                              border: "2px solid #000",
-                                              padding: "10px",
-                                              color: "#000",
-                                              background: "#d6d6d6",
-                                              borderRadius: "20px",
-                                              fontFamily: "bold",
-                                              fontWeight: "1000",
-                                            },
-                                          }
-                                        );
-                                      }
-                                    }}
-                                  >
-                                    <ImgIcon buscar={"true"} icon={faAdd} />
-                                  </BotonBuscar>
-                                </ContainerBotonBusqueda>
-                              </BoxCampo>
-                              <ContainerTabla cursos={"true"}>
-                                <Table>
-                                  <TableHead>
-                                    <TableRow>
-                                      <TableCell className={classes.celdas}>
-                                        Hora
-                                      </TableCell>
-                                      {diasSemana.map((dia) => (
-                                        <TableCell
-                                          align="center"
-                                          className={classes.celdas}
-                                          key={dia}
-                                        >
-                                          {dia}
-                                        </TableCell>
-                                      ))}
-                                    </TableRow>
-                                  </TableHead>
-                                  <TableBody>{filas}</TableBody>
-                                </Table>
-                              </ContainerTabla>
-                            </DetalleUsuario>
-                          </ContainerDatos>
-                        </ContainerTodo>
-                      )}
-                      {opcionPasos == 4 && (
-                        <ContainerTodo>
-                          <Titulo>Registro de huella</Titulo>
-                          <ContainerDatos>
-                            {!huellaEscaneada && (
-                              <Texto>
-                                Presione para registrar los datos biometricos
-                                de: {nombre.campo + " " + apellido.campo}
-                              </Texto>
-                            )}
-                            {huellaEscaneada && (
-                              <Texto>
-                                Se registraron los datos biometricos de:{" "}
-                                {nombre.campo + " " + apellido.campo}{" "}
-                                {" correctamente"}
-                              </Texto>
-                            )}
-                            <Texto>
-                              {calcularEdad(fechaNacimientoEstudiante.campo) +
-                                " Años"}
-                            </Texto>
-                            <ContainerHuella
-                              disabled={habilitarHuella}
-                              onClick={() => {
-                                setImagenHuella(
-                                  require("../Imagenes/HuellaEscaneando.png")
-                                );
-                                setHabilitarHuella(true);
-                                setEscaneando(true);
-                                abrirExe();
-                              }}
-                            >
-                              {escaneando && (
-                                <BarraEscaneo escaneando={escaneando} />
-                              )}
-                              <ImagenHuella
-                                src={imagenHuella}
-                                escaneando={escaneando}
-                              />
-                            </ContainerHuella>
-                          </ContainerDatos>
-                        </ContainerTodo>
-                      )}
-                      <BotonSiguientePasos onClick={siguientePasoRegistro}>
-                        <ImgIcon icon={faAngleRight} />
-                      </BotonSiguientePasos>
-                    </ContainerRegistro>
-                  )}
-                  {seSubio && (
-                    <ContainerRegistro>
-                      <ContainerCarga>
-                        <ImagenCarga src={require("../Imagenes/Carga.gif")} />
-                      </ContainerCarga>
-                    </ContainerRegistro>
-                  )}
-                </ContainerContenido>
-              </>
-            )}
-            {opcion === 2 && (
-              <ContainerContenido>
-                <TituloLateral>Listas</TituloLateral>
-                <ContainerLateral>
-                  <ContainerBotonLista>
-                    <PasosLateral
-                      onClick={obtenerListaEstudiantes}
-                      seleccionado={lista == 1 ? "true" : "false"}
-                    >
-                      Estudiantes
-                    </PasosLateral>
-                    <LineaLista />
-                    <PasosLateral
-                      onClick={obtenerListaTutores}
-                      seleccionado={lista == 2 ? "true" : "false"}
-                    >
-                      Tutores
-                    </PasosLateral>
-                  </ContainerBotonLista>
-                </ContainerLateral>
-                <ContainerRegistro>
-                  {!carga && (
-                    <>
-                      {lista == 1 && (
-                        <>
-                          <ContainerTodo lista={"true"}>
-                            <ContainerTituloBusqueda>
-                              <BoxCampo buscar={"true"}>
-                                <InputBusqueda
-                                  value={buscar}
-                                  onChange={(e) => {
-                                    setBuscar(e.target.value);
-                                  }}
-                                />
-                                <IconoBuscar icon={faSearch} />
-                                <IconoBuscar
-                                  filtro={"true"}
-                                  icon={faArrowDownWideShort}
-                                  onClick={() => {
-                                    setFiltro(!filtro);
-                                    setTipoFiltro("Estudiante");
-                                  }}
-                                />
-                              </BoxCampo>
-                            </ContainerTituloBusqueda>
-                            <ContainerDatos>
-                              <>
-                                <ContainerTabla>
-                                  <Table>
-                                    <TableHead>
-                                      <TableRow>
-                                        <TableCell className={classes.celdas}>
-                                          Nº
-                                        </TableCell>
-                                        <TableCell className={classes.celdas}>
-                                          CODIGO
-                                        </TableCell>
-                                        <TableCell className={classes.celdas}>
-                                          NOMBRE
-                                        </TableCell>
-                                        <TableCell className={classes.celdas}>
-                                          APELLIDO
-                                        </TableCell>
-                                        <TableCell
-                                          align="center"
-                                          className={classes.celdas}
-                                        >
-                                          OPCIONES
-                                        </TableCell>
-                                      </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                      {listaRes
-                                        .slice(
-                                          pagina * rowPerPage,
-                                          pagina * rowPerPage + rowPerPage
-                                        )
-                                        .map((estudiante, index) => {
-                                          const rowNum =
-                                            pagina * rowPerPage + index + 1;
-                                          return (
-                                            <FilaTabla
-                                              key={estudiante.CODESTUDIANTE}
-                                              estudiante={estudiante}
-                                              modalInformacion={
-                                                setModalInformacion
-                                              }
-                                              ocultar={setOcultar}
-                                              estudianteElegido={setElegido}
-                                              tipo={setTipo}
-                                              actualizo={setActualizo}
-                                              cantidad={rowNum}
-                                              setAgregar={setModalAgregar}
-                                            />
-                                          );
-                                        })}
-                                    </TableBody>
-                                  </Table>
-                                </ContainerTabla>
-                                <TablePagination
-                                  rowsPerPageOptions={[5, 10, 15, 20]}
-                                  rowsPerPage={rowPerPage}
-                                  page={pagina}
-                                  count={listaRes.length}
-                                  component="div"
-                                  onPageChange={cambiarPagina}
-                                  onRowsPerPageChange={cambiarPerPage}
-                                  labelRowsPerPage="Filas por página:"
-                                  labelDisplayedRows={({ from, to, count }) =>
-                                    `${from}-${to} de ${count}`
-                                  }
-                                  style={{
-                                    display: "flex",
-                                    position: "absolute",
-                                    bottom: "1px",
-                                    justifyContent: "center",
-                                    width: "72%",
-                                  }}
-                                />
-                              </>
-                            </ContainerDatos>
-                          </ContainerTodo>
-                        </>
-                      )}
-                      {lista == 2 && (
-                        <>
-                          <ContainerTodo lista={"true"}>
-                            <ContainerTituloBusqueda>
-                              <ContainerBotonBusqueda>
-                                <BotonBuscar
-                                  onClick={() => {
-                                    setAñadirTutor(true);
-                                    setOcultar("true");
-                                  }}
-                                >
-                                  <ImgIcon buscar={"true"} icon={faAdd} />
-                                </BotonBuscar>
-                              </ContainerBotonBusqueda>
-                              <BoxCampo buscar={"true"}>
-                                <InputBusqueda
-                                  value={buscarTutor}
-                                  onChange={(e) => {
-                                    setBuscarTutor(e.target.value);
-                                  }}
-                                />
-                                <IconoBuscar icon={faSearch} />
-                                <IconoBuscar
-                                  filtro={"true"}
-                                  icon={faArrowDownWideShort}
-                                  onClick={() => {
-                                    setFiltro(!filtro);
-                                    setTipoFiltro("Tutor");
-                                  }}
-                                />
-                              </BoxCampo>
-                            </ContainerTituloBusqueda>
-                            <ContainerDatos>
-                              <>
-                                <ContainerTabla>
-                                  <Table>
-                                    <TableHead>
-                                      <TableRow>
-                                        <TableCell className={classes.celdas}>
-                                          Nº
-                                        </TableCell>
-                                        <TableCell className={classes.celdas}>
-                                          CODIGO
-                                        </TableCell>
-                                        <TableCell className={classes.celdas}>
-                                          NOMBRE
-                                        </TableCell>
-                                        <TableCell className={classes.celdas}>
-                                          APELLIDO
-                                        </TableCell>
-                                        <TableCell
-                                          align="center"
-                                          className={classes.celdas}
-                                        >
-                                          OPCIONES
-                                        </TableCell>
-                                      </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                      {listaResTutor
-                                        .slice(
-                                          paginaTutor * rowPerPageTutor,
-                                          paginaTutor * rowPerPageTutor +
-                                            rowPerPageTutor
-                                        )
-                                        .map((tutor, index) => {
-                                          const rowNumTutor =
-                                            paginaTutor * rowPerPageTutor +
-                                            index +
-                                            1;
-                                          return (
-                                            <FilaTablaTutor
-                                              tutor={tutor}
-                                              modalInformacion={
-                                                setModalInformacion
-                                              }
-                                              ocultar={setOcultar}
-                                              tutorElegido={setElegido}
-                                              tipo={setTipo}
-                                              actualizo={setActualizo}
-                                              cantidad={rowNumTutor}
-                                              modalTutor={setModalTutor}
-                                            />
-                                          );
-                                        })}
-                                    </TableBody>
-                                  </Table>
-                                </ContainerTabla>
-                                <TablePagination
-                                  rowsPerPageOptions={[5, 10, 15, 20]}
-                                  rowsPerPage={rowPerPageTutor}
-                                  page={paginaTutor}
-                                  count={listaResTutor.length}
-                                  component="div"
-                                  labelRowsPerPage="Filas por página:"
-                                  onPageChange={cambiarPaginaTutor}
-                                  onRowsPerPageChange={cambiarPerPageTutor}
-                                  labelDisplayedRows={({ from, to, count }) =>
-                                    `${from}-${to} de ${count}`
-                                  }
-                                  style={{
-                                    display: "flex",
-                                    position: "absolute",
-                                    bottom: "1px",
-                                    justifyContent: "center",
-                                    width: "72%",
-                                  }}
-                                />
-                              </>
-                            </ContainerDatos>
-                          </ContainerTodo>
-                        </>
-                      )}
-                    </>
-                  )}
-                  {carga && (
-                    <ContainerCarga>
-                      <ImagenCarga src={require("../Imagenes/Carga.gif")} />
-                    </ContainerCarga>
-                  )}
-                </ContainerRegistro>
-              </ContainerContenido>
-            )}
-            {opcion === 3 && (
-              <ContainerContenido>
-                <TituloLateral>Materias</TituloLateral>
-                <ContainerRegistro>
-                  <ContainerTodo lista={"true"} cantidad={listaCursos.length}>
-                    <ContainerTituloBusqueda>
-                      <Titulo>Listas de materias</Titulo>
-                      <ContainerBotonBusqueda>
-                        <BotonBuscar
-                          onClick={() => {
-                            setModalAñadirCurso(true);
-                            setTipoAñadir("curso");
-                            setOcultar("true");
-                          }}
-                        >
-                          <ImgIcon buscar={"true"} icon={faAdd} />
-                        </BotonBuscar>
-                      </ContainerBotonBusqueda>
-                    </ContainerTituloBusqueda>
-                    <ContainerDatos>
-                      <ContainerTabla cursos={"false"}>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className={classes.celdas}>
-                                Nº
-                              </TableCell>
-                              <TableCell className={classes.celdas}>
-                                CODIGO
-                              </TableCell>
-                              <TableCell className={classes.celdas}>
-                                MATERIA
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                className={classes.celdas}
-                              >
-                                GRUPOS
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                className={classes.celdas}
-                              >
-                                ESTADO
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                className={classes.celdas}
-                              >
-                                ELIMINAR
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {listaCursos.map((curso) => {
-                              return (
-                                <TableRow className={classes.fila}>
-                                  <TableCell className={classes.texto}>
-                                    {(cantidad = cantidad + 1)}
-                                  </TableCell>
-                                  <TableCell className={classes.texto}>
-                                    {curso.CODCURSO}
-                                  </TableCell>
-                                  <TableCell className={classes.texto}>
-                                    {curso.CURSO}
-                                  </TableCell>
-                                  <TableCell className={classes.opciones}>
-                                    <ContainerImgIcon
-                                      onClick={() => {
-                                        setModalVerGrupo(true);
-                                        setOcultar("true");
-                                        setGrupoEscogido(curso);
+                                  </BoxCampo>
+                                  <BoxCampo precio={"true"}>
+                                    <TextBox>Pago:</TextBox>
+                                    <InputBox
+                                      type="number"
+                                      placeholder="Monto"
+                                      value={montoPagado}
+                                      onChange={(e) => {
+                                        setMontoPagado(e.target.value);
                                       }}
-                                    >
-                                      <ImgIcon icon={faGraduationCap} />
-                                    </ContainerImgIcon>
-                                  </TableCell>
-                                  <TableCell className={classes.texto}>
-                                    <ContainerImgIcon
-                                      switch={"true"}
-                                      onClick={() => {}}
-                                    >
-                                      <ImgIcon
-                                        tabla={"true"}
-                                        icon={
-                                          curso.ESTADO === "Activo"
-                                            ? faToggleOn
-                                            : faToggleOff
-                                        }
-                                      />
-                                    </ContainerImgIcon>
-                                  </TableCell>
-                                  <TableCell className={classes.texto}>
-                                    <ContainerImgIcon
-                                      onClick={() => {
-                                        alerta
-                                          .fire({
-                                            title: "¿Esta seguro de eliminar?",
-                                            icon: "question",
-                                            showCancelButton: true,
-                                            confirmButtonColor: "#000",
-                                            cancelButtonColor: "#d33",
-                                            reverseButtons: true,
-                                            confirmButtonText: "Si",
-                                            cancelButtonText: "No",
-                                            background: "#d6d6d6",
-                                            iconColor: "#000",
-                                            color: "#000",
-                                          })
-                                          .then((result) => {
-                                            if (result.isConfirmed) {
-                                              alerta.fire({
-                                                title: "Operacion Exitosa",
-                                                icon: "success",
-                                                confirmButtonColor: "#000",
-                                                background: "#d6d6d6",
-                                                iconColor: "#000",
-                                                color: "#000",
-                                              });
-
-                                              const cursoEliminar = {
-                                                CODSEDE: curso.CODSEDE,
-                                                CODCURSO: curso.CODCURSO,
+                                    />
+                                  </BoxCampo>
+                                  <BoxCampo saldo={"true"}>
+                                    <TextBox saldo={"true"}>
+                                      Cantidad dias: {diasHabiles}
+                                    </TextBox>
+                                    <TextBox id="diasPagados" saldo={"true"}>
+                                      Dia pagados:{" "}
+                                      {precioConDescuento !== null
+                                        ? calcularDiasPagados(
+                                            montoPagado,
+                                            parseFloat(precioConDescuento) /
+                                              diasHabiles
+                                          )
+                                        : calcularDiasPagados(
+                                            montoPagado,
+                                            parseFloat(grupo.precio) /
+                                              diasHabiles
+                                          )}
+                                    </TextBox>
+                                  </BoxCampo>
+                                  <BoxCampo boton={"true"}>
+                                    <ContainerBotonBusqueda add={"true"}>
+                                      <BotonBuscar
+                                        onClick={() => {
+                                          if (
+                                            cursoRegistrados.campo !== "" &&
+                                            grupo.campo !== "" &&
+                                            montoPagado !== ""
+                                          ) {
+                                            var cursoTemp = {
+                                              CODCURSO: cursoRegistrados.campo,
+                                              CURSOINSCRITO:
+                                                cursoRegistrados.texto,
+                                              CODGRUPO: grupo.campo,
+                                              NOMBREGRUPO: grupo.texto,
+                                              MONTOPAGADO: montoPagado,
+                                              DIAPAGADO:
+                                                precioConDescuento !== null
+                                                  ? calcularDiasPagados(
+                                                      montoPagado,
+                                                      parseFloat(
+                                                        precioConDescuento
+                                                      ) / diasHabiles
+                                                    )
+                                                  : calcularDiasPagados(
+                                                      montoPagado,
+                                                      parseFloat(grupo.precio) /
+                                                        diasHabiles
+                                                    ),
+                                            };
+                                            // Verificamos si ya existe un curso con las mismas propiedades en listaCursosRes
+                                            const cursoExistente =
+                                              listaCursosRes.find(
+                                                (curs) =>
+                                                  curs.CODCURSO ===
+                                                    cursoTemp.CODCURSO &&
+                                                  curs.NOMBREGRUPO ===
+                                                    cursoTemp.NOMBREGRUPO
+                                              );
+                                            if (!cursoExistente) {
+                                              // El curso no existe, lo agregamos a la lista.
+                                              setListaCursosRes((prevLista) => [
+                                                ...prevLista,
+                                                cursoTemp,
+                                              ]);
+                                              const horarioN = {
+                                                CODCURSO:
+                                                  cursoRegistrados.campo,
+                                                CODSEDE: sede,
+                                                CODGRUPO: grupo.campo,
                                               };
                                               axios
-                                                .delete(url + "eliminarCurso", {
-                                                  data: cursoEliminar,
-                                                })
-                                                .then((response) =>
-                                                  setActualizo(true)
-                                                );
+                                                .post(
+                                                  url + "obtenerHorario",
+                                                  horarioN
+                                                )
+                                                .then((response) => {
+                                                  setHorarios(
+                                                    (prevHorarios) => [
+                                                      ...prevHorarios,
+                                                      ...response.data,
+                                                    ]
+                                                  );
+                                                  setCursoRegistrados({
+                                                    campo: "",
+                                                    valido: null,
+                                                  });
+                                                  setGrupo({
+                                                    campo: "",
+                                                    valido: null,
+                                                  });
+                                                  setDescuento("");
+                                                  setPrecioConDescuento(null);
+                                                  setMontoPagado("");
+                                                });
+                                            } else {
+                                              toast("Curso ya agregado", {
+                                                icon: "⚠️",
+                                                duration: 3000,
+                                                style: {
+                                                  border: "2px solid #000",
+                                                  padding: "10px",
+                                                  color: "#000",
+                                                  background: "#d6d6d6",
+                                                  borderRadius: "20px",
+                                                  fontFamily: "bold",
+                                                  fontWeight: "1000",
+                                                },
+                                              });
                                             }
-                                          });
+                                          } else {
+                                            toast(
+                                              cursoRegistrados.campo === ""
+                                                ? "Seleccionar curso"
+                                                : grupo.campo === ""
+                                                ? "Seleccionar grupo"
+                                                : "Ingresar Monto",
+                                              {
+                                                icon: "⚠️",
+                                                duration: 3000,
+                                                style: {
+                                                  border: "2px solid #000",
+                                                  padding: "10px",
+                                                  color: "#000",
+                                                  background: "#d6d6d6",
+                                                  borderRadius: "20px",
+                                                  fontFamily: "bold",
+                                                  fontWeight: "1000",
+                                                },
+                                              }
+                                            );
+                                          }
+                                        }}
+                                      >
+                                        <ImgIcon buscar={"true"} icon={faAdd} />
+                                      </BotonBuscar>
+                                    </ContainerBotonBusqueda>
+                                  </BoxCampo>
+                                  <ContainerTabla cursos={"true"}>
+                                    <Table>
+                                      <TableHead>
+                                        <TableRow>
+                                          <TableCell className={classes.celdas}>
+                                            Hora
+                                          </TableCell>
+                                          {diasSemana.map((dia) => (
+                                            <TableCell
+                                              align="center"
+                                              className={classes.celdas}
+                                              key={dia}
+                                            >
+                                              {dia}
+                                            </TableCell>
+                                          ))}
+                                        </TableRow>
+                                      </TableHead>
+                                      <TableBody>{filas}</TableBody>
+                                    </Table>
+                                  </ContainerTabla>
+                                </DetalleUsuario>
+                              </ContainerDatos>
+                            </ContainerTodo>
+                          )}
+                          {opcionPasos == 4 && (
+                            <ContainerTodo>
+                              <Titulo>Registro de huella</Titulo>
+                              <ContainerDatos>
+                                {!huellaEscaneada && (
+                                  <Texto>
+                                    Presione para registrar los datos
+                                    biometricos de:{" "}
+                                    {nombre.campo + " " + apellido.campo}
+                                  </Texto>
+                                )}
+                                {huellaEscaneada && (
+                                  <Texto>
+                                    Se registraron los datos biometricos de:{" "}
+                                    {nombre.campo + " " + apellido.campo}{" "}
+                                    {" correctamente"}
+                                  </Texto>
+                                )}
+                                <Texto>
+                                  {calcularEdad(
+                                    fechaNacimientoEstudiante.campo
+                                  ) + " Años"}
+                                </Texto>
+                                <ContainerHuella
+                                  disabled={habilitarHuella}
+                                  onClick={() => {
+                                    setImagenHuella(
+                                      require("../Imagenes/HuellaEscaneando.png")
+                                    );
+                                    setHabilitarHuella(true);
+                                    setEscaneando(true);
+                                    abrirExe();
+                                  }}
+                                >
+                                  {escaneando && (
+                                    <BarraEscaneo escaneando={escaneando} />
+                                  )}
+                                  <ImagenHuella
+                                    src={imagenHuella}
+                                    escaneando={escaneando}
+                                  />
+                                </ContainerHuella>
+                              </ContainerDatos>
+                            </ContainerTodo>
+                          )}
+                          <BotonSiguientePasos onClick={siguientePasoRegistro}>
+                            <ImgIcon icon={faAngleRight} />
+                          </BotonSiguientePasos>
+                        </ContainerRegistro>
+                      )}
+                      {seSubio && (
+                        <ContainerRegistro>
+                          <ContainerCarga>
+                            <ImagenCarga
+                              src={require("../Imagenes/Carga.gif")}
+                            />
+                          </ContainerCarga>
+                        </ContainerRegistro>
+                      )}
+                    </ContainerContenido>
+                  </>
+                )}
+                {opcion === 2 && (
+                  <ContainerContenido>
+                    <TituloLateral>Listas</TituloLateral>
+                    <ContainerLateral>
+                      <ContainerBotonLista>
+                        <PasosLateral
+                          onClick={obtenerListaEstudiantes}
+                          seleccionado={lista == 1 ? "true" : "false"}
+                        >
+                          Estudiantes
+                        </PasosLateral>
+                        <LineaLista />
+                        <PasosLateral
+                          onClick={obtenerListaTutores}
+                          seleccionado={lista == 2 ? "true" : "false"}
+                        >
+                          Tutores
+                        </PasosLateral>
+                      </ContainerBotonLista>
+                    </ContainerLateral>
+                    <ContainerRegistro>
+                      {!carga && (
+                        <>
+                          {lista == 1 && (
+                            <>
+                              <ContainerTodo lista={"true"}>
+                                <ContainerTituloBusqueda>
+                                  <BoxCampo buscar={"true"}>
+                                    <InputBusqueda
+                                      value={buscar}
+                                      onChange={(e) => {
+                                        setBuscar(e.target.value);
+                                      }}
+                                    />
+                                    <IconoBuscar icon={faSearch} />
+                                    <IconoBuscar
+                                      filtro={"true"}
+                                      icon={faArrowDownWideShort}
+                                      onClick={() => {
+                                        setFiltro(!filtro);
+                                        setTipoFiltro("Estudiante");
+                                      }}
+                                    />
+                                  </BoxCampo>
+                                </ContainerTituloBusqueda>
+                                <ContainerDatos>
+                                  <>
+                                    <ContainerTabla>
+                                      <Table>
+                                        <TableHead>
+                                          <TableRow>
+                                            <TableCell
+                                              className={classes.celdas}
+                                            >
+                                              Nº
+                                            </TableCell>
+                                            <TableCell
+                                              className={classes.celdas}
+                                            >
+                                              CODIGO
+                                            </TableCell>
+                                            <TableCell
+                                              className={classes.celdas}
+                                            >
+                                              NOMBRE
+                                            </TableCell>
+                                            <TableCell
+                                              className={classes.celdas}
+                                            >
+                                              APELLIDO
+                                            </TableCell>
+                                            <TableCell
+                                              align="center"
+                                              className={classes.celdas}
+                                            >
+                                              OPCIONES
+                                            </TableCell>
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          {listaRes
+                                            .slice(
+                                              pagina * rowPerPage,
+                                              pagina * rowPerPage + rowPerPage
+                                            )
+                                            .map((estudiante, index) => {
+                                              const rowNum =
+                                                pagina * rowPerPage + index + 1;
+                                              return (
+                                                <FilaTabla
+                                                  key={estudiante.CODESTUDIANTE}
+                                                  estudiante={estudiante}
+                                                  modalInformacion={
+                                                    setModalInformacion
+                                                  }
+                                                  ocultar={setOcultar}
+                                                  estudianteElegido={setElegido}
+                                                  tipo={setTipo}
+                                                  actualizo={setActualizo}
+                                                  cantidad={rowNum}
+                                                  setAgregar={setModalAgregar}
+                                                />
+                                              );
+                                            })}
+                                        </TableBody>
+                                      </Table>
+                                    </ContainerTabla>
+                                    <TablePagination
+                                      rowsPerPageOptions={[5, 10, 15, 20]}
+                                      rowsPerPage={rowPerPage}
+                                      page={pagina}
+                                      count={listaRes.length}
+                                      component="div"
+                                      onPageChange={cambiarPagina}
+                                      onRowsPerPageChange={cambiarPerPage}
+                                      labelRowsPerPage="Filas por página:"
+                                      labelDisplayedRows={({
+                                        from,
+                                        to,
+                                        count,
+                                      }) => `${from}-${to} de ${count}`}
+                                      style={{
+                                        display: "flex",
+                                        position: "absolute",
+                                        bottom: "1px",
+                                        justifyContent: "center",
+                                        width: "72%",
+                                      }}
+                                    />
+                                  </>
+                                </ContainerDatos>
+                              </ContainerTodo>
+                            </>
+                          )}
+                          {lista == 2 && (
+                            <>
+                              <ContainerTodo lista={"true"}>
+                                <ContainerTituloBusqueda>
+                                  <ContainerBotonBusqueda>
+                                    <BotonBuscar
+                                      onClick={() => {
+                                        setAñadirTutor(true);
+                                        setOcultar("true");
                                       }}
                                     >
-                                      <ImgIcon icon={faXmark} />
-                                    </ContainerImgIcon>
+                                      <ImgIcon buscar={"true"} icon={faAdd} />
+                                    </BotonBuscar>
+                                  </ContainerBotonBusqueda>
+                                  <BoxCampo buscar={"true"}>
+                                    <InputBusqueda
+                                      value={buscarTutor}
+                                      onChange={(e) => {
+                                        setBuscarTutor(e.target.value);
+                                      }}
+                                    />
+                                    <IconoBuscar icon={faSearch} />
+                                    <IconoBuscar
+                                      filtro={"true"}
+                                      icon={faArrowDownWideShort}
+                                      onClick={() => {
+                                        setFiltro(!filtro);
+                                        setTipoFiltro("Tutor");
+                                      }}
+                                    />
+                                  </BoxCampo>
+                                </ContainerTituloBusqueda>
+                                <ContainerDatos>
+                                  <>
+                                    <ContainerTabla>
+                                      <Table>
+                                        <TableHead>
+                                          <TableRow>
+                                            <TableCell
+                                              className={classes.celdas}
+                                            >
+                                              Nº
+                                            </TableCell>
+                                            <TableCell
+                                              className={classes.celdas}
+                                            >
+                                              CODIGO
+                                            </TableCell>
+                                            <TableCell
+                                              className={classes.celdas}
+                                            >
+                                              NOMBRE
+                                            </TableCell>
+                                            <TableCell
+                                              className={classes.celdas}
+                                            >
+                                              APELLIDO
+                                            </TableCell>
+                                            <TableCell
+                                              align="center"
+                                              className={classes.celdas}
+                                            >
+                                              OPCIONES
+                                            </TableCell>
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          {listaResTutor
+                                            .slice(
+                                              paginaTutor * rowPerPageTutor,
+                                              paginaTutor * rowPerPageTutor +
+                                                rowPerPageTutor
+                                            )
+                                            .map((tutor, index) => {
+                                              const rowNumTutor =
+                                                paginaTutor * rowPerPageTutor +
+                                                index +
+                                                1;
+                                              return (
+                                                <FilaTablaTutor
+                                                  tutor={tutor}
+                                                  modalInformacion={
+                                                    setModalInformacion
+                                                  }
+                                                  ocultar={setOcultar}
+                                                  tutorElegido={setElegido}
+                                                  tipo={setTipo}
+                                                  actualizo={setActualizo}
+                                                  cantidad={rowNumTutor}
+                                                  modalTutor={setModalTutor}
+                                                />
+                                              );
+                                            })}
+                                        </TableBody>
+                                      </Table>
+                                    </ContainerTabla>
+                                    <TablePagination
+                                      rowsPerPageOptions={[5, 10, 15, 20]}
+                                      rowsPerPage={rowPerPageTutor}
+                                      page={paginaTutor}
+                                      count={listaResTutor.length}
+                                      component="div"
+                                      labelRowsPerPage="Filas por página:"
+                                      onPageChange={cambiarPaginaTutor}
+                                      onRowsPerPageChange={cambiarPerPageTutor}
+                                      labelDisplayedRows={({
+                                        from,
+                                        to,
+                                        count,
+                                      }) => `${from}-${to} de ${count}`}
+                                      style={{
+                                        display: "flex",
+                                        position: "absolute",
+                                        bottom: "1px",
+                                        justifyContent: "center",
+                                        width: "72%",
+                                      }}
+                                    />
+                                  </>
+                                </ContainerDatos>
+                              </ContainerTodo>
+                            </>
+                          )}
+                        </>
+                      )}
+                      {carga && (
+                        <ContainerCarga>
+                          <ImagenCarga src={require("../Imagenes/Carga.gif")} />
+                        </ContainerCarga>
+                      )}
+                    </ContainerRegistro>
+                  </ContainerContenido>
+                )}
+                {opcion === 3 && (
+                  <ContainerContenido>
+                    <TituloLateral>Materias</TituloLateral>
+                    <ContainerRegistro>
+                      <ContainerTodo
+                        lista={"true"}
+                        cantidad={listaCursos.length}
+                      >
+                        <ContainerTituloBusqueda>
+                          <Titulo>Listas de materias</Titulo>
+                          <ContainerBotonBusqueda>
+                            <BotonBuscar
+                              onClick={() => {
+                                setModalAñadirCurso(true);
+                                setTipoAñadir("curso");
+                                setOcultar("true");
+                              }}
+                            >
+                              <ImgIcon buscar={"true"} icon={faAdd} />
+                            </BotonBuscar>
+                          </ContainerBotonBusqueda>
+                        </ContainerTituloBusqueda>
+                        <ContainerDatos>
+                          <ContainerTabla cursos={"false"}>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell className={classes.celdas}>
+                                    Nº
+                                  </TableCell>
+                                  <TableCell className={classes.celdas}>
+                                    CODIGO
+                                  </TableCell>
+                                  <TableCell className={classes.celdas}>
+                                    MATERIA
+                                  </TableCell>
+                                  <TableCell
+                                    align="center"
+                                    className={classes.celdas}
+                                  >
+                                    GRUPOS
+                                  </TableCell>
+                                  <TableCell
+                                    align="center"
+                                    className={classes.celdas}
+                                  >
+                                    ESTADO
+                                  </TableCell>
+                                  <TableCell
+                                    align="center"
+                                    className={classes.celdas}
+                                  >
+                                    ELIMINAR
                                   </TableCell>
                                 </TableRow>
-                              );
-                            })}
-                          </TableBody>
-                        </Table>
-                      </ContainerTabla>
-                    </ContainerDatos>
-                  </ContainerTodo>
-                </ContainerRegistro>
-              </ContainerContenido>
-            )}
-            {opcion === 5 && (
-              <ContainerContenido>
-                <TituloLateral>Sedes</TituloLateral>
-                <ContainerRegistro>
-                  <ContainerTodo lista={"true"} cantidad={listaCursos.length}>
-                    <ContainerTituloBusqueda>
-                      <Titulo>Listas de sedes</Titulo>
-                      <ContainerBotonBusqueda>
-                        <BotonBuscar
-                          onClick={() => {
-                            setModalAñadirCurso(true);
-                            setTipoAñadir("sede");
-                            setOcultar("true");
-                          }}
-                        >
-                          <ImgIcon buscar={"true"} icon={faAdd} />
-                        </BotonBuscar>
-                      </ContainerBotonBusqueda>
-                    </ContainerTituloBusqueda>
-                    <ContainerDatos>
-                      <ContainerTabla cursos={"false"}>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className={classes.celdas}>
-                                Nº
-                              </TableCell>
-                              <TableCell className={classes.celdas}>
-                                SEDE
-                              </TableCell>
-                              <TableCell className={classes.celdas}>
-                                UBICACION
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                className={classes.celdas}
-                              >
-                                ELIMINAR
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {listaSedes.map((sede) => {
-                              return (
-                                <TableRow className={classes.fila}>
-                                  <TableCell className={classes.texto}>
-                                    {(cantidad = cantidad + 1)}
-                                  </TableCell>
-                                  <TableCell className={classes.texto}>
-                                    {sede.NOMBRESEDE}
-                                  </TableCell>
-                                  <TableCell className={classes.texto}>
-                                    {sede.UBICACION}
-                                  </TableCell>
-                                  <TableCell className={classes.texto}>
-                                    <ContainerImgIcon
-                                      onClick={() => {
-                                        alerta
-                                          .fire({
-                                            title: "¿Esta seguro de eliminar?",
-                                            icon: "question",
-                                            showCancelButton: true,
-                                            confirmButtonColor: "#000",
-                                            cancelButtonColor: "#d33",
-                                            reverseButtons: true,
-                                            confirmButtonText: "Si",
-                                            cancelButtonText: "No",
-                                            background: "#d6d6d6",
-                                            iconColor: "#000",
-                                            color: "#000",
-                                          })
-                                          .then((result) => {
-                                            if (result.isConfirmed) {
-                                              alerta.fire({
-                                                title: "Operacion Exitosa",
-                                                icon: "success",
+                              </TableHead>
+                              <TableBody>
+                                {listaCursos.map((curso) => {
+                                  return (
+                                    <TableRow className={classes.fila}>
+                                      <TableCell className={classes.texto}>
+                                        {(cantidad = cantidad + 1)}
+                                      </TableCell>
+                                      <TableCell className={classes.texto}>
+                                        {curso.CODCURSO}
+                                      </TableCell>
+                                      <TableCell className={classes.texto}>
+                                        {curso.CURSO}
+                                      </TableCell>
+                                      <TableCell className={classes.opciones}>
+                                        <ContainerImgIcon
+                                          onClick={() => {
+                                            setModalVerGrupo(true);
+                                            setOcultar("true");
+                                            setGrupoEscogido(curso);
+                                          }}
+                                        >
+                                          <ImgIcon icon={faGraduationCap} />
+                                        </ContainerImgIcon>
+                                      </TableCell>
+                                      <TableCell className={classes.texto}>
+                                        <ContainerImgIcon
+                                          switch={"true"}
+                                          onClick={() => {}}
+                                        >
+                                          <ImgIcon
+                                            tabla={"true"}
+                                            icon={
+                                              curso.ESTADO === "Activo"
+                                                ? faToggleOn
+                                                : faToggleOff
+                                            }
+                                          />
+                                        </ContainerImgIcon>
+                                      </TableCell>
+                                      <TableCell className={classes.texto}>
+                                        <ContainerImgIcon
+                                          onClick={() => {
+                                            alerta
+                                              .fire({
+                                                title:
+                                                  "¿Esta seguro de eliminar?",
+                                                icon: "question",
+                                                showCancelButton: true,
                                                 confirmButtonColor: "#000",
+                                                cancelButtonColor: "#d33",
+                                                reverseButtons: true,
+                                                confirmButtonText: "Si",
+                                                cancelButtonText: "No",
                                                 background: "#d6d6d6",
                                                 iconColor: "#000",
                                                 color: "#000",
+                                              })
+                                              .then((result) => {
+                                                if (result.isConfirmed) {
+                                                  alerta.fire({
+                                                    title: "Operacion Exitosa",
+                                                    icon: "success",
+                                                    confirmButtonColor: "#000",
+                                                    background: "#d6d6d6",
+                                                    iconColor: "#000",
+                                                    color: "#000",
+                                                  });
+
+                                                  const cursoEliminar = {
+                                                    CODSEDE: curso.CODSEDE,
+                                                    CODCURSO: curso.CODCURSO,
+                                                  };
+                                                  axios
+                                                    .delete(
+                                                      url + "eliminarCurso",
+                                                      {
+                                                        data: cursoEliminar,
+                                                      }
+                                                    )
+                                                    .then((response) =>
+                                                      setActualizo(true)
+                                                    );
+                                                }
                                               });
+                                          }}
+                                        >
+                                          <ImgIcon icon={faXmark} />
+                                        </ContainerImgIcon>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </ContainerTabla>
+                        </ContainerDatos>
+                      </ContainerTodo>
+                    </ContainerRegistro>
+                  </ContainerContenido>
+                )}
+                {opcion === 5 && (
+                  <ContainerContenido>
+                    <TituloLateral>Sedes</TituloLateral>
+                    <ContainerRegistro>
+                      <ContainerTodo
+                        lista={"true"}
+                        cantidad={listaCursos.length}
+                      >
+                        <ContainerTituloBusqueda>
+                          <Titulo>Listas de sedes</Titulo>
+                          <ContainerBotonBusqueda>
+                            <BotonBuscar
+                              onClick={() => {
+                                setModalAñadirCurso(true);
+                                setTipoAñadir("sede");
+                                setOcultar("true");
+                              }}
+                            >
+                              <ImgIcon buscar={"true"} icon={faAdd} />
+                            </BotonBuscar>
+                          </ContainerBotonBusqueda>
+                        </ContainerTituloBusqueda>
+                        <ContainerDatos>
+                          <ContainerTabla cursos={"false"}>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell className={classes.celdas}>
+                                    Nº
+                                  </TableCell>
+                                  <TableCell className={classes.celdas}>
+                                    SEDE
+                                  </TableCell>
+                                  <TableCell className={classes.celdas}>
+                                    UBICACION
+                                  </TableCell>
+                                  <TableCell
+                                    align="center"
+                                    className={classes.celdas}
+                                  >
+                                    ELIMINAR
+                                  </TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {listaSedes.map((sede) => {
+                                  return (
+                                    <TableRow className={classes.fila}>
+                                      <TableCell className={classes.texto}>
+                                        {(cantidad = cantidad + 1)}
+                                      </TableCell>
+                                      <TableCell className={classes.texto}>
+                                        {sede.NOMBRESEDE}
+                                      </TableCell>
+                                      <TableCell className={classes.texto}>
+                                        {sede.UBICACION}
+                                      </TableCell>
+                                      <TableCell className={classes.texto}>
+                                        <ContainerImgIcon
+                                          onClick={() => {
+                                            alerta
+                                              .fire({
+                                                title:
+                                                  "¿Esta seguro de eliminar?",
+                                                icon: "question",
+                                                showCancelButton: true,
+                                                confirmButtonColor: "#000",
+                                                cancelButtonColor: "#d33",
+                                                reverseButtons: true,
+                                                confirmButtonText: "Si",
+                                                cancelButtonText: "No",
+                                                background: "#d6d6d6",
+                                                iconColor: "#000",
+                                                color: "#000",
+                                              })
+                                              .then((result) => {
+                                                if (result.isConfirmed) {
+                                                  alerta.fire({
+                                                    title: "Operacion Exitosa",
+                                                    icon: "success",
+                                                    confirmButtonColor: "#000",
+                                                    background: "#d6d6d6",
+                                                    iconColor: "#000",
+                                                    color: "#000",
+                                                  });
+                                                }
+                                              });
+                                          }}
+                                        >
+                                          <ImgIcon icon={faXmark} />
+                                        </ContainerImgIcon>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </ContainerTabla>
+                        </ContainerDatos>
+                      </ContainerTodo>
+                    </ContainerRegistro>
+                  </ContainerContenido>
+                )}
+                {opcion === 6 && (
+                  <ContainerContenido>
+                    <TituloLateral>Trabajadores</TituloLateral>
+                    <ContainerRegistro>
+                      <ContainerTodo
+                        lista={"true"}
+                        cantidad={listaCursos.length}
+                      >
+                        <ContainerTituloBusqueda>
+                          <Titulo>Listas de trabajadores</Titulo>
+                          <ContainerBotonBusqueda>
+                            <BotonBuscar
+                              onClick={() => {
+                                setModalAñadirCurso(true);
+                                setTipoAñadir("trabajador");
+                                setOcultar("true");
+                              }}
+                            >
+                              <ImgIcon buscar={"true"} icon={faAdd} />
+                            </BotonBuscar>
+                          </ContainerBotonBusqueda>
+                        </ContainerTituloBusqueda>
+                        <ContainerDatos>
+                          <ContainerTabla cursos={"false"}>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell className={classes.celdas}>
+                                    Nº
+                                  </TableCell>
+                                  <TableCell className={classes.celdas}>
+                                    NOMBRE
+                                  </TableCell>
+                                  <TableCell className={classes.celdas}>
+                                    ROL
+                                  </TableCell>
+                                  <TableCell
+                                    align="center"
+                                    className={classes.celdas}
+                                  >
+                                    ESTADO
+                                  </TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {listaTrabajadores.map((trabajador) => {
+                                  return (
+                                    <TableRow className={classes.fila}>
+                                      <TableCell className={classes.texto}>
+                                        {(cantidad = cantidad + 1)}
+                                      </TableCell>
+                                      <TableCell className={classes.texto}>
+                                        {trabajador.NOMBRETRABAJADOR}
+                                      </TableCell>
+                                      <TableCell className={classes.texto}>
+                                        {trabajador.ROLTRABAJADOR}
+                                      </TableCell>
+                                      <TableCell className={classes.texto}>
+                                        <ContainerImgIcon
+                                          switch={"true"}
+                                          onClick={() => {}}
+                                        >
+                                          <ImgIcon
+                                            tabla={"true"}
+                                            icon={
+                                              trabajador.ESTADO === "Activo"
+                                                ? faToggleOn
+                                                : faToggleOff
                                             }
-                                          });
-                                      }}
-                                    >
-                                      <ImgIcon icon={faXmark} />
-                                    </ContainerImgIcon>
-                                  </TableCell>
-                                </TableRow>
-                              );
-                            })}
-                          </TableBody>
-                        </Table>
-                      </ContainerTabla>
-                    </ContainerDatos>
-                  </ContainerTodo>
-                </ContainerRegistro>
-              </ContainerContenido>
-            )}
-            {opcion === 6 && (
-              <ContainerContenido>
-                <TituloLateral>Trabajadores</TituloLateral>
-                <ContainerRegistro>
-                  <ContainerTodo lista={"true"} cantidad={listaCursos.length}>
-                    <ContainerTituloBusqueda>
-                      <Titulo>Listas de trabajadores</Titulo>
-                      <ContainerBotonBusqueda>
-                        <BotonBuscar
-                          onClick={() => {
-                            setModalAñadirCurso(true);
-                            setTipoAñadir("trabajador");
-                            setOcultar("true");
-                          }}
-                        >
-                          <ImgIcon buscar={"true"} icon={faAdd} />
-                        </BotonBuscar>
-                      </ContainerBotonBusqueda>
-                    </ContainerTituloBusqueda>
-                    <ContainerDatos>
-                      <ContainerTabla cursos={"false"}>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className={classes.celdas}>
-                                Nº
-                              </TableCell>
-                              <TableCell className={classes.celdas}>
-                                NOMBRE
-                              </TableCell>
-                              <TableCell className={classes.celdas}>
-                                ROL
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                className={classes.celdas}
-                              >
-                                ESTADO
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {listaTrabajadores.map((trabajador) => {
-                              return (
-                                <TableRow className={classes.fila}>
-                                  <TableCell className={classes.texto}>
-                                    {(cantidad = cantidad + 1)}
-                                  </TableCell>
-                                  <TableCell className={classes.texto}>
-                                    {trabajador.NOMBRETRABAJADOR}
-                                  </TableCell>
-                                  <TableCell className={classes.texto}>
-                                    {trabajador.ROLTRABAJADOR}
-                                  </TableCell>
-                                  <TableCell className={classes.texto}>
-                                    <ContainerImgIcon
-                                      switch={"true"}
-                                      onClick={() => {}}
-                                    >
-                                      <ImgIcon
-                                        tabla={"true"}
-                                        icon={
-                                          trabajador.ESTADO === "Activo"
-                                            ? faToggleOn
-                                            : faToggleOff
-                                        }
-                                      />
-                                    </ContainerImgIcon>
-                                  </TableCell>
-                                </TableRow>
-                              );
-                            })}
-                          </TableBody>
-                        </Table>
-                      </ContainerTabla>
-                    </ContainerDatos>
-                  </ContainerTodo>
-                </ContainerRegistro>
-              </ContainerContenido>
+                                          />
+                                        </ContainerImgIcon>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </ContainerTabla>
+                        </ContainerDatos>
+                      </ContainerTodo>
+                    </ContainerRegistro>
+                  </ContainerContenido>
+                )}
+              </>
             )}
           </ContainerPrincipal>
           <ModalTutor
@@ -2548,8 +2645,8 @@ export default function PantallaPrincipal() {
             ocultar={setOcultar}
             actualizar={setActualizo}
             tipo={tipoAñadir}
-            data = {sede === "NACIONAL" ? listaSedes : sede}
-            rolT = {rolTrabajador}
+            data={sede === "NACIONAL" ? listaSedes : sede}
+            rolT={rolTrabajador}
           />
           <ModalVerGrupo
             estado={modalVerGrupo}

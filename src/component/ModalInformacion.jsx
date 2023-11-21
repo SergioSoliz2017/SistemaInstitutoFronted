@@ -39,6 +39,7 @@ import {
   TableRow,
   makeStyles,
 } from "@material-ui/core";
+import { ContainerCarga, ImagenCarga } from "./DiseñoPantallaPrincipal";
 const styles = makeStyles({
   celdas: {
     fontFamily: "bold",
@@ -50,7 +51,7 @@ const styles = makeStyles({
   },
   fila: {
     borderBottom: "2px solid white",
-    cursor:"pointer",
+    cursor: "pointer",
     "&:hover": {
       backgroundColor: "#a09fa2",
     },
@@ -156,7 +157,7 @@ export default function ModalInformacion({
     setDepartamento("");
     setPais("");
     setNombreTutor("");
-    setApellidoTutor("")
+    setApellidoTutor("");
     setCelular("");
     setFechaNacimientoEstudiante("");
     setFechaNacimientoTutor("");
@@ -245,9 +246,11 @@ export default function ModalInformacion({
             });
       }
       if (opcion === 1) {
+        setCarga(true);
         axios
           .get(url + "obtenerTutoresEstudiante/" + datos.CODESTUDIANTE)
           .then((response) => {
+            setCarga(false);
             setListaTutores(response.data);
           });
       }
@@ -298,9 +301,11 @@ export default function ModalInformacion({
                 valido: null,
               });
         }
+        setCarga(true)
         axios
           .get(url + "obtenerEstudiantesTutor/" + datos.CODTUTOR)
           .then((response) => {
+            setCarga(false)
             setListaEstudiantes(response.data);
           });
       }
@@ -387,14 +392,21 @@ export default function ModalInformacion({
 
   const handleItemClick = (selectedItem) => {
     const selectedGroup = horarios.find(
-      (grupo) =>grupo.NOMBREGRUPO === selectedItem 
+      (grupo) => grupo.NOMBREGRUPO === selectedItem
     );
     console.log(selectedGroup);
     if (selectedGroup) {
-      const { CODESTUDIANTE, CODCURSOINSCRITO , CODGRUPOINSCRITO} = selectedGroup;
+      const { CODESTUDIANTE, CODCURSOINSCRITO, CODGRUPOINSCRITO } =
+        selectedGroup;
       axios
         .get(
-          url + "obtenerAsistencia/" + CODESTUDIANTE + "/" + CODCURSOINSCRITO + "/" + CODGRUPOINSCRITO
+          url +
+            "obtenerAsistencia/" +
+            CODESTUDIANTE +
+            "/" +
+            CODCURSOINSCRITO +
+            "/" +
+            CODGRUPOINSCRITO
         )
         .then((response) => {
           setAsistencia(response.data);
@@ -419,6 +431,8 @@ export default function ModalInformacion({
   const [presente, setPresente] = useState("");
   const [falta, setFalta] = useState("");
   const [licencia, setLicencia] = useState("");
+  const [carga, setCarga] = useState(null);
+  const [seEdito, setSeEdito] = useState(false);
   return (
     <>
       {estado && (
@@ -436,7 +450,10 @@ export default function ModalInformacion({
                 setEditarEstudiante(false);
                 setEditarTutor(false);
                 borrar();
-                actualizo(true);
+                if (seEdito) {
+                  actualizo(true);
+                  setSeEdito(false);
+                }
                 setOpcion(1);
                 setOculto(false);
               }}
@@ -459,6 +476,7 @@ export default function ModalInformacion({
                       <ContainerImgIcon
                         onClick={() => {
                           setEditarEstudiante(true);
+                          setSeEdito(true);
                         }}
                       >
                         <ImgIcon tabla={"true"} icon={faPenToSquare} />
@@ -668,49 +686,58 @@ export default function ModalInformacion({
                     </ContainerBoton>
                     {opcion === 1 && (
                       <ContainerVerTutores>
-                        <ContainerTabla>
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell className={classes.celdas}>
-                                  Nombre
-                                </TableCell>
-                                <TableCell className={classes.celdas}>
-                                  Relacion
-                                </TableCell>
-                                <TableCell className={classes.celdas}>
-                                  Celular
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {listaTutores.map((tutor) => {
-                                return (
-                                  <>
-                                    <TableRow
-                                      onClick={() => {
-                                        setDatos(tutor);
-                                        setTipo("Tutor");
-                                      }}
-                                      className={classes.fila}
-                                    >
-                                      <TableCell className={classes.texto}>
-                                        {tutor.NOMBRETUTOR +
-                                          " " +
-                                          tutor.APELLIDOTUTOR}{" "}
-                                      </TableCell>
-                                      <TableCell className={classes.texto}>
-                                        {tutor.pivot.RELACION}{" "}
-                                      </TableCell>
-                                      <TableCell className={classes.texto}>
-                                        {tutor.CELULARTUTOR}
-                                      </TableCell>
-                                    </TableRow>
-                                  </>
-                                );
-                              })}
-                            </TableBody>
-                          </Table>
+                        <ContainerTabla tabla={carga ? "true" : "false"}>
+                          {carga && (
+                            <ContainerCarga>
+                              <ImagenCarga
+                                src={require("../Imagenes/Carga.gif")}
+                              />
+                            </ContainerCarga>
+                          )}
+                          {!carga && (
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell className={classes.celdas}>
+                                    Nombre
+                                  </TableCell>
+                                  <TableCell className={classes.celdas}>
+                                    Relacion
+                                  </TableCell>
+                                  <TableCell className={classes.celdas}>
+                                    Celular
+                                  </TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {listaTutores.map((tutor) => {
+                                  return (
+                                    <>
+                                      <TableRow
+                                        onClick={() => {
+                                          setDatos(tutor);
+                                          setTipo("Tutor");
+                                        }}
+                                        className={classes.fila}
+                                      >
+                                        <TableCell className={classes.texto}>
+                                          {tutor.NOMBRETUTOR +
+                                            " " +
+                                            tutor.APELLIDOTUTOR}{" "}
+                                        </TableCell>
+                                        <TableCell className={classes.texto}>
+                                          {tutor.pivot.RELACION}{" "}
+                                        </TableCell>
+                                        <TableCell className={classes.texto}>
+                                          {tutor.CELULARTUTOR}
+                                        </TableCell>
+                                      </TableRow>
+                                    </>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          )}
                         </ContainerTabla>
                       </ContainerVerTutores>
                     )}
@@ -724,10 +751,7 @@ export default function ModalInformacion({
                               </TituloNombre>
                               {Array.from(
                                 new Set(
-                                  horarios.map(
-                                    (grupo) =>
-                                      grupo.NOMBREGRUPO
-                                  )
+                                  horarios.map((grupo) => grupo.NOMBREGRUPO)
                                 )
                               ).map((item, index) => (
                                 <BoxCampo
@@ -853,6 +877,7 @@ export default function ModalInformacion({
                       <ContainerImgIcon
                         onClick={() => {
                           setEditarTutor(true);
+                          setSeEdito(true);
                         }}
                       >
                         <ImgIcon tabla={"true"} icon={faPenToSquare} />
@@ -947,49 +972,58 @@ export default function ModalInformacion({
                     </ContainerBoton>
                     {opcion === 1 && (
                       <ContainerVerTutores>
-                        <ContainerTabla>
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell className={classes.celdas}>
-                                  Nombre
-                                </TableCell>
-                                <TableCell className={classes.celdas}>
-                                  Fecha nacimiento
-                                </TableCell>
-                                <TableCell className={classes.celdas}>
-                                  Estado
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {listaEstudiantes.map((estudiante) => {
-                                return (
-                                  <>
-                                    <TableRow
-                                      onClick={() => {
-                                        setDatos(estudiante);
-                                        setTipo("Estudiante");
-                                      }}
-                                      className={classes.fila}
-                                    >
-                                      <TableCell className={classes.texto}>
-                                        {estudiante.NOMBREESTUDIANTE +
-                                          " " +
-                                          estudiante.APELLIDOESTUDIANTE}{" "}
-                                      </TableCell>
-                                      <TableCell className={classes.texto}>
-                                        {estudiante.FECHANACIMIENTOESTUDIANTE}
-                                      </TableCell>
-                                      <TableCell className={classes.texto}>
-                                        {estudiante.HABILITADO}
-                                      </TableCell>
-                                    </TableRow>
-                                  </>
-                                );
-                              })}
-                            </TableBody>
-                          </Table>
+                        <ContainerTabla tabla={carga ? "true" : "false"}>
+                          {carga && (
+                            <ContainerCarga>
+                              <ImagenCarga
+                                src={require("../Imagenes/Carga.gif")}
+                              />
+                            </ContainerCarga>
+                          )}
+                          {!carga && (
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell className={classes.celdas}>
+                                    Nombre
+                                  </TableCell>
+                                  <TableCell className={classes.celdas}>
+                                    Fecha nacimiento
+                                  </TableCell>
+                                  <TableCell className={classes.celdas}>
+                                    Estado
+                                  </TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {listaEstudiantes.map((estudiante) => {
+                                  return (
+                                    <>
+                                      <TableRow
+                                        onClick={() => {
+                                          setDatos(estudiante);
+                                          setTipo("Estudiante");
+                                        }}
+                                        className={classes.fila}
+                                      >
+                                        <TableCell className={classes.texto}>
+                                          {estudiante.NOMBREESTUDIANTE +
+                                            " " +
+                                            estudiante.APELLIDOESTUDIANTE}{" "}
+                                        </TableCell>
+                                        <TableCell className={classes.texto}>
+                                          {estudiante.FECHANACIMIENTOESTUDIANTE}
+                                        </TableCell>
+                                        <TableCell className={classes.texto}>
+                                          {estudiante.HABILITADO}
+                                        </TableCell>
+                                      </TableRow>
+                                    </>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          )}
                         </ContainerTabla>
                       </ContainerVerTutores>
                     )}
