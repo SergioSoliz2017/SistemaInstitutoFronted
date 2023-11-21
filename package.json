@@ -1,6 +1,7 @@
 {
   "name": "re",
   "version": "0.1.0",
+  "homepage": "http://infinitychess.com/",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
