@@ -106,6 +106,7 @@ import Modal from "./Modal";
 import Filtro from "./Filtro";
 import ModalAgregarEstudiante from "./ModalAgregarEstudiante";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+
 const styles = makeStyles({
   celdas: {
     fontFamily: "bold",
@@ -130,6 +131,15 @@ const styles = makeStyles({
     display: "flex",
   },
 });
+
+const iniciarElectron = () => {
+  if (window.require) {
+    const { ipcRenderer } = window.require('electron');
+    window.ipcRenderer = ipcRenderer;
+  } else {
+    console.error('Electron no está disponible en este entorno.');
+  }
+};
 
 export default function PantallaPrincipal() {
   const [opcion, setOpcion] = useState(0);
@@ -831,6 +841,7 @@ export default function PantallaPrincipal() {
   const [rolTrabajador, setRolTrabajador] = useState("");
 
   useEffect(() => {
+    
     if (opcion === 0) {
       if (trabajador === null) {
         toast.success("Inicio Correcto", {
@@ -879,7 +890,7 @@ export default function PantallaPrincipal() {
     }
     if (opcion === 2) {
       if (lista === 1) {
-        setCarga(true)
+        setCarga(true);
         axios.get(url + "obtenerEstudiantes/" + sede).then((response) => {
           if (response.data.length > 0) {
             setCarga(false);
@@ -892,7 +903,7 @@ export default function PantallaPrincipal() {
         });
       }
       if (lista == 2) {
-        setCarga(true)
+        setCarga(true);
         axios.get(url + "obtenerTutores/" + sede).then((response) => {
           if (response.data.length > 0) {
             setCarga(false);
@@ -942,6 +953,7 @@ export default function PantallaPrincipal() {
       }
       if (respuestaHuella === "NoVirtual") {
         setOpcionPasos(opcionPasos + 1);
+        iniciarElectron();
       }
     }
     if (opcion === 1 && respuesta === "Existe") {
@@ -973,8 +985,44 @@ export default function PantallaPrincipal() {
   const [tipo, setTipo] = useState("");
   const [habilitarHuella, setHabilitarHuella] = useState(false);
   const [huellaEscaneada, setHuellaEscaneada] = useState(false);
-  const abrirExe = () => {
-    try {
+
+  const abrirExe = async () => {  
+  try {
+    var codigoEstudiante = generarCodigoEstudiante();
+    const respuesta = await window.ipcRenderer.invoke('open-exe', codigoEstudiante);
+    console.log(respuesta)
+    if (respuesta === "Existe"){
+      setHuellaEscaneada(true);
+      setImagenHuella(require("../Imagenes/HuellaRegistrada.png"));
+    }else{
+      setHabilitarHuella(false);
+      setImagenHuella(require("../Imagenes/HuellaNoRegistrada.png"));
+    }
+    setEscaneando(false);
+  } catch (error) {
+    console.error('Error al abrir el archivo .exe:', error);
+  }
+};
+
+
+/*
+    if (respuesta && respuesta.success) {
+      // Puedes manejar el resultado aquí según tus necesidades
+      if (respuesta.mensaje === 'Existe') {
+        setHuellaEscaneada(true);
+        setImagenHuella(require("../Imagenes/HuellaRegistrada.png"));
+      } else if (respuesta.mensaje === 'No existe') {
+        setHabilitarHuella(false);
+        setImagenHuella(require("../Imagenes/HuellaNoRegistrada.png"));
+      } else {
+        console.log('Operación completada correctamente');
+      }
+    } else {
+      console.error('Error al abrir el archivo .exe:', respuesta ? respuesta.mensaje : 'Respuesta indefinida');
+    }
+    */
+
+  /*try {
       axios
         .post(url + "ejecutar-exe", {
           CODESTUDIANTE: generarCodigoEstudiante(),
@@ -991,8 +1039,8 @@ export default function PantallaPrincipal() {
         });
     } catch (error) {
       console.error("Error de red", error);
-    }
-  };
+    }*/
+
   const abrirExeVerificar = () => {
     try {
       setOpcion(0);

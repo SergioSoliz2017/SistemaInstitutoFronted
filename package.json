@@ -2,6 +2,7 @@
   "name": "re",
   "version": "0.1.0",
   "private": true,
+  "main": "main.js",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-brands-svg-icons": "^6.0.0",
@@ -15,6 +16,8 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.24.0",
     "bootstrap": "^5.2.1",
+    "electron-builder": "^24.6.4",
+    "electron-is-dev": "^2.0.0",
     "material-table": "^2.0.3",
     "multiselect-react-dropdown": "^2.0.25",
     "react": "^17.0.2",
@@ -27,13 +30,15 @@
     "react-scripts": "^5.0.0",
     "styled-components": "^5.3.5",
     "sweetalert2": "^11.7.31",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yarn": "^1.22.21"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron-dev": "electron ."
   },
   "eslintConfig": {
     "extends": [
@@ -52,5 +57,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "electron": "^27.1.2",
+    "electron-builder": "^23.3.2",
+    "wait-on": "^7.2.0"
   }
 }

@@ -100,7 +100,7 @@ export const BotonOpciones = styled.button`
     `}
 `;
 export const ContainerIcon = styled.div`
-  width: 90%;
+  width: 2.5%;
   margin-top: 15px;
   display: flex;
   position: relative;
