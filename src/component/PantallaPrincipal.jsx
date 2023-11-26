@@ -71,6 +71,7 @@ import {
   faBuilding,
   faUserTie,
   faArrowRightFromBracket,
+  faGear,
 } from "@fortawesome/free-solid-svg-icons";
 import alerta from "sweetalert2";
 import SelectInput from "./SelectValidar";
@@ -134,10 +135,10 @@ const styles = makeStyles({
 
 const iniciarElectron = () => {
   if (window.require) {
-    const { ipcRenderer } = window.require('electron');
+    const { ipcRenderer } = window.require("electron");
     window.ipcRenderer = ipcRenderer;
   } else {
-    console.error('Electron no está disponible en este entorno.');
+    console.error("Electron no está disponible en este entorno.");
   }
 };
 
@@ -189,7 +190,7 @@ export default function PantallaPrincipal() {
   //carga
   const [seSubio, setSeSubio] = useState(false);
   //listas
-  const [lista, setLista] = useState(0);
+  const [lista, setLista] = useState(1);
   const expresiones = {
     nombre: /^(?=\S)(?!.*\s{2})[a-zA-ZÀ-ÿ\s-]{3,40}$/, // Letras y espacios, pueden llevar acentos.
     correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
@@ -213,7 +214,6 @@ export default function PantallaPrincipal() {
   const [sede, setSede] = useState();
 
   function esValido() {
-    /*
     var esValido = true;
     if (opcionPasos === 1) {
       if (nombre.campo === "") {
@@ -563,7 +563,7 @@ export default function PantallaPrincipal() {
           },
         });
       }
-    }*/
+    }
     return esValido;
   }
   const [respuesta, setRespuesta] = useState("");
@@ -604,7 +604,7 @@ export default function PantallaPrincipal() {
   };
   const [horarios, setHorarios] = useState([]);
   const obtenerCursos = () => {
-    axios.get(url + "obtenerCursos").then((response) => {
+    axios.get(url + "obtenerCursos/" + sede).then((response) => {
       setListaCursos(response.data);
       setCarga(false);
       setActualizo(false);
@@ -796,30 +796,6 @@ export default function PantallaPrincipal() {
   const [carga, setCarga] = useState(false);
   const [listaEstudiantes, setListaEstudiantes] = useState([]);
   const [listaTutores, setListaTutores] = useState([]);
-  const obtenerListaEstudiantes = () => {
-    setLista(1);
-    setCarga(true);
-    axios.get(url + "obtenerEstudiantes/" + sede).then((response) => {
-      if (response.data.length > 0) {
-        setCarga(false);
-        setListaEstudiantes(response.data);
-      } else {
-        setCarga(false);
-      }
-    });
-  };
-  const obtenerListaTutores = () => {
-    setLista(2);
-    setCarga(true);
-    axios.get(url + "obtenerTutores/" + sede).then((response) => {
-      if (response.data.length > 0) {
-        setCarga(false);
-        setListaTutores(response.data);
-      } else {
-        setCarga(false);
-      }
-    });
-  };
   const classes = styles();
   const [editEstudiante, setEditEstudiante] = useState(false);
   const [elegido, setElegido] = useState([]);
@@ -839,11 +815,10 @@ export default function PantallaPrincipal() {
   const [listaTrabajadores, setListaTrabajadores] = useState([]);
   const [trabajador, setTrabajador] = useState(null);
   const [rolTrabajador, setRolTrabajador] = useState("");
-
+  const [trabajadorObtenido, setTrabajadorObtenido] = useState(false);
   useEffect(() => {
-    
     if (opcion === 0) {
-      if (trabajador === null) {
+      if (!trabajadorObtenido) {
         toast.success("Inicio Correcto", {
           duration: 3000,
           style: {
@@ -865,25 +840,40 @@ export default function PantallaPrincipal() {
           axios
             .get(url + "obtenerTrabajador/" + codTrabajador)
             .then((response) => {
-              setTrabajador((prevTrabajador) => {
-                setSede(response.data.sedes);
-                setRolTrabajador(response.data.ROLTRABAJADOR);
-                if (response.data.ROLTRABAJADOR === "Director") {
-                  setSede(response.data.sedes[0].CODSEDE);
-                  axios.get(url + "obtenerSedes").then((response) => {
-                    setListaSedes(response.data);
-                  });
-                } else {
-                  if (response.data.ROLTRABAJADOR === "Gerente") {
-                    if (response.data.sedes.length > 1) {
-                      setListaSedes(response.data.sedes);
+              if (response.data !== "") {
+                setTrabajadorObtenido(true);
+                setTrabajador((prevTrabajador) => {
+                  setSede(response.data.sedes);
+                  setRolTrabajador(response.data.ROLTRABAJADOR);
+                  if (response.data.ROLTRABAJADOR === "Director") {
+                    setSede(response.data.sedes[0].CODSEDE);
+                    axios.get(url + "obtenerSedes").then((response) => {
+                      setListaSedes(response.data);
+                    });
+                  } else {
+                    if (response.data.ROLTRABAJADOR === "Gerente") {
+                      if (response.data.sedes.length > 1) {
+                        setListaSedes(response.data.sedes);
+                      } else {
+                        setSede(response.data.sedes[0].CODSEDE);
+                      }
                     } else {
-                      setSede(response.data.sedes[0].CODSEDE);
+                      if (response.data.ROLTRABAJADOR === "Secretaria") {
+                        if (response.data.sedes.length > 1) {
+                          setListaSedes(response.data.sedes);
+                        } else {
+                          setSede(response.data.sedes[0].CODSEDE);
+                        }
+                      } else {
+                        if (response.data.ROLTRABAJADOR === "Maestro") {
+                          setSede(response.data.sedes[0].CODSEDE);
+                        }
+                      }
                     }
                   }
-                }
-                return response.data;
-              });
+                  return response.data;
+                });
+              }
             });
         }
       }
@@ -891,16 +881,29 @@ export default function PantallaPrincipal() {
     if (opcion === 2) {
       if (lista === 1) {
         setCarga(true);
-        axios.get(url + "obtenerEstudiantes/" + sede).then((response) => {
-          if (response.data.length > 0) {
-            setCarga(false);
-            setActualizo(false);
-            setListaEstudiantes((prevEstudiantes) => [...response.data]);
-          } else {
-            setCarga(false);
-            setListaEstudiantes((prevEstudiantes) => [...response.data]);
-          }
-        });
+        if (rolTrabajador === "Maestro") {
+          axios.get(url + "obtenerEstudiantes/NACIONAL").then((response) => {
+            if (response.data.length > 0) {
+              setCarga(false);
+              setActualizo(false);
+              setListaEstudiantes((prevEstudiantes) => [...response.data]);
+            } else {
+              setCarga(false);
+              setListaEstudiantes((prevEstudiantes) => [...response.data]);
+            }
+          });
+        } else {
+          axios.get(url + "obtenerEstudiantes/" + sede).then((response) => {
+            if (response.data.length > 0) {
+              setCarga(false);
+              setActualizo(false);
+              setListaEstudiantes((prevEstudiantes) => [...response.data]);
+            } else {
+              setCarga(false);
+              setListaEstudiantes((prevEstudiantes) => [...response.data]);
+            }
+          });
+        }
       }
       if (lista == 2) {
         setCarga(true);
@@ -959,14 +962,21 @@ export default function PantallaPrincipal() {
     if (opcion === 1 && respuesta === "Existe") {
       obtenerCursos();
     }
-    if (opcion === 5) {
-      axios.get(url + "obtenerSedes").then((response) => {
-        setListaSedes(response.data);
-      });
-    }
     if (opcion === 6) {
-      axios.get(url + "obtenerTrabajadores").then((response) => {
-        setListaTrabajadores(response.data);
+      setCarga(true);
+      axios.get(url + "obtenerTrabajadores/" + sede).then((response) => {
+        const trabajadores = response.data;
+
+        // Supongamos que idTrabajadorActual es el id del trabajador iniciado
+        const idTrabajadorActual = trabajador.CODTRABAJADOR; // Ajusta esto según tu lógica
+
+        // Filtrar al trabajador actual
+        const listaFiltrada = trabajadores.filter(
+          (trabajador) => trabajador.CODTRABAJADOR !== idTrabajadorActual
+        );
+        setCarga(false);
+        // Establecer la lista filtrada en el estado
+        setListaTrabajadores(listaFiltrada);
       });
     }
   }, [
@@ -986,60 +996,25 @@ export default function PantallaPrincipal() {
   const [habilitarHuella, setHabilitarHuella] = useState(false);
   const [huellaEscaneada, setHuellaEscaneada] = useState(false);
 
-  const abrirExe = async () => {  
-  try {
-    var codigoEstudiante = generarCodigoEstudiante();
-    const respuesta = await window.ipcRenderer.invoke('open-exe', codigoEstudiante);
-    console.log(respuesta)
-    if (respuesta === "Existe"){
-      setHuellaEscaneada(true);
-      setImagenHuella(require("../Imagenes/HuellaRegistrada.png"));
-    }else{
-      setHabilitarHuella(false);
-      setImagenHuella(require("../Imagenes/HuellaNoRegistrada.png"));
-    }
-    setEscaneando(false);
-  } catch (error) {
-    console.error('Error al abrir el archivo .exe:', error);
-  }
-};
-
-
-/*
-    if (respuesta && respuesta.success) {
-      // Puedes manejar el resultado aquí según tus necesidades
-      if (respuesta.mensaje === 'Existe') {
+  const abrirExe = async () => {
+    try {
+      var codigoEstudiante = generarCodigoEstudiante();
+      const respuesta = await window.ipcRenderer.invoke(
+        "open-exe",
+        codigoEstudiante
+      );
+      if (respuesta === "Existe") {
         setHuellaEscaneada(true);
         setImagenHuella(require("../Imagenes/HuellaRegistrada.png"));
-      } else if (respuesta.mensaje === 'No existe') {
+      } else {
         setHabilitarHuella(false);
         setImagenHuella(require("../Imagenes/HuellaNoRegistrada.png"));
-      } else {
-        console.log('Operación completada correctamente');
       }
-    } else {
-      console.error('Error al abrir el archivo .exe:', respuesta ? respuesta.mensaje : 'Respuesta indefinida');
-    }
-    */
-
-  /*try {
-      axios
-        .post(url + "ejecutar-exe", {
-          CODESTUDIANTE: generarCodigoEstudiante(),
-        })
-        .then((response) => {
-          if (response.data == "Existe") {
-            setHuellaEscaneada(true);
-            setImagenHuella(require("../Imagenes/HuellaRegistrada.png"));
-          } else {
-            setHabilitarHuella(false);
-            setImagenHuella(require("../Imagenes/HuellaNoRegistrada.png"));
-          }
-          setEscaneando(false);
-        });
+      setEscaneando(false);
     } catch (error) {
-      console.error("Error de red", error);
-    }*/
+      console.error("Error al abrir el archivo .exe:", error);
+    }
+  };
 
   const abrirExeVerificar = () => {
     try {
@@ -1336,129 +1311,179 @@ export default function PantallaPrincipal() {
                 <TituloDasboard subTitutlo={"true"}>DASHBOARD</TituloDasboard>
               </ContainerTitulo>
             </ContainerLogo>
-            <ContainerBotonNav>
-              <BotonNav
-                onClick={() => {
-                  setOpcion(1);
-                }}
-                seleccionado={opcion == 1 ? "true" : "false"}
-              >
-                <ImgIcon menu={"true"} icon={faFilePen} />
-                Registro de estudiantes
-              </BotonNav>
-              <BotonNav
-                onClick={() => {
-                  setOpcion(2);
-                }}
-                seleccionado={opcion == 2 ? "true" : "false"}
-              >
-                <ImgIcon menu={"true"} icon={faListSquares} />
-                Listas
-              </BotonNav>
-              <BotonNav
-                onClick={() => {
-                  setOpcion(3);
-                  setActualizo(true);
-                  //obtenerCursos();
-                }}
-                seleccionado={opcion == 3 ? "true" : "false"}
-              >
-                <ImgIcon menu={"true"} icon={faGraduationCap} />
-                Materias
-              </BotonNav>
-              <BotonNav
-                onClick={() => {
-                  abrirExeVerificar();
-                }}
-              >
-                <ImgIcon menu={"true"} icon={faListCheck} />
-                Control asistencia
-              </BotonNav>
-              {rolTrabajador === "Director" && (
-                <>
-                  {" "}
-                  <BotonNav
-                    onClick={() => {
-                      setOpcion(5);
-                    }}
-                    seleccionado={opcion == 5 ? "true" : "false"}
-                  >
-                    <ImgIcon menu={"true"} icon={faBuilding} />
-                    Sedes
-                  </BotonNav>
-                  <BotonNav
-                    onClick={() => {
-                      setOpcion(6);
-                    }}
-                    seleccionado={opcion == 6 ? "true" : "false"}
-                  >
-                    <ImgIcon menu={"true"} icon={faUserTie} />
-                    Trabajadores
-                  </BotonNav>
-                  <BotonNavSelect
-                    value={sede}
-                    onChange={(e) => {
-                      setSede(e.target.value);
-                    }}
-                  >
-                    {listaSedes.map((sede) => (
-                      <option key={sede.CODSEDE} value={sede.CODSEDE}>
-                        {sede.CODSEDE}
-                      </option>
-                    ))}
-                  </BotonNavSelect>
-                </>
-              )}
-              {rolTrabajador === "Gerente" && (
-                <>
-                  <BotonNav
-                    onClick={() => {
-                      setOpcion(6);
-                    }}
-                    seleccionado={opcion == 6 ? "true" : "false"}
-                  >
-                    <ImgIcon menu={"true"} icon={faUserTie} />
-                    Trabajadores
-                  </BotonNav>
-                  {rolTrabajador === "Gerente" && listaSedes.length > 0 && (
+            {rolTrabajador === "Maestro" && (
+              <ContainerBotonNav>
+                <BotonNav
+                  onClick={() => {
+                    setOpcion(2);
+                  }}
+                  seleccionado={opcion == 2 ? "true" : "false"}
+                >
+                  <ImgIcon menu={"true"} icon={faListSquares} />
+                  Listas
+                </BotonNav>
+                <BotonNav
+                  cerrar={"true"}
+                  onClick={() => {
+                    historial.replace("/");
+                    toast.success("Regresa Pronto", {
+                      duration: 5000,
+                      style: {
+                        border: "2px solid #000",
+                        padding: "10px",
+                        color: "#000",
+                        background: "#d6d6d6",
+                        borderRadius: "20px",
+                        fontFamily: "bold",
+                        fontWeight: "1000",
+                      },
+                    });
+                  }}
+                >
+                  <ImgIcon menu={"true"} icon={faArrowRightFromBracket} />
+                  Cerrar sesion
+                </BotonNav>
+              </ContainerBotonNav>
+            )}
+            {rolTrabajador !== "Maestro" && (
+              <ContainerBotonNav>
+                <BotonNav
+                  onClick={() => {
+                    setOpcion(1);
+                  }}
+                  seleccionado={opcion == 1 ? "true" : "false"}
+                >
+                  <ImgIcon menu={"true"} icon={faFilePen} />
+                  Registro de estudiantes
+                </BotonNav>
+                <BotonNav
+                  onClick={() => {
+                    setOpcion(2);
+                  }}
+                  seleccionado={opcion == 2 ? "true" : "false"}
+                >
+                  <ImgIcon menu={"true"} icon={faListSquares} />
+                  Listas
+                </BotonNav>
+                <BotonNav
+                  onClick={() => {
+                    setOpcion(3);
+                    setActualizo(true);
+                  }}
+                  seleccionado={opcion == 3 ? "true" : "false"}
+                >
+                  <ImgIcon menu={"true"} icon={faGraduationCap} />
+                  Materias
+                </BotonNav>
+                <BotonNav
+                  onClick={() => {
+                    abrirExeVerificar();
+                  }}
+                >
+                  <ImgIcon menu={"true"} icon={faListCheck} />
+                  Control asistencia
+                </BotonNav>
+                {rolTrabajador === "Director" && (
+                  <>
+                    {" "}
+                    <BotonNav
+                      onClick={() => {
+                        setOpcion(5);
+                      }}
+                      seleccionado={opcion == 5 ? "true" : "false"}
+                    >
+                      <ImgIcon menu={"true"} icon={faBuilding} />
+                      Sedes
+                    </BotonNav>
+                    <BotonNav
+                      onClick={() => {
+                        setOpcion(6);
+                      }}
+                      seleccionado={opcion == 6 ? "true" : "false"}
+                    >
+                      <ImgIcon menu={"true"} icon={faUserTie} />
+                      Trabajadores
+                    </BotonNav>
                     <BotonNavSelect
                       value={sede}
                       onChange={(e) => {
                         setSede(e.target.value);
                       }}
                     >
-                      <option value="">Seleccione sede</option>
                       {listaSedes.map((sede) => (
                         <option key={sede.CODSEDE} value={sede.CODSEDE}>
                           {sede.CODSEDE}
                         </option>
                       ))}
                     </BotonNavSelect>
-                  )}
-                </>
-              )}
-              <BotonNav
-                cerrar={"true"}
-                onClick={() => {
-                  historial.replace("/");
-                  toast.success("Regresa Pronto", {
-                    duration: 5000,
-                    style: {
-                      border: "2px solid #000",
-                      padding: "10px",
-                      color: "#000",
-                      background: "#d6d6d6",
-                      borderRadius: "20px",
-                      fontFamily: "bold",
-                      fontWeight: "1000",
-                    },
-                  });
-                }}
-              >
-                <ImgIcon menu={"true"} icon={faArrowRightFromBracket} />
-                Cerrar sesion
-              </BotonNav>
-            </ContainerBotonNav>
+                  </>
+                )}
+                {rolTrabajador === "Gerente" && (
+                  <>
+                    <BotonNav
+                      onClick={() => {
+                        setOpcion(6);
+                      }}
+                      seleccionado={opcion == 6 ? "true" : "false"}
+                    >
+                      <ImgIcon menu={"true"} icon={faUserTie} />
+                      Trabajadores
+                    </BotonNav>
+                    {rolTrabajador === "Gerente" && listaSedes.length > 0 && (
+                      <BotonNavSelect
+                        value={sede}
+                        onChange={(e) => {
+                          setSede(e.target.value);
+                        }}
+                      >
+                        <option value="">Seleccione sede</option>
+                        {listaSedes.map((sede) => (
+                          <option key={sede.CODSEDE} value={sede.CODSEDE}>
+                            {sede.CODSEDE}
+                          </option>
+                        ))}
+                      </BotonNavSelect>
+                    )}
+                  </>
+                )}
+                {rolTrabajador === "Secretaria" && listaSedes.length > 0 && (
+                  <BotonNavSelect
+                    value={sede}
+                    onChange={(e) => {
+                      setSede(e.target.value);
+                    }}
+                  >
+                    <option value="">Seleccione sede</option>
+                    {listaSedes.map((sede) => (
+                      <option key={sede.CODSEDE} value={sede.CODSEDE}>
+                        {sede.CODSEDE}
+                      </option>
+                    ))}
+                  </BotonNavSelect>
+                )}
+                <BotonNav
+                  cerrar={"true"}
+                  onClick={() => {
+                    historial.replace("/");
+                    toast.success("Regresa Pronto", {
+                      duration: 5000,
+                      style: {
+                        border: "2px solid #000",
+                        padding: "10px",
+                        color: "#000",
+                        background: "#d6d6d6",
+                        borderRadius: "20px",
+                        fontFamily: "bold",
+                        fontWeight: "1000",
+                      },
+                    });
+                  }}
+                >
+                  <ImgIcon menu={"true"} icon={faArrowRightFromBracket} />
+                  Cerrar sesion
+                </BotonNav>
+              </ContainerBotonNav>
+            )}
           </Nav>
           <ContainerPrincipal ocultar={ocultar}>
             {carga && (
@@ -2057,21 +2082,29 @@ export default function PantallaPrincipal() {
                   <ContainerContenido>
                     <TituloLateral>Listas</TituloLateral>
                     <ContainerLateral>
-                      <ContainerBotonLista>
-                        <PasosLateral
-                          onClick={obtenerListaEstudiantes}
-                          seleccionado={lista == 1 ? "true" : "false"}
-                        >
-                          Estudiantes
-                        </PasosLateral>
-                        <LineaLista />
-                        <PasosLateral
-                          onClick={obtenerListaTutores}
-                          seleccionado={lista == 2 ? "true" : "false"}
-                        >
-                          Tutores
-                        </PasosLateral>
-                      </ContainerBotonLista>
+                      {rolTrabajador !== "Maestro" && (
+                        <>
+                          <ContainerBotonLista>
+                            <PasosLateral
+                              onClick={() => {
+                                setLista(1);
+                              }}
+                              seleccionado={lista == 1 ? "true" : "false"}
+                            >
+                              Estudiantes
+                            </PasosLateral>
+                            <LineaLista />
+                            <PasosLateral
+                              onClick={() => {
+                                setLista(2);
+                              }}
+                              seleccionado={lista == 2 ? "true" : "false"}
+                            >
+                              Tutores
+                            </PasosLateral>
+                          </ContainerBotonLista>
+                        </>
+                      )}
                     </ContainerLateral>
                     <ContainerRegistro>
                       {!carga && (
@@ -2100,7 +2133,7 @@ export default function PantallaPrincipal() {
                                 </ContainerTituloBusqueda>
                                 <ContainerDatos>
                                   <>
-                                    <ContainerTabla>
+                                    <ContainerTabla lista={"true"}>
                                       <Table>
                                         <TableHead>
                                           <TableRow>
@@ -2154,6 +2187,7 @@ export default function PantallaPrincipal() {
                                                   actualizo={setActualizo}
                                                   cantidad={rowNum}
                                                   setAgregar={setModalAgregar}
+                                                  rol={rolTrabajador}
                                                 />
                                               );
                                             })}
@@ -2191,16 +2225,6 @@ export default function PantallaPrincipal() {
                             <>
                               <ContainerTodo lista={"true"}>
                                 <ContainerTituloBusqueda>
-                                  <ContainerBotonBusqueda>
-                                    <BotonBuscar
-                                      onClick={() => {
-                                        setAñadirTutor(true);
-                                        setOcultar("true");
-                                      }}
-                                    >
-                                      <ImgIcon buscar={"true"} icon={faAdd} />
-                                    </BotonBuscar>
-                                  </ContainerBotonBusqueda>
                                   <BoxCampo buscar={"true"}>
                                     <InputBusqueda
                                       value={buscarTutor}
@@ -2221,7 +2245,7 @@ export default function PantallaPrincipal() {
                                 </ContainerTituloBusqueda>
                                 <ContainerDatos>
                                   <>
-                                    <ContainerTabla>
+                                    <ContainerTabla lista={"true"}>
                                       <Table>
                                         <TableHead>
                                           <TableRow>
@@ -2330,7 +2354,7 @@ export default function PantallaPrincipal() {
                       >
                         <ContainerTituloBusqueda>
                           <Titulo>Listas de materias</Titulo>
-                          <ContainerBotonBusqueda>
+                          <ContainerBotonBusqueda title="Agregar materia">
                             <BotonBuscar
                               onClick={() => {
                                 setModalAñadirCurso(true);
@@ -2366,13 +2390,7 @@ export default function PantallaPrincipal() {
                                     align="center"
                                     className={classes.celdas}
                                   >
-                                    ESTADO
-                                  </TableCell>
-                                  <TableCell
-                                    align="center"
-                                    className={classes.celdas}
-                                  >
-                                    ELIMINAR
+                                    CANTIDAD DE GRUPOS
                                   </TableCell>
                                 </TableRow>
                               </TableHead>
@@ -2391,6 +2409,7 @@ export default function PantallaPrincipal() {
                                       </TableCell>
                                       <TableCell className={classes.opciones}>
                                         <ContainerImgIcon
+                                          title="Ver grupos"
                                           onClick={() => {
                                             setModalVerGrupo(true);
                                             setOcultar("true");
@@ -2400,70 +2419,12 @@ export default function PantallaPrincipal() {
                                           <ImgIcon icon={faGraduationCap} />
                                         </ContainerImgIcon>
                                       </TableCell>
-                                      <TableCell className={classes.texto}>
-                                        <ContainerImgIcon
-                                          switch={"true"}
-                                          onClick={() => {}}
-                                        >
-                                          <ImgIcon
-                                            tabla={"true"}
-                                            icon={
-                                              curso.ESTADO === "Activo"
-                                                ? faToggleOn
-                                                : faToggleOff
-                                            }
-                                          />
-                                        </ContainerImgIcon>
-                                      </TableCell>
-                                      <TableCell className={classes.texto}>
-                                        <ContainerImgIcon
-                                          onClick={() => {
-                                            alerta
-                                              .fire({
-                                                title:
-                                                  "¿Esta seguro de eliminar?",
-                                                icon: "question",
-                                                showCancelButton: true,
-                                                confirmButtonColor: "#000",
-                                                cancelButtonColor: "#d33",
-                                                reverseButtons: true,
-                                                confirmButtonText: "Si",
-                                                cancelButtonText: "No",
-                                                background: "#d6d6d6",
-                                                iconColor: "#000",
-                                                color: "#000",
-                                              })
-                                              .then((result) => {
-                                                if (result.isConfirmed) {
-                                                  alerta.fire({
-                                                    title: "Operacion Exitosa",
-                                                    icon: "success",
-                                                    confirmButtonColor: "#000",
-                                                    background: "#d6d6d6",
-                                                    iconColor: "#000",
-                                                    color: "#000",
-                                                  });
-
-                                                  const cursoEliminar = {
-                                                    CODSEDE: curso.CODSEDE,
-                                                    CODCURSO: curso.CODCURSO,
-                                                  };
-                                                  axios
-                                                    .delete(
-                                                      url + "eliminarCurso",
-                                                      {
-                                                        data: cursoEliminar,
-                                                      }
-                                                    )
-                                                    .then((response) =>
-                                                      setActualizo(true)
-                                                    );
-                                                }
-                                              });
-                                          }}
-                                        >
-                                          <ImgIcon icon={faXmark} />
-                                        </ContainerImgIcon>
+                                      <TableCell
+                                        align="center"
+                                        className={classes.texto}
+                                      >
+                                        {curso.Cantidad +
+                                          " Grupo(s) registrado(s)"}
                                       </TableCell>
                                     </TableRow>
                                   );
@@ -2486,7 +2447,7 @@ export default function PantallaPrincipal() {
                       >
                         <ContainerTituloBusqueda>
                           <Titulo>Listas de sedes</Titulo>
-                          <ContainerBotonBusqueda>
+                          <ContainerBotonBusqueda title="Agregar sede">
                             <BotonBuscar
                               onClick={() => {
                                 setModalAñadirCurso(true);
@@ -2512,12 +2473,6 @@ export default function PantallaPrincipal() {
                                   <TableCell className={classes.celdas}>
                                     UBICACION
                                   </TableCell>
-                                  <TableCell
-                                    align="center"
-                                    className={classes.celdas}
-                                  >
-                                    ELIMINAR
-                                  </TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
@@ -2532,41 +2487,6 @@ export default function PantallaPrincipal() {
                                       </TableCell>
                                       <TableCell className={classes.texto}>
                                         {sede.UBICACION}
-                                      </TableCell>
-                                      <TableCell className={classes.texto}>
-                                        <ContainerImgIcon
-                                          onClick={() => {
-                                            alerta
-                                              .fire({
-                                                title:
-                                                  "¿Esta seguro de eliminar?",
-                                                icon: "question",
-                                                showCancelButton: true,
-                                                confirmButtonColor: "#000",
-                                                cancelButtonColor: "#d33",
-                                                reverseButtons: true,
-                                                confirmButtonText: "Si",
-                                                cancelButtonText: "No",
-                                                background: "#d6d6d6",
-                                                iconColor: "#000",
-                                                color: "#000",
-                                              })
-                                              .then((result) => {
-                                                if (result.isConfirmed) {
-                                                  alerta.fire({
-                                                    title: "Operacion Exitosa",
-                                                    icon: "success",
-                                                    confirmButtonColor: "#000",
-                                                    background: "#d6d6d6",
-                                                    iconColor: "#000",
-                                                    color: "#000",
-                                                  });
-                                                }
-                                              });
-                                          }}
-                                        >
-                                          <ImgIcon icon={faXmark} />
-                                        </ContainerImgIcon>
                                       </TableCell>
                                     </TableRow>
                                   );
@@ -2584,12 +2504,14 @@ export default function PantallaPrincipal() {
                     <TituloLateral>Trabajadores</TituloLateral>
                     <ContainerRegistro>
                       <ContainerTodo
-                        lista={"true"}
+                        lista={"false"}
                         cantidad={listaCursos.length}
                       >
                         <ContainerTituloBusqueda>
-                          <Titulo>Listas de trabajadores</Titulo>
-                          <ContainerBotonBusqueda>
+                          <ContainerBotonBusqueda
+                            title="Agregar trabajador"
+                            add={"false"}
+                          >
                             <BotonBuscar
                               onClick={() => {
                                 setModalAñadirCurso(true);
@@ -2601,8 +2523,8 @@ export default function PantallaPrincipal() {
                             </BotonBuscar>
                           </ContainerBotonBusqueda>
                         </ContainerTituloBusqueda>
-                        <ContainerDatos>
-                          <ContainerTabla cursos={"false"}>
+                        <ContainerDatos trabajador={"true"}>
+                          <ContainerTabla abajo={"true"}>
                             <Table>
                               <TableHead>
                                 <TableRow>
@@ -2614,6 +2536,15 @@ export default function PantallaPrincipal() {
                                   </TableCell>
                                   <TableCell className={classes.celdas}>
                                     ROL
+                                  </TableCell>
+                                  <TableCell className={classes.celdas}>
+                                    SEDE
+                                  </TableCell>
+                                  <TableCell
+                                    align="center"
+                                    className={classes.celdas}
+                                  >
+                                    AJUSTES
                                   </TableCell>
                                   <TableCell
                                     align="center"
@@ -2637,7 +2568,26 @@ export default function PantallaPrincipal() {
                                         {trabajador.ROLTRABAJADOR}
                                       </TableCell>
                                       <TableCell className={classes.texto}>
+                                        {trabajador.sedes.map((sede, index) =>
+                                          index === trabajador.sedes.length - 1
+                                            ? sede.CODSEDE
+                                            : sede.CODSEDE + " - "
+                                        )}
+                                      </TableCell>
+                                      <TableCell className={classes.texto}>
                                         <ContainerImgIcon
+                                          title="Ajustes del trabajador"
+                                          onClick={() => {}}
+                                        >
+                                          <ImgIcon
+                                            tabla={"false"}
+                                            icon={faGear}
+                                          />
+                                        </ContainerImgIcon>
+                                      </TableCell>
+                                      <TableCell className={classes.texto}>
+                                        <ContainerImgIcon
+                                          title="Habilitar/Deshabilitar"
                                           switch={"true"}
                                           onClick={() => {}}
                                         >
@@ -2758,9 +2708,107 @@ export default function PantallaPrincipal() {
             ocultar={setOcultar}
             datos={elegido}
             sede={sede}
+            trabajador={trabajador.CODTRABAJADOR}
           />
         </>
       )}
     </GlobalStyle>
   );
 }
+
+/*
+eliminar curso
+<TableCell className={classes.texto}>
+                                        <ContainerImgIcon
+                                          onClick={() => {
+                                            alerta
+                                              .fire({
+                                                title:
+                                                  "¿Esta seguro de eliminar?",
+                                                icon: "question",
+                                                showCancelButton: true,
+                                                confirmButtonColor: "#000",
+                                                cancelButtonColor: "#d33",
+                                                reverseButtons: true,
+                                                confirmButtonText: "Si",
+                                                cancelButtonText: "No",
+                                                background: "#d6d6d6",
+                                                iconColor: "#000",
+                                                color: "#000",
+                                              })
+                                              .then((result) => {
+                                                if (result.isConfirmed) {
+                                                  alerta.fire({
+                                                    title: "Operacion Exitosa",
+                                                    icon: "success",
+                                                    confirmButtonColor: "#000",
+                                                    background: "#d6d6d6",
+                                                    iconColor: "#000",
+                                                    color: "#000",
+                                                  });
+                                                  const cursoEliminar = {
+                                                    CODSEDE: curso.CODSEDE,
+                                                    CODCURSO: curso.CODCURSO,
+                                                  };
+                                                  axios
+                                                    .delete(
+                                                      url + "eliminarCurso",
+                                                      {
+                                                        data: cursoEliminar,
+                                                      }
+                                                    )
+                                                    .then((response) =>
+                                                      setActualizo(true)
+                                                    );
+                                                }
+                                              });
+                                          }}
+                                        >
+                                          <ImgIcon icon={faXmark} />
+                                        </ContainerImgIcon>
+                                      </TableCell>
+eliminar sede <TableCell className={classes.texto}>
+                                        <ContainerImgIcon
+                                          onClick={() => {
+                                            alerta
+                                              .fire({
+                                                title:
+                                                  "¿Esta seguro de eliminar?",
+                                                icon: "question",
+                                                showCancelButton: true,
+                                                confirmButtonColor: "#000",
+                                                cancelButtonColor: "#d33",
+                                                reverseButtons: true,
+                                                confirmButtonText: "Si",
+                                                cancelButtonText: "No",
+                                                background: "#d6d6d6",
+                                                iconColor: "#000",
+                                                color: "#000",
+                                              })
+                                              .then((result) => {
+                                                if (result.isConfirmed) {
+                                                  alerta.fire({
+                                                    title: "Operacion Exitosa",
+                                                    icon: "success",
+                                                    confirmButtonColor: "#000",
+                                                    background: "#d6d6d6",
+                                                    iconColor: "#000",
+                                                    color: "#000",
+                                                  });
+                                                }
+                                              });
+                                          }}
+                                        >
+                                          <ImgIcon icon={faXmark} />
+                                        </ContainerImgIcon>
+                                      </TableCell>
+<ContainerBotonBusqueda>
+                                    <BotonBuscar
+                                      onClick={() => {
+                                        setAñadirTutor(true);
+                                        setOcultar("true");
+                                      }}
+                                    >
+                                      <ImgIcon buscar={"true"} icon={faAdd} />
+                                    </BotonBuscar>
+                                  </ContainerBotonBusqueda> */

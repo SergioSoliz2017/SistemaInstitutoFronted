@@ -513,62 +513,7 @@ export default function ModalInformacion({
                         {" - "}
                         {pais.campo === undefined ? datos.PAIS : pais.campo}
                       </BoxCampo>
-                      <ContainerImgIcon habilitar={"true"}>
-                        <ImgIcon
-                          habilitar={"true"}
-                          icon={habilitado}
-                          onClick={() => {
-                            alerta
-                              .fire({
-                                title: "¿Esta seguro?",
-                                icon: "question",
-                                showCancelButton: true,
-                                confirmButtonColor: "#000",
-                                cancelButtonColor: "#d33",
-                                reverseButtons: true,
-                                confirmButtonText: "Si",
-                                cancelButtonText: "No",
-                                background: "#d6d6d6",
-                                iconColor: "#000",
-                                color: "#000",
-                              })
-                              .then((result) => {
-                                if (result.isConfirmed) {
-                                  alerta.fire({
-                                    title: "Cambio realizado",
-                                    icon: "success",
-                                    confirmButtonColor: "#000",
-                                    background: "#d6d6d6",
-                                    iconColor: "#000",
-                                    color: "#000",
-                                  });
-                                  const cambiar = {
-                                    HABILITADO:
-                                      valor === "Habilitado"
-                                        ? "Deshabilitado"
-                                        : "Habilitado",
-                                  };
-                                  setHabilitado(
-                                    cambiar.HABILITADO === "Habilitado"
-                                      ? faToggleOn
-                                      : faToggleOff
-                                  );
-                                  setValor(cambiar.HABILITADO);
-                                  axios
-                                    .put(
-                                      url +
-                                        "actualizarEstadoEstudiante/" +
-                                        datos.CODESTUDIANTE,
-                                      cambiar
-                                    )
-                                    .then((response) => {
-                                      actualizo(true);
-                                    });
-                                }
-                              });
-                          }}
-                        />
-                      </ContainerImgIcon>
+                      
                     </>
                   )}
                   {editarEstudiante && (
@@ -1060,4 +1005,61 @@ export default function ModalInformacion({
                             <BoxCampo key={index}>
                               <Texto>{item}</Texto>
                             </BoxCampo>
-                          ))}*/
+                          ))}
+                          
+                          <ContainerImgIcon habilitar={"true"}>
+                        <ImgIcon
+                          habilitar={"true"}
+                          icon={habilitado}
+                          onClick={() => {
+                            alerta
+                              .fire({
+                                title: "¿Esta seguro?",
+                                icon: "question",
+                                showCancelButton: true,
+                                confirmButtonColor: "#000",
+                                cancelButtonColor: "#d33",
+                                reverseButtons: true,
+                                confirmButtonText: "Si",
+                                cancelButtonText: "No",
+                                background: "#d6d6d6",
+                                iconColor: "#000",
+                                color: "#000",
+                              })
+                              .then((result) => {
+                                if (result.isConfirmed) {
+                                  alerta.fire({
+                                    title: "Cambio realizado",
+                                    icon: "success",
+                                    confirmButtonColor: "#000",
+                                    background: "#d6d6d6",
+                                    iconColor: "#000",
+                                    color: "#000",
+                                  });
+                                  const cambiar = {
+                                    HABILITADO:
+                                      valor === "Habilitado"
+                                        ? "Deshabilitado"
+                                        : "Habilitado",
+                                  };
+                                  setHabilitado(
+                                    cambiar.HABILITADO === "Habilitado"
+                                      ? faToggleOn
+                                      : faToggleOff
+                                  );
+                                  setValor(cambiar.HABILITADO);
+                                  axios
+                                    .put(
+                                      url +
+                                        "actualizarEstadoEstudiante/" +
+                                        datos.CODESTUDIANTE,
+                                      cambiar
+                                    )
+                                    .then((response) => {
+                                      actualizo(true);
+                                    });
+                                }
+                              });
+                          }}
+                        />
+                      </ContainerImgIcon>*/

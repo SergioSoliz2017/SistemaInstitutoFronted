@@ -56,6 +56,7 @@ export default function FilaTablaTutor({
       <TableCell className={classes.texto}>{tutor.APELLIDOTUTOR}</TableCell>
       <TableCell className={classes.opciones}>
         <ContainerImgIcon
+        title="Información del tutor"
           onClick={() => {
             modalInformacion(true);
             ocultar("true");
@@ -68,6 +69,7 @@ export default function FilaTablaTutor({
           <ImgIcon tabla={"false"} icon={hovered ? faFolderOpen : faFolder} />
         </ContainerImgIcon>
         <ContainerImgIcon
+        title="Habilitar/Deshabilitar"
           switch={"true"}
           onClick={() => {
             modalTutor(true);

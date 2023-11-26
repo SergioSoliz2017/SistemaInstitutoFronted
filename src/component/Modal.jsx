@@ -190,9 +190,9 @@ export default function Modal({
                   {listaCursos.map((dato) => {
                     return (
                       <>
-                        <TextBox>Clase: {dato.NOMBRECURSO}</TextBox>
-                        <TextBox>Grupo: {dato.GRUPOCURSO}</TextBox>
-                        <TextBox>Codigo: {dato.CODCURSO}</TextBox>
+                        <TextBox todo={"true"}>Materia: {dato.CURSOINSCRITO}</TextBox>
+                        <TextBox todo={"true"}>Grupo: {dato.NOMBREGRUPO}</TextBox>
+                        <TextBox todo={"true"}>Codigo: {dato.CODGRUPO}</TextBox>
                       </>
                     );
                   })}

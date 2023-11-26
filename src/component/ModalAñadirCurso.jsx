@@ -29,7 +29,7 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Select } from "./DiseñoInputValidar";
+import { InputBox, Select } from "./DiseñoInputValidar";
 import { useEffect } from "react";
 
 export default function ModalAñadirCurso({
@@ -38,7 +38,8 @@ export default function ModalAñadirCurso({
   ocultar,
   actualizar,
   tipo,
-  data,rolT
+  data,
+  rolT,
 }) {
   const [curso, setCurso] = useState({
     campo: "",
@@ -113,7 +114,8 @@ export default function ModalAñadirCurso({
       FECHANACIMIENTOTRABAJADOR: fecha.campo,
       ROLTRABAJADOR: rol.campo,
       CONTRASEÑA: contraseña.campo,
-    };axios.post(url + "agregarTrabajador", trabajador).then((response) => {
+    };
+    axios.post(url + "agregarTrabajador", trabajador).then((response) => {
       cambiarEstado(false);
       borrarDatos();
       ocultar("false");
@@ -179,7 +181,7 @@ export default function ModalAñadirCurso({
     if (tipo === "trabajador" && Array.isArray(data)) {
       setListaSedes(data.map((sede) => sede.CODSEDE));
     } else {
-      setSede(data)
+      setSede(data);
     }
   }, [estado]);
   return (
@@ -274,10 +276,10 @@ export default function ModalAñadirCurso({
                   cambiarEstado={setRol}
                   label="Rol:"
                   name="Rol"
-                  rol ={rolT}
+                  rol={rolT}
                 />
                 {Array.isArray(data) && (
-                  <BoxCampo campo = {"sede"}>
+                  <BoxCampo campo={"sede"}>
                     <TextBox>Sede:</TextBox>
                     <MultiSelect
                       sede={"true"}
@@ -293,6 +295,12 @@ export default function ModalAñadirCurso({
                     />
                   </BoxCampo>
                 )}
+                {!Array.isArray(data) && (
+                  <BoxCampo campo={"sede"}>
+                    <TextBox>Sede:</TextBox>
+                    <InputBox type="text" value={data} />
+                  </BoxCampo>
+                )}
                 <InputValidar
                   estado={contraseña}
                   cambiarEstado={setContraseña}
@@ -300,7 +308,7 @@ export default function ModalAñadirCurso({
                   label="Contraseña:"
                   placeholder="Contraseña"
                   name="Contraseña"
-                  expresionRegular={{}}
+                  expresionRegular={expresiones.letra}
                 />
                 <ContainerBoton>
                   <BotonGuardar onClick={crearTrabajador}>

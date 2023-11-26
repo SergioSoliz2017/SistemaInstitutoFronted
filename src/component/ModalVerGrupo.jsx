@@ -32,7 +32,32 @@ import { useState } from "react";
 import InputValidar from "./InputValidarModal";
 import { MultiSelect } from "./DiseñoModalAñadirCurso";
 import { ContainerCarga, ImagenCarga } from "./DiseñoPantallaPrincipal";
+import { makeStyles } from "@material-ui/core/styles";
 
+const styles = makeStyles({
+  celdas: {
+    fontFamily: "bold",
+    fontWeight: "1000",
+    borderBottom: "1px solid #d6d6d6",
+    borderLeft: "1px solid #d6d6d6",
+    borderTop: "1px solid #d6d6d6",
+    color: "#000",
+  },
+  fila: {
+    borderBottom: "2px solid white",
+    cursor: "pointer",
+    "&:hover": {
+      backgroundColor: "#a09fa2",
+    },
+  },
+  texto: {
+    height: "40px",
+    fontFamily: "bold",
+  },
+  opciones: {
+    display: "flex",
+  },
+});
 export default function ModalVerGrupo({
   estado,
   cambiarEstado,
@@ -53,6 +78,7 @@ export default function ModalVerGrupo({
     letra: /^(?=\S)(?!.*\s{2})(?!.*\s$)[a-zA-Z0-9\-: ]{3,40}$/,
     numero: /^\d{1,3}$/,
   };
+  const classes = styles();
   var cantidad = 0;
   const [carga, setCarga] = useState(null);
   useEffect(() => {
@@ -147,78 +173,31 @@ export default function ModalVerGrupo({
                       <Table>
                         <TableHead>
                           <TableRow>
-                            <TableCell>Nº</TableCell>
-                            <TableCell>Curso</TableCell>
-                            <TableCell>Precio</TableCell>
-                            <TableCell>Sede</TableCell>
-                            <TableCell align="center">Eliminar</TableCell>
+                            <TableCell className={classes.celdas} >Nº</TableCell>
+                            <TableCell className={classes.celdas}>Curso</TableCell>
+                            <TableCell className={classes.celdas}>Precio</TableCell>
+                            <TableCell className={classes.celdas}>Sede</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
                           {listaGrupos.map((grupo) => {
                             return (
-                              <TableRow>
-                                <TableCell>
+                              <TableRow className={classes.fila}>
+                                <TableCell className={classes.texto}>
                                   {(cantidad = cantidad + 1)}
                                 </TableCell>
-                                <TableCell>{grupo.NOMBREGRUPO}</TableCell>
+                                <TableCell className={classes.texto}>{grupo.NOMBREGRUPO}</TableCell>
                                 <TableCell align="center">
                                   {grupo.PRECIO}
-                                </TableCell>
-                                <TableCell>{grupo.CODSEDE}</TableCell>
-                                <TableCell>
-                                  <ContainerImgIcon
-                                    onClick={() => {
-                                      alerta
-                                        .fire({
-                                          title: "¿Esta seguro de eliminar?",
-                                          icon: "question",
-                                          showCancelButton: true,
-                                          confirmButtonColor: "#000",
-                                          cancelButtonColor: "#d33",
-                                          reverseButtons: true,
-                                          confirmButtonText: "Si",
-                                          cancelButtonText: "No",
-                                          background: "#d6d6d6",
-                                          iconColor: "#000",
-                                          color: "#000",
-                                        })
-                                        .then((result) => {
-                                          if (result.isConfirmed) {
-                                            alerta.fire({
-                                              title: "Operacion Exitosa",
-                                              icon: "success",
-                                              confirmButtonColor: "#000",
-                                              background: "#d6d6d6",
-                                              iconColor: "#000",
-                                              color: "#000",
-                                            });
-                                            const grupoEliminar = {
-                                              CODSEDE: grupo.CODSEDE,
-                                              CODCURSO: grupo.CODCURSO,
-                                              CODGRUPO: grupo.CODGRUPO,
-                                            };
-                                            axios
-                                              .delete(url + "eliminarGrupo", {
-                                                data: grupoEliminar,
-                                              })
-                                              .then((response) =>
-                                                setActualizo(true)
-                                              );
-                                          }
-                                        });
-                                    }}
-                                  >
-                                    <ImgIcon icon={faXmark} />
-                                  </ContainerImgIcon>
-                                </TableCell>{" "}
+                                </TableCell >
+                                <TableCell className={classes.texto}>{grupo.CODSEDE}</TableCell>
                               </TableRow>
                             );
                           })}
                         </TableBody>
                       </Table>
                     </ContainerTabla>
-                    <BotonAñadir
+                    <BotonAñadir title="Agregar grupo"
                       onClick={() => {
                         setAñadirGrupo("true");
                       }}
@@ -304,3 +283,49 @@ export default function ModalVerGrupo({
     </>
   );
 }
+/*<TableCell>
+                                  <ContainerImgIcon
+                                    onClick={() => {
+                                      alerta
+                                        .fire({
+                                          title: "¿Esta seguro de eliminar?",
+                                          icon: "question",
+                                          showCancelButton: true,
+                                          confirmButtonColor: "#000",
+                                          cancelButtonColor: "#d33",
+                                          reverseButtons: true,
+                                          confirmButtonText: "Si",
+                                          cancelButtonText: "No",
+                                          background: "#d6d6d6",
+                                          iconColor: "#000",
+                                          color: "#000",
+                                        })
+                                        .then((result) => {
+                                          if (result.isConfirmed) {
+                                            alerta.fire({
+                                              title: "Operacion Exitosa",
+                                              icon: "success",
+                                              confirmButtonColor: "#000",
+                                              background: "#d6d6d6",
+                                              iconColor: "#000",
+                                              color: "#000",
+                                            });
+                                            const grupoEliminar = {
+                                              CODSEDE: grupo.CODSEDE,
+                                              CODCURSO: grupo.CODCURSO,
+                                              CODGRUPO: grupo.CODGRUPO,
+                                            };
+                                            axios
+                                              .delete(url + "eliminarGrupo", {
+                                                data: grupoEliminar,
+                                              })
+                                              .then((response) =>
+                                                setActualizo(true)
+                                              );
+                                          }
+                                        });
+                                    }}
+                                  >
+                                    <ImgIcon icon={faXmark} />
+                                  </ContainerImgIcon>
+                                </TableCell>{" "} */

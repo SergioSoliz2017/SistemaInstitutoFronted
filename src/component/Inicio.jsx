@@ -29,7 +29,8 @@ export default function Inicio() {
         .post(url + "iniciarSesion", { codigo: id, contraseña: contraseña })
         .then((response) => {
           if (response.data === "Correcto") {
-            historial.push("/home/" + id);
+            var codigo =  id.toUpperCase()
+            historial.push("/home/" + codigo);
           } else {
             if (response.data === "Incorrecto") {
               toast("Contraseña Incorrecta", {

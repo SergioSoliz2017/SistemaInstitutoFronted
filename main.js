@@ -1,34 +1,29 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, screen, ipcMain } = require("electron");
 const { exec } = require("child_process");
-const path = require("path");
-const isDev = require("electron-is-dev");
-const fs = require('fs').promises;
+const path = require('path');
+const fs = require('fs');
 
 let mainWindow;
 
 function createWindow() {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: width,
+    height: height,
+    resizable: false,  // Desactiva la capacidad de redimensionamiento
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
     },
   });
-  mainWindow.loadURL(
-    "http://173.249.2.36"
-  );
-  if (isDev) {
-    // Open the DevTools.
-    //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-    mainWindow.webContents.openDevTools();
-  }
+  mainWindow.loadURL('http://localhost:3000');
+  mainWindow.webContents.openDevTools();
   mainWindow.on("closed", () => (mainWindow = null));
 }
 
-app.on("ready", () => {
-  createWindow();
 
+app.whenReady().then(() => {
+  createWindow();
   ipcMain.handle("open-exe", async (event, codigoEstudiante) => {
     return new Promise((resolve, reject) => {
       const exePath = "C:\\InfinityChess\\RegistrarHuella\\HyuellaDigital.exe";
@@ -40,7 +35,7 @@ app.on("ready", () => {
         }
   
         const rutaArchivo = path.join('C:\\InfinityChess\\RegistrarHuella\\Huellas', `${codigoEstudiante}.txt`);
-  
+
         try {
           fs.accessSync(rutaArchivo, fs.constants.F_OK);
           // El archivo existe
@@ -52,7 +47,9 @@ app.on("ready", () => {
       });
     });
   });
-  
+  app.on('activate', function () {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
 });
 
 app.on("window-all-closed", () => {

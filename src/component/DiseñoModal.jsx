@@ -138,6 +138,12 @@ export const TextBox = styled.span`
     css`
       text-align: center;
     `}
+    ${(props) =>
+    props.todo === "true" &&
+    css`
+    text-align: start;
+      width: 100%;
+    `}
 `;
 export const Select = styled.select`
   height: 45px;

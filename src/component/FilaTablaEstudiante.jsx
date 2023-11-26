@@ -7,6 +7,7 @@ import {
   faAdd,
   faFolder,
   faFolderOpen,
+  faNoteSticky,
   faToggleOff,
   faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
@@ -48,6 +49,7 @@ export default function FilaTabla({
   tipo,
   actualizo,
   setAgregar,
+  rol,
 }) {
   const [hovered, setHovered] = useState(false);
   const classes = styles();
@@ -64,81 +66,113 @@ export default function FilaTabla({
         {estudiante.APELLIDOESTUDIANTE}
       </TableCell>
       <TableCell className={classes.opciones}>
-        <ContainerImgIcon
-          onClick={() => {
-            modalInformacion(true);
-            ocultar("true");
-            estudianteElegido(estudiante);
-            tipo("Estudiante");
-          }}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-        >
-          <ImgIcon tabla={"false"} icon={hovered ? faFolderOpen : faFolder} />
-        </ContainerImgIcon>
-        <ContainerImgIcon
-          switch={"true"}
-          onClick={() => {
-            alerta
-              .fire({
-                title: "¿Esta seguro?",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#000",
-                cancelButtonColor: "#d33",
-                reverseButtons: true,
-                confirmButtonText: "Si",
-                cancelButtonText: "No",
-                background: "#d6d6d6",
-                iconColor: "#000",
-                color: "#000",
-              })
-              .then((result) => {
-                if (result.isConfirmed) {
-                  alerta.fire({
-                    title: "Cambio realizado",
-                    icon: "success",
+        {rol !== "Maestro" && (
+          <>
+            <ContainerImgIcon
+              title="Información del estudiante"
+              onClick={() => {
+                modalInformacion(true);
+                ocultar("true");
+                estudianteElegido(estudiante);
+                tipo("Estudiante");
+              }}
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+            >
+              <ImgIcon
+                tabla={"false"}
+                icon={hovered ? faFolderOpen : faFolder}
+              />
+            </ContainerImgIcon>
+            <ContainerImgIcon
+              title="Ver observaciones"
+              onClick={() => {
+                estudianteElegido(estudiante);
+              }}
+            >
+              <ImgIcon tabla={"false"} icon={faNoteSticky} />
+            </ContainerImgIcon>
+            <ContainerImgIcon
+              title="Agregar estudiante"
+              onClick={() => {
+                setAgregar(true);
+                ocultar("true");
+                estudianteElegido(estudiante);
+              }}
+            >
+              <ImgIcon tabla={"false"} icon={faAdd} />
+            </ContainerImgIcon>
+            <ContainerImgIcon
+              title="Habilitar/Deshabilitar"
+              switch={"true"}
+              onClick={() => {
+                alerta
+                  .fire({
+                    title: "¿Esta seguro?",
+                    icon: "question",
+                    showCancelButton: true,
                     confirmButtonColor: "#000",
+                    cancelButtonColor: "#d33",
+                    reverseButtons: true,
+                    confirmButtonText: "Si",
+                    cancelButtonText: "No",
                     background: "#d6d6d6",
                     iconColor: "#000",
                     color: "#000",
+                  })
+                  .then((result) => {
+                    if (result.isConfirmed) {
+                      alerta.fire({
+                        title: "Cambio realizado",
+                        icon: "success",
+                        confirmButtonColor: "#000",
+                        background: "#d6d6d6",
+                        iconColor: "#000",
+                        color: "#000",
+                      });
+                      const cambiar = {
+                        HABILITADO:
+                          estudiante.HABILITADO === "Habilitado"
+                            ? "Deshabilitado"
+                            : "Habilitado",
+                      };
+                      axios
+                        .put(
+                          url +
+                            "actualizarEstadoEstudiante/" +
+                            estudiante.CODESTUDIANTE,
+                          cambiar
+                        )
+                        .then((response) => {
+                          actualizo(true);
+                        });
+                    }
                   });
-                  const cambiar = {
-                    HABILITADO:
-                      estudiante.HABILITADO === "Habilitado"
-                        ? "Deshabilitado"
-                        : "Habilitado",
-                  };
-                  axios
-                    .put(
-                      url +
-                        "actualizarEstadoEstudiante/" +
-                        estudiante.CODESTUDIANTE,
-                      cambiar
-                    )
-                    .then((response) => {
-                      actualizo(true);
-                    });
+              }}
+            >
+              <ImgIcon
+                tabla={"true"}
+                icon={
+                  estudiante.HABILITADO === "Habilitado"
+                    ? faToggleOn
+                    : faToggleOff
                 }
-              });
-          }}
-        >
-          <ImgIcon
-            tabla={"true"}
-            icon={
-              estudiante.HABILITADO === "Habilitado" ? faToggleOn : faToggleOff
-            }
-          />
-        </ContainerImgIcon>
-        <ContainerImgIcon
-          onClick={() => {
-            setAgregar(true);
-            ocultar("true");
-            estudianteElegido(estudiante)
-          }}
-        >
-          <ImgIcon tabla={"false"} icon={faAdd} />
-        </ContainerImgIcon>
+              />
+            </ContainerImgIcon>
+          </>
+        )}
+        {rol === "Maestro" && (
+          <ContainerImgIcon
+          title="Agregar observaciones"
+            onClick={() => {
+              /*setAgregar(true);
+              ocultar("true");*/
+              estudianteElegido(estudiante);
+            }}
+          >
+            <ImgIcon tabla={"false"} icon={faNoteSticky} />
+          </ContainerImgIcon>
+        )}
       </TableCell>
     </TableRow>
   );

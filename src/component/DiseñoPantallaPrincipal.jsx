@@ -80,7 +80,7 @@ export const BotonNav = styled.button`
     props.cerrar === "true" &&
     css`
       position: absolute;
-      bottom: 0px;
+      bottom: -10px;
     `}
 `;
 export const BotonNavSelect = styled.select`
@@ -345,8 +345,16 @@ export const ContainerDatos = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  height: 530px;
-  
+  ${(props) =>
+    props.espacio === "true" &&
+    css`
+      margin-top: 40px;
+    `}
+    ${(props) =>
+    props.trabajador === "true" &&
+    css`
+      height: 620px;
+    `}
 `;
 
 export const Category = styled.div`
@@ -386,11 +394,20 @@ export const ContainerTodo = styled.div`
       width: 80%;
       display: flex;
       flex-direction: column;
+      height: 580px;
+    `}
+    ${(props) =>
+    props.lista === "false" &&
+    css`
+      width: 80%;
+      display: flex;
+      flex-direction: column;
+      height: 620px;
     `}
   ${(props) =>
     props.cursos === "true" &&
     css`
-      height: 550px;
+      height: 620px;
     `}
     ${(props) =>
     props.cursos === "false" &&
@@ -404,13 +421,14 @@ export const ContainerTodo = styled.div`
       height: 750px;
       margin-bottom: 10px;
     `}
+    
 `;
 export const ContainerTabla = styled.div`
   width: 90%;
   z-index: 1;
   margin-top: 35px;
-  height: 450px;
   overflow-y: auto;
+  margin-bottom: 20px;
   ${(props) =>
     props.cursos === "registro" &&
     css`
@@ -419,13 +437,25 @@ export const ContainerTabla = styled.div`
   ${(props) =>
     props.cursos === "true" &&
     css`
-    margin-top: 60px;
-      height: 285px;
+      margin-top: 60px;
+      height: 280px;
+    `}
+    ${(props) =>
+    props.lista === "true" &&
+    css`
+      height: 440px;
     `}
      ${(props) =>
     props.cursos === "false" &&
     css`
      margin-top: 80px;
+     height: 420px;
+    `}
+    ${(props) =>
+    props.abajo === "true" &&
+    css`
+    margin-top: 80px;
+     height: 620px;
     `}
 `;
 export const ContainerBotonBusqueda = styled.div`
@@ -442,6 +472,11 @@ export const ContainerBotonBusqueda = styled.div`
     css`
       left: 45%;
       margin-top: 20px;
+    `}
+    ${(props) =>
+    props.add === "false" &&
+    css`
+      top: 13%;
     `}
 `;
 export const BotonBuscar = styled.button`
