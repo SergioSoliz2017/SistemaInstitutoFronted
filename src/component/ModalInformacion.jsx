@@ -164,6 +164,8 @@ export default function ModalInformacion({
     setPresente("");
     setFalta("");
     setLicencia("");
+    setHorarios([])
+    setAsistencia([])
   };
   const [horarios, setHorarios] = useState([]);
 
@@ -791,7 +793,7 @@ export default function ModalInformacion({
                                             {asis.ESTADO}{" "}
                                           </TableCell>
                                           <TableCell className={classes.texto}>
-                                            {asis.OBSERVACION}
+                                            {asis.OBSERVACION === null? "Falta" :asis.OBSERVACION}
                                           </TableCell>
                                         </TableRow>
                                       </>

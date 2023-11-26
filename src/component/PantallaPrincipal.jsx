@@ -640,7 +640,7 @@ export default function PantallaPrincipal() {
     return codigo.toUpperCase();
   }
   const agregarTodo = (estudiante, EstudianteTutor) => {
-    const hoy = new Date().toLocaleDateString();
+    const hoy = new Date().toISOString().split('T')[0];
     axios.post(url + "asignar-tutor", EstudianteTutor).then((response) => {
       const dataCurso = {
         CODESTUDIANTE: estudiante.CODESTUDIANTE,
@@ -962,6 +962,16 @@ export default function PantallaPrincipal() {
     if (opcion === 1 && respuesta === "Existe") {
       obtenerCursos();
     }
+    if (opcion === 1 && opcionPasos === 3 && sede === "NACIONAL") {
+      alerta.fire({
+        title: "Seleccionar sede",
+        icon: "warning",
+        confirmButtonColor: "#000",
+        background: "#d6d6d6",
+        iconColor: "#000",
+        color: "#000",
+      });
+    }
     if (opcion === 6) {
       setCarga(true);
       axios.get(url + "obtenerTrabajadores/" + sede).then((response) => {
@@ -987,6 +997,7 @@ export default function PantallaPrincipal() {
     modalAñadirTutor,
     modal,
     opcion,
+    opcionPasos,
     sede,
     lista,
   ]);
@@ -1001,7 +1012,8 @@ export default function PantallaPrincipal() {
       var codigoEstudiante = generarCodigoEstudiante();
       const respuesta = await window.ipcRenderer.invoke(
         "open-exe",
-        codigoEstudiante
+        codigoEstudiante,
+        sede
       );
       if (respuesta === "Existe") {
         setHuellaEscaneada(true);
