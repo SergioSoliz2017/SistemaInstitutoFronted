@@ -50,6 +50,13 @@ export const BoxCampo = styled.div`
       z-index: 90;
     `}
     ${(props) =>
+    props.buscar === "false" &&
+    css`
+      margin: 20px -10px 0px 10px;
+      width: calc(30% - 20px);
+      z-index: 90;
+    `}
+    ${(props) =>
     props.precio === "true" &&
     css`
       width: calc(20% - 20px);

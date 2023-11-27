@@ -1,19 +1,31 @@
 import styled, { css } from "styled-components";
+import { Calendar } from 'react-date-range';
 export const Overlay = styled.div`
   width: 100vw;
   height: 100vh;
   position: fixed;
-  left: 22%;
+  left: 20%;
   top: -3%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 2s ease-in-out;
+  transition: all 0s ease-in-out;
   z-index: 1;
+  ${(props) =>
+    props.tipo === "true" &&
+    css`
+      left: 20.8%;
+    `}
+    ${(props) =>
+    props.tipo === "false" &&
+    css`
+      top: 9%;
+      left: 18.4%;
+    `}
 `;
 export const ContenedorModal = styled.div`
-  transition: all 1s ease-in-out;
-  width: 35%;
+  transition: all 0s ease-in-out;
+  width: 38%;
   height: 250px;
   min-height: 100px;
   background: #d6d6d6;
@@ -27,7 +39,13 @@ export const ContenedorModal = styled.div`
   ${(props) =>
     props.tipo === "true" &&
     css`
-      width: 35.5%;
+      width: 37%;
+    `}
+    ${(props) =>
+    props.tipo === "false" &&
+    css`
+      width: max-content;
+      height: max-content;
     `}
 `;
 export const EncabezadoModal = styled.div`
@@ -91,6 +109,15 @@ export const BotonCerrar = styled.button`
   &:hover {
     background: red;
   }
+  ${(props) =>
+    props.alado === "true" &&
+    css`
+      right: 60px;
+      &:hover {
+        color:#d6d6d6 ;
+      background: black;
+  }
+    `}
 `;
 export const DetalleUsuario = styled.div`
   position: relative;
@@ -102,8 +129,9 @@ export const DetalleUsuario = styled.div`
   height: 90%;
 `;
 export const ContainerTabla = styled.div`
-  width: 90%;
+  width: 100%;
   z-index: 1;
   height: 100%;
   overflow-y: auto;
 `;
+export const Calendario = styled(Calendar)``

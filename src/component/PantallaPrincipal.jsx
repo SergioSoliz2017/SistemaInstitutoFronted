@@ -72,6 +72,7 @@ import {
   faUserTie,
   faArrowRightFromBracket,
   faGear,
+  faRefresh,
 } from "@fortawesome/free-solid-svg-icons";
 import alerta from "sweetalert2";
 import SelectInput from "./SelectValidar";
@@ -640,7 +641,7 @@ export default function PantallaPrincipal() {
     return codigo.toUpperCase();
   }
   const agregarTodo = (estudiante, EstudianteTutor) => {
-    const hoy = new Date().toISOString().split('T')[0];
+    const hoy = new Date().toISOString().split("T")[0];
     axios.post(url + "asignar-tutor", EstudianteTutor).then((response) => {
       const dataCurso = {
         CODESTUDIANTE: estudiante.CODESTUDIANTE,
@@ -989,7 +990,6 @@ export default function PantallaPrincipal() {
         setListaTrabajadores(listaFiltrada);
       });
     }
-
   }, [
     editEstudiante,
     modalTutor,
@@ -1136,13 +1136,17 @@ export default function PantallaPrincipal() {
   }
   const [fechaIniFiltro, setFechaIniFiltro] = useState("");
   const [fechaFinFiltro, setFechaFinFiltro] = useState("");
+  const [iniIn, setIniIn] = useState("");
+  const [finIn, setFinIn] = useState("");
   let listaRes = [];
   if (
     !buscar &&
     !generoFiltro &&
     !colegioFiltro &&
     !fechaIniFiltro &&
-    !fechaFinFiltro
+    !fechaFinFiltro &&
+    !iniIn &&
+    !finIn
   ) {
     listaRes = listaEstudiantes;
   } else {
@@ -1165,6 +1169,30 @@ export default function PantallaPrincipal() {
       const fechaDentroIntervalo =
         (!fechaIniFiltro || fechaNacimiento >= fechaIniFiltro) &&
         (!fechaFinFiltro || fechaNacimiento <= fechaFinFiltro);
+      if (iniIn && finIn) {
+        const fechaDb = new Date(fechaNacimiento);
+        const diaMesIniIn = {
+          day: iniIn.getDate(),
+          month: iniIn.getMonth() + 1,
+        };
+        const diaMesFinIn = {
+          day: finIn.getDate(),
+          month: finIn.getMonth() + 1,
+        };
+        const diaMesFechaDb = {
+          day: fechaDb.getDate(),
+          month: fechaDb.getMonth() + 1,
+        };
+        const estaEnIntervalo =
+          diaMesIniIn.month <= diaMesFechaDb.month &&
+          diaMesFechaDb.month <= diaMesFinIn.month &&
+          diaMesIniIn.day <= diaMesFechaDb.day &&
+          diaMesFechaDb.day <= diaMesFinIn.day;
+        return (
+          searchWords.every((word) => campos.includes(word)) && estaEnIntervalo
+        );
+      }
+
       return (
         searchWords.every((word) => campos.includes(word)) &&
         fechaDentroIntervalo
@@ -1304,7 +1332,20 @@ export default function PantallaPrincipal() {
   const historial = useHistory();
 
   const [tipoAñadir, setTipoAñadir] = useState("curso");
-
+  const borrarFiltros = () => {
+    setGeneroFiltro ("")
+    setColegioFiltro ("")
+    setFechaIniFiltro ("")
+    setFechaFinFiltro ("")
+    setIniIn ("")
+    setFinIn("")
+  }
+  const borrarFiltrosTutor = () => {
+    setGeneroTutorFiltro ("")
+    setRelacionFiltro ("")
+    setFechaIniFiltroTutor ("")
+    setFechaFinFiltroTutor ("")
+  }
   return (
     <GlobalStyle>
       {trabajador !== null && (
@@ -2127,6 +2168,15 @@ export default function PantallaPrincipal() {
                             <>
                               <ContainerTodo lista={"true"}>
                                 <ContainerTituloBusqueda>
+                                <BoxCampo buscar={"false"}>
+                                <IconoBuscar
+                                      filtro={"true"}
+                                      icon={faRefresh}
+                                      onClick={() => {
+                                        borrarFiltros()
+                                      }}
+                                    />
+                                </BoxCampo>
                                   <BoxCampo buscar={"true"}>
                                     <InputBusqueda
                                       value={buscar}
@@ -2239,6 +2289,15 @@ export default function PantallaPrincipal() {
                             <>
                               <ContainerTodo lista={"true"}>
                                 <ContainerTituloBusqueda>
+                                <BoxCampo buscar={"false"}>
+                                <IconoBuscar
+                                      filtro={"true"}
+                                      icon={faRefresh}
+                                      onClick={() => {
+                                        borrarFiltrosTutor()
+                                      }}
+                                    />
+                                </BoxCampo>
                                   <BoxCampo buscar={"true"}>
                                     <InputBusqueda
                                       value={buscarTutor}
@@ -2686,6 +2745,8 @@ export default function PantallaPrincipal() {
           <Filtro
             estado={filtro}
             cambiarEstado={setFiltro}
+            iniInt={setIniIn}
+            finInt={setFinIn}
             genero={
               tipoFiltro === "Estudiante" ? generoFiltro : generoTutorFiltro
             }

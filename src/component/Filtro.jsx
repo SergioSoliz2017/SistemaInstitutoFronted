@@ -1,4 +1,4 @@
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarDay, faXmark } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import {
   BotonCerrar,
@@ -14,7 +14,10 @@ import {
 } from "./DiseñoFiltro";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import { DateRangePicker } from "react-date-range";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css";
+import { useState } from "react";
 export default function Filtro({
   estado,
   cambiarEstado,
@@ -29,139 +32,55 @@ export default function Filtro({
   setFechaFin,
   relacion,
   setRelacion,
+  iniInt,
+  finInt,
 }) {
+  function handleSelect(ranges) {
+    setDatosFecha(ranges.selection);
+    iniInt(ranges.selection.startDate);
+    finInt(ranges.selection.endDate);
+  }
+
+  const [cumpleaño, setCumpleaño] = useState(false);
+  const [datosFecha, setDatosFecha] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    key: "selection",
+  });
   return (
     <>
       {estado && (
-        <Overlay>
-          <ContenedorModal tipo ={tipo==="Tutor"?"true":"false"}>
+        <Overlay
+          tipo={tipo === "Tutor" ? "true" : cumpleaño ? "false" : "nada"}
+        >
+          <ContenedorModal
+            tipo={tipo === "Tutor" ? "true" : cumpleaño ? "false" : "nada"}
+          >
             <EncabezadoModal>
               <Titulo>Filtros</Titulo>
             </EncabezadoModal>
+            {!cumpleaño && (
+              <BotonCerrar
+                alado={"true"}
+                onClick={() => {
+                  setCumpleaño(true);
+                }}
+              >
+                <FontAwesomeIcon icon={faCalendarDay} />
+              </BotonCerrar>
+            )}
             <BotonCerrar
               onClick={() => {
-                cambiarEstado(false);
+                cumpleaño ? setCumpleaño(false) : cambiarEstado(false);
               }}
             >
               <FontAwesomeIcon icon={faXmark} />
             </BotonCerrar>
-            {tipo === "Estudiante" && (
-              <DetalleUsuario>
-                <ContainerTabla>
-                  <ContainerTexto>
-                    <Text titulo={"true"}>Fecha nacimiento</Text>
-                    <Text titulo={"true"}>Genero</Text>
-                    <Text titulo={"true"}>Colegio</Text>
-                  </ContainerTexto>
-                  <ContainerTexto>
-                    <Text>Fecha inicio</Text>
-                    <Text
-                      seleccionado={genero === "Hombre" ? "true" : "false"}
-                      onClick={() => {
-                        genero !== "Hombre"
-                          ? setGenero((prevGenero) => {
-                              return "Hombre";
-                            })
-                          : setGenero((prevGenero) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Hombre
-                    </Text>
-                    <Text
-                      seleccionado={colegio === "Fiscal" ? "true" : "false"}
-                      onClick={() => {
-                        colegio !== "Fiscal"
-                          ? setColegio((prev) => {
-                              return "Fiscal";
-                            })
-                          : setColegio((prev) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Fiscal
-                    </Text>
-                  </ContainerTexto>
-                  <ContainerTexto>
-                    <Text>
-                      <InputDate
-                        type="date"
-                        value={fechaIni}
-                        onChange={(e) => {
-                          setFechaIni(e.target.value);
-                        }}
-                      />
-                    </Text>
-                    <Text
-                      seleccionado={genero === "Mujer" ? "true" : "false"}
-                      onClick={() => {
-                        genero !== "Mujer"
-                          ? setGenero((prevGenero) => {
-                              return "Mujer";
-                            })
-                          : setGenero((prevGenero) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Mujer
-                    </Text>
-                    <Text
-                      seleccionado={colegio === "Particular" ? "true" : "false"}
-                      onClick={() => {
-                        colegio !== "Particular"
-                          ? setColegio((prev) => {
-                              return "Particular";
-                            })
-                          : setColegio((prev) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Particular
-                    </Text>
-                  </ContainerTexto>
-                  <ContainerTexto>
-                    <Text>Fecha fin</Text>
-                    <Text></Text>
-                    <Text
-                      seleccionado={colegio === "Convenio" ? "true" : "false"}
-                      onClick={() => {
-                        colegio !== "Convenio"
-                          ? setColegio((prev) => {
-                              return "Convenio";
-                            })
-                          : setColegio((prev) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Convenio
-                    </Text>
-                  </ContainerTexto>
-                  <ContainerTexto>
-                    <Text>
-                      <InputDate
-                        type="date"
-                        value={fechaFin}
-                        onChange={(e) => {
-                          setFechaFin(e.target.value);
-                        }}
-                      />
-                    </Text>
-                    <Text></Text>
-                    <Text></Text>
-                  </ContainerTexto>
-                </ContainerTabla>
-              </DetalleUsuario>
-            )}
             {tipo === "Tutor" && (
               <DetalleUsuario>
                 <ContainerTabla>
                   <ContainerTexto>
-                    <Text titulo={"true"}>Fecha nacimiento</Text>
+                    <Text titulo={"true"}>Fecha de nacimiento</Text>
                     <Text titulo={"true"}>Genero</Text>
                     <Text titulo={"true"}>Relacion</Text>
                   </ContainerTexto>
@@ -354,6 +273,134 @@ export default function Filtro({
                     </Text>
                   </ContainerTexto>
                 </ContainerTabla>
+              </DetalleUsuario>
+            )}
+            {!cumpleaño && (
+              <>
+                {tipo === "Estudiante" && (
+                  <DetalleUsuario>
+                    <ContainerTabla>
+                      <ContainerTexto>
+                        <Text titulo={"true"}>Fecha de nacimiento</Text>
+                        <Text titulo={"true"}>Genero</Text>
+                        <Text titulo={"true"}>Colegio</Text>
+                      </ContainerTexto>
+                      <ContainerTexto>
+                        <Text>Fecha inicio</Text>
+                        <Text
+                          seleccionado={genero === "Hombre" ? "true" : "false"}
+                          onClick={() => {
+                            genero !== "Hombre"
+                              ? setGenero((prevGenero) => {
+                                  return "Hombre";
+                                })
+                              : setGenero((prevGenero) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Hombre
+                        </Text>
+                        <Text
+                          seleccionado={colegio === "Fiscal" ? "true" : "false"}
+                          onClick={() => {
+                            colegio !== "Fiscal"
+                              ? setColegio((prev) => {
+                                  return "Fiscal";
+                                })
+                              : setColegio((prev) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Fiscal
+                        </Text>
+                      </ContainerTexto>
+                      <ContainerTexto>
+                        <Text>
+                          <InputDate
+                            type="date"
+                            value={fechaIni}
+                            onChange={(e) => {
+                              setFechaIni(e.target.value);
+                            }}
+                          />
+                        </Text>
+                        <Text
+                          seleccionado={genero === "Mujer" ? "true" : "false"}
+                          onClick={() => {
+                            genero !== "Mujer"
+                              ? setGenero((prevGenero) => {
+                                  return "Mujer";
+                                })
+                              : setGenero((prevGenero) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Mujer
+                        </Text>
+                        <Text
+                          seleccionado={
+                            colegio === "Particular" ? "true" : "false"
+                          }
+                          onClick={() => {
+                            colegio !== "Particular"
+                              ? setColegio((prev) => {
+                                  return "Particular";
+                                })
+                              : setColegio((prev) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Particular
+                        </Text>
+                      </ContainerTexto>
+                      <ContainerTexto>
+                        <Text>Fecha fin</Text>
+                        <Text></Text>
+                        <Text
+                          seleccionado={
+                            colegio === "Convenio" ? "true" : "false"
+                          }
+                          onClick={() => {
+                            colegio !== "Convenio"
+                              ? setColegio((prev) => {
+                                  return "Convenio";
+                                })
+                              : setColegio((prev) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Convenio
+                        </Text>
+                      </ContainerTexto>
+                      <ContainerTexto>
+                        <Text>
+                          <InputDate
+                            type="date"
+                            value={fechaFin}
+                            onChange={(e) => {
+                              setFechaFin(e.target.value);
+                            }}
+                          />
+                        </Text>
+                        <Text></Text>
+                        <Text></Text>
+                      </ContainerTexto>
+                    </ContainerTabla>
+                  </DetalleUsuario>
+                )}
+              </>
+            )}
+            {cumpleaño && (
+              <DetalleUsuario>
+                <DateRangePicker
+                  ranges={[datosFecha]}
+                  onChange={handleSelect}
+                />
               </DetalleUsuario>
             )}
           </ContenedorModal>
