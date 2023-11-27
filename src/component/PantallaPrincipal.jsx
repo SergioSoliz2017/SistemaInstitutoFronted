@@ -989,6 +989,7 @@ export default function PantallaPrincipal() {
         setListaTrabajadores(listaFiltrada);
       });
     }
+
   }, [
     editEstudiante,
     modalTutor,
@@ -1028,14 +1029,14 @@ export default function PantallaPrincipal() {
     }
   };
 
-  const abrirExeVerificar = () => {
+  const abrirExeVerificar = async () => {
     try {
-      setOpcion(0);
-      axios
-        .post(url + "ejecutar-exe-verificar", { SEDE: sede })
-        .then((response) => {});
+      const respuesta = await window.ipcRenderer.invoke(
+        "open-exeVerificar",
+        sede
+      );
     } catch (error) {
-      console.error("Error de red", error);
+      console.error("Error al abrir el archivo .exe:", error);
     }
   };
   const [imagenHuella, setImagenHuella] = useState(
@@ -1389,6 +1390,7 @@ export default function PantallaPrincipal() {
                 </BotonNav>
                 <BotonNav
                   onClick={() => {
+                    iniciarElectron();
                     abrirExeVerificar();
                   }}
                 >

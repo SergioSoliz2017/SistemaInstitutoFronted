@@ -28,17 +28,14 @@ app.whenReady().then(() => {
     return new Promise((resolve, reject) => {
       const exePath = "C:\\InfinityChess\\RegistrarHuella\\HyuellaDigital.exe";
       const comando = `"${exePath}" "${codigoEstudiante}" 2>&1`;
-
       exec(comando, (error, stdout, stderr) => {
         if (error) {
           reject("Error al ejecutar el archivo .exe: " + error.message);
         }
-
         const rutaArchivo = path.join(
           "C:\\InfinityChess\\RegistrarHuella\\Huellas",
           `${codigoEstudiante}.txt`
         );
-
         try {
           fs.accessSync(rutaArchivo, fs.constants.F_OK);
           // El archivo existe
@@ -60,6 +57,16 @@ app.whenReady().then(() => {
         }
       });
     });
+  });
+  ipcMain.handle("open-exeVerificar", async (event,sede) => {
+    const exePath = "C:\\InfinityChess\\VerificarHuella\\VerificarHuella.exe";
+    const comando = `"${exePath}" "${sede}" 2>&1`;
+
+    exec(comando, (error, stdout, stderr) => {
+      if (error) {
+        reject("Error al ejecutar el archivo .exe: " + error.message);
+      }
+    })
   });
   app.on("activate", function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
