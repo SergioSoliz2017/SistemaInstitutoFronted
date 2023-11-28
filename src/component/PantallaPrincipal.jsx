@@ -227,7 +227,7 @@ export default function PantallaPrincipal() {
             border: "2px solid #000",
             padding: "10px",
             color: "#000",
-            background: "#d6d6d6",
+            background: "#B9D7EA",
             borderRadius: "20px",
             fontFamily: "bold",
             fontWeight: "1000",
@@ -243,7 +243,7 @@ export default function PantallaPrincipal() {
               border: "2px solid #000",
               padding: "10px",
               color: "#000",
-              background: "#d6d6d6",
+              background: "#B9D7EA",
               borderRadius: "20px",
               fontFamily: "bold",
               fontWeight: "1000",
@@ -261,7 +261,7 @@ export default function PantallaPrincipal() {
             border: "2px solid #000",
             padding: "10px",
             color: "#000",
-            background: "#d6d6d6",
+            background: "#B9D7EA",
             borderRadius: "20px",
             fontFamily: "bold",
             fontWeight: "1000",
@@ -277,7 +277,7 @@ export default function PantallaPrincipal() {
               border: "2px solid #000",
               padding: "10px",
               color: "#000",
-              background: "#d6d6d6",
+              background: "#B9D7EA",
               borderRadius: "20px",
               fontFamily: "bold",
               fontWeight: "1000",
@@ -298,7 +298,7 @@ export default function PantallaPrincipal() {
             border: "2px solid #000",
             padding: "10px",
             color: "#000",
-            background: "#d6d6d6",
+            background: "#B9D7EA",
             borderRadius: "20px",
             fontFamily: "bold",
             fontWeight: "1000",
@@ -314,7 +314,7 @@ export default function PantallaPrincipal() {
               border: "2px solid #000",
               padding: "10px",
               color: "#000",
-              background: "#d6d6d6",
+              background: "#B9D7EA",
               borderRadius: "20px",
               fontFamily: "bold",
               fontWeight: "1000",
@@ -332,7 +332,7 @@ export default function PantallaPrincipal() {
             border: "2px solid #000",
             padding: "10px",
             color: "#000",
-            background: "#d6d6d6",
+            background: "#B9D7EA",
             borderRadius: "20px",
             fontFamily: "bold",
             fontWeight: "1000",
@@ -351,7 +351,7 @@ export default function PantallaPrincipal() {
             border: "2px solid #000",
             padding: "10px",
             color: "#000",
-            background: "#d6d6d6",
+            background: "#B9D7EA",
             borderRadius: "20px",
             fontFamily: "bold",
             fontWeight: "1000",
@@ -367,7 +367,7 @@ export default function PantallaPrincipal() {
               border: "2px solid #000",
               padding: "10px",
               color: "#000",
-              background: "#d6d6d6",
+              background: "#B9D7EA",
               borderRadius: "20px",
               fontFamily: "bold",
               fontWeight: "1000",
@@ -385,7 +385,7 @@ export default function PantallaPrincipal() {
             border: "2px solid #000",
             padding: "10px",
             color: "#000",
-            background: "#d6d6d6",
+            background: "#B9D7EA",
             borderRadius: "20px",
             fontFamily: "bold",
             fontWeight: "1000",
@@ -401,7 +401,7 @@ export default function PantallaPrincipal() {
               border: "2px solid #000",
               padding: "10px",
               color: "#000",
-              background: "#d6d6d6",
+              background: "#B9D7EA",
               borderRadius: "20px",
               fontFamily: "bold",
               fontWeight: "1000",
@@ -419,7 +419,7 @@ export default function PantallaPrincipal() {
             border: "2px solid #000",
             padding: "10px",
             color: "#000",
-            background: "#d6d6d6",
+            background: "#B9D7EA",
             borderRadius: "20px",
             fontFamily: "bold",
             fontWeight: "1000",
@@ -435,7 +435,7 @@ export default function PantallaPrincipal() {
               border: "2px solid #000",
               padding: "10px",
               color: "#000",
-              background: "#d6d6d6",
+              background: "#B9D7EA",
               borderRadius: "20px",
               fontFamily: "bold",
               fontWeight: "1000",
@@ -453,7 +453,7 @@ export default function PantallaPrincipal() {
             border: "2px solid #000",
             padding: "10px",
             color: "#000",
-            background: "#d6d6d6",
+            background: "#B9D7EA",
             borderRadius: "20px",
             fontFamily: "bold",
             fontWeight: "1000",
@@ -469,7 +469,7 @@ export default function PantallaPrincipal() {
               border: "2px solid #000",
               padding: "10px",
               color: "#000",
-              background: "#d6d6d6",
+              background: "#B9D7EA",
               borderRadius: "20px",
               fontFamily: "bold",
               fontWeight: "1000",
@@ -487,7 +487,7 @@ export default function PantallaPrincipal() {
             border: "2px solid #000",
             padding: "10px",
             color: "#000",
-            background: "#d6d6d6",
+            background: "#B9D7EA",
             borderRadius: "20px",
             fontFamily: "bold",
             fontWeight: "1000",
@@ -504,7 +504,7 @@ export default function PantallaPrincipal() {
             border: "2px solid #000",
             padding: "10px",
             color: "#000",
-            background: "#d6d6d6",
+            background: "#B9D7EA",
             borderRadius: "20px",
             fontFamily: "bold",
             fontWeight: "1000",
@@ -520,7 +520,7 @@ export default function PantallaPrincipal() {
               border: "2px solid #000",
               padding: "10px",
               color: "#000",
-              background: "#d6d6d6",
+              background: "#B9D7EA",
               borderRadius: "20px",
               fontFamily: "bold",
               fontWeight: "1000",
@@ -539,7 +539,7 @@ export default function PantallaPrincipal() {
             border: "2px solid #000",
             padding: "10px",
             color: "#000",
-            background: "#d6d6d6",
+            background: "#B9D7EA",
             borderRadius: "20px",
             fontFamily: "bold",
             fontWeight: "1000",
@@ -557,7 +557,7 @@ export default function PantallaPrincipal() {
             border: "2px solid #000",
             padding: "10px",
             color: "#000",
-            background: "#d6d6d6",
+            background: "#B9D7EA",
             borderRadius: "20px",
             fontFamily: "bold",
             fontWeight: "1000",
@@ -613,7 +613,6 @@ export default function PantallaPrincipal() {
   };
   const atrasPasoRegistro = () => {
     if (opcionPasos - 1 > 0) {
-      
       if (opcionPasos - 1 === 2 && respuesta === "ExisteR") {
         setOpcionPasos(1);
       } else {
@@ -933,7 +932,7 @@ export default function PantallaPrincipal() {
         setGeneroTutor("");
         setOpcionPasos(opcionPasos + 1);
         setTutorSi(true);
-        setRespuesta("")
+        setRespuesta("");
       }
       if (respuesta === "No") {
         setRelacion({ campo: "No tiene", valido: "true" });
@@ -943,12 +942,12 @@ export default function PantallaPrincipal() {
         setGeneroTutor(generoEstudiante);
         setOpcionPasos(opcionPasos + 1);
         setTutorSi(true);
-        setRespuesta("")
+        setRespuesta("");
       }
       if (respuesta === "Existe") {
         setOpcionPasos(opcionPasos + 2);
         setTutorSi(true);
-        setRespuesta("ExisteR")
+        setRespuesta("ExisteR");
       }
     }
     if (opcion === 1 && !modal && opcionPasos === 3) {
@@ -972,7 +971,7 @@ export default function PantallaPrincipal() {
         title: "Seleccionar sede",
         icon: "warning",
         confirmButtonColor: "#000",
-        background: "#d6d6d6",
+        background: "#B9D7EA",
         iconColor: "#000",
         color: "#000",
       });
@@ -1092,13 +1091,17 @@ export default function PantallaPrincipal() {
   };
   const [fechaIniFiltroTutor, setFechaIniFiltroTutor] = useState("");
   const [fechaFinFiltroTutor, setFechaFinFiltroTutor] = useState("");
+  const [iniInTutor, setIniInTutor] = useState("");
+  const [finInTutor, setFinInTutor] = useState("");
   let listaResTutor = [];
   if (
     !buscarTutor &&
     !generoTutorFiltro &&
     !relacionFiltro &&
     !fechaIniFiltroTutor &&
-    !fechaFinFiltroTutor
+    !fechaFinFiltroTutor &&
+    !iniInTutor && 
+    !finInTutor
   ) {
     listaResTutor = listaTutores;
   } else {
@@ -1132,6 +1135,29 @@ export default function PantallaPrincipal() {
       const fechaDentroIntervalo =
         (!fechaIniFiltroTutor || fechaNacimiento >= fechaIniFiltroTutor) &&
         (!fechaFinFiltroTutor || fechaNacimiento <= fechaFinFiltroTutor);
+        if (iniInTutor && finInTutor) {
+          const fechaDb = new Date(fechaNacimiento);
+          const diaMesIniIn = {
+            day: iniInTutor.getDate(),
+            month: iniInTutor.getMonth() + 1,
+          };
+          const diaMesFinIn = {
+            day: finInTutor.getDate(),
+            month: finInTutor.getMonth() + 1,
+          };
+          const diaMesFechaDb = {
+            day: fechaDb.getDate(),
+            month: fechaDb.getMonth() + 1,
+          };
+          const estaEnIntervalo =
+            diaMesIniIn.month <= diaMesFechaDb.month &&
+            diaMesFechaDb.month <= diaMesFinIn.month &&
+            diaMesIniIn.day <= diaMesFechaDb.day &&
+            diaMesFechaDb.day <= diaMesFinIn.day;
+          return (
+            searchWords.every((word) => campos.includes(word)) && estaEnIntervalo
+          );
+        }
       return (
         searchWords.every((word) => campos.includes(word)) &&
         fechaDentroIntervalo
@@ -1196,7 +1222,6 @@ export default function PantallaPrincipal() {
           searchWords.every((word) => campos.includes(word)) && estaEnIntervalo
         );
       }
-
       return (
         searchWords.every((word) => campos.includes(word)) &&
         fechaDentroIntervalo
@@ -1341,6 +1366,11 @@ export default function PantallaPrincipal() {
     endDate: new Date(),
     key: "selection",
   });
+  const [datosFechaTutor, setDatosFechaTutor] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    key: "selection",
+  });
   const borrarFiltros = () => {
     setGeneroFiltro("");
     setColegioFiltro("");
@@ -1348,26 +1378,29 @@ export default function PantallaPrincipal() {
     setFechaFinFiltro("");
     setIniIn("");
     setFinIn("");
-    setDatosFecha ({
+    setDatosFecha({
       startDate: new Date(),
       endDate: new Date(),
       key: "selection",
-    })
+    });
   };
   const borrarFiltrosTutor = () => {
     setGeneroTutorFiltro("");
     setRelacionFiltro("");
     setFechaIniFiltroTutor("");
     setFechaFinFiltroTutor("");
+    setIniInTutor("");
+    setFinInTutor("");
+    setDatosFechaTutor({
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    });
   };
   return (
     <GlobalStyle>
       {trabajador !== null && (
         <>
-          <ContainerUser>
-            {trabajador.NOMBRETRABAJADOR}
-            <IconoUser icon={faUserCircle}></IconoUser>
-          </ContainerUser>
           <Nav>
             <ContainerLogo
               onClick={() => {
@@ -1569,13 +1602,23 @@ export default function PantallaPrincipal() {
             {!carga && (
               <>
                 {opcion === 0 && (
-                  <ContainerImagenCentro>
-                    <ImagenLogoCentro src={require("../Imagenes/Logo.png")} />
-                  </ContainerImagenCentro>
+                  <>
+                    <ContainerUser arriba={"true"}>
+                      {trabajador.NOMBRETRABAJADOR}
+                      <IconoUser icon={faUserCircle}></IconoUser>
+                    </ContainerUser>
+                    <ContainerImagenCentro>
+                      <ImagenLogoCentro src={require("../Imagenes/Logo.png")} />
+                    </ContainerImagenCentro>
+                  </>
                 )}
                 {opcion === 1 && (
                   <>
                     <ContainerContenido>
+                      <ContainerUser>
+                        {trabajador.NOMBRETRABAJADOR}
+                        <IconoUser icon={faUserCircle}></IconoUser>
+                      </ContainerUser>
                       <TituloLateral>Registro de estudiantes</TituloLateral>
                       <ContainerLateral>
                         <ContainerPasosLateral>
@@ -2153,6 +2196,10 @@ export default function PantallaPrincipal() {
                 )}
                 {opcion === 2 && (
                   <ContainerContenido>
+                    <ContainerUser>
+                      {trabajador.NOMBRETRABAJADOR}
+                      <IconoUser icon={faUserCircle}></IconoUser>
+                    </ContainerUser>
                     <TituloLateral>Listas</TituloLateral>
                     <ContainerLateral>
                       {rolTrabajador !== "Maestro" && (
@@ -2186,7 +2233,10 @@ export default function PantallaPrincipal() {
                             <>
                               <ContainerTodo lista={"true"}>
                                 <ContainerTituloBusqueda>
-                                  <BoxCampo title="Borrar filtros" buscar={"false"}>
+                                  <BoxCampo
+                                    title="Borrar filtros"
+                                    buscar={"false"}
+                                  >
                                     <IconoBuscar
                                       filtro={"true"}
                                       icon={faRefresh}
@@ -2307,7 +2357,10 @@ export default function PantallaPrincipal() {
                             <>
                               <ContainerTodo lista={"true"}>
                                 <ContainerTituloBusqueda>
-                                  <BoxCampo title="Borrar filtros" buscar={"false"}>
+                                  <BoxCampo
+                                    title="Borrar filtros"
+                                    buscar={"false"}
+                                  >
                                     <IconoBuscar
                                       filtro={"true"}
                                       icon={faRefresh}
@@ -2437,6 +2490,10 @@ export default function PantallaPrincipal() {
                 )}
                 {opcion === 3 && (
                   <ContainerContenido>
+                    <ContainerUser>
+                      {trabajador.NOMBRETRABAJADOR}
+                      <IconoUser icon={faUserCircle}></IconoUser>
+                    </ContainerUser>
                     <TituloLateral>Materias</TituloLateral>
                     <ContainerRegistro>
                       <ContainerTodo
@@ -2530,6 +2587,10 @@ export default function PantallaPrincipal() {
                 )}
                 {opcion === 5 && (
                   <ContainerContenido>
+                    <ContainerUser>
+                      {trabajador.NOMBRETRABAJADOR}
+                      <IconoUser icon={faUserCircle}></IconoUser>
+                    </ContainerUser>
                     <TituloLateral>Sedes</TituloLateral>
                     <ContainerRegistro>
                       <ContainerTodo
@@ -2592,6 +2653,10 @@ export default function PantallaPrincipal() {
                 )}
                 {opcion === 6 && (
                   <ContainerContenido>
+                    <ContainerUser>
+                      {trabajador.NOMBRETRABAJADOR}
+                      <IconoUser icon={faUserCircle}></IconoUser>
+                    </ContainerUser>
                     <TituloLateral>Trabajadores</TituloLateral>
                     <ContainerRegistro>
                       <ContainerTodo
@@ -2763,10 +2828,10 @@ export default function PantallaPrincipal() {
           <Filtro
             estado={filtro}
             cambiarEstado={setFiltro}
-            iniInt={setIniIn}
-            finInt={setFinIn}
-            datosFecha={datosFecha}
-            setDatosFecha={setDatosFecha}
+            iniInt={tipoFiltro === "Estudiante" ? setIniIn : setIniInTutor}
+            finInt={tipoFiltro === "Estudiante" ? setFinIn : setFinInTutor}
+            datosFecha={tipoFiltro === "Estudiante" ?datosFecha : datosFechaTutor}
+            setDatosFecha={tipoFiltro === "Estudiante" ? setDatosFecha : setDatosFechaTutor}
             genero={
               tipoFiltro === "Estudiante" ? generoFiltro : generoTutorFiltro
             }

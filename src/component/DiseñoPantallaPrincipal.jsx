@@ -608,7 +608,6 @@ padding: 5px;
 export const ContainerUser = styled.div`
   height: max-content;
   position: absolute;
-  top: 20px;
   right: 40px;
   display: flex;
   gap: 20px;
@@ -616,6 +615,12 @@ export const ContainerUser = styled.div`
   align-items: center;
   font-family: "bold";
   font-weight: 1000;
+  ${(props) =>
+    props.arriba === "true" &&
+    css`
+    right: 57px;
+      top: 15px;
+    `}
 `
 export const IconoUser = styled(FontAwesomeIcon)`
   width: 50px;

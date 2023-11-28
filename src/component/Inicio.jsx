@@ -12,6 +12,7 @@ import {
   ConatinerBoton,
   ConatinerImput,
   Container,
+  ImagenCarga,
 } from "./DiseñosInicio";
 import toast, { Toaster } from "react-hot-toast";
 import { useHistory } from "react-router";
@@ -23,12 +24,15 @@ export default function Inicio() {
   const [id, setId] = useState("");
   const [contraseña, setContraseña] = useState("");
   const historial = useHistory();
+  const [carga,setCarga] = useState(false)
   function ingresar() {
     if (EsValido()) {
+      setCarga(true)
       axios
         .post(url + "iniciarSesion", { codigo: id, contraseña: contraseña })
         .then((response) => {
           if (response.data === "Correcto") {
+            setCarga(false)
             var codigo =  id.toUpperCase()
             historial.push("/home/" + codigo);
           } else {
@@ -40,7 +44,7 @@ export default function Inicio() {
                   border: "2px solid #000",
                   padding: "10px",
                   color: "#000",
-                  background: "#d6d6d6",
+                  background: "#B9D7EA",
                   borderRadius: "20px",
                   fontFamily: "bold",
                   fontWeight: "1000",
@@ -54,7 +58,7 @@ export default function Inicio() {
                   border: "2px solid #000",
                   padding: "10px",
                   color: "#000",
-                  background: "#d6d6d6",
+                  background: "#B9D7EA",
                   borderRadius: "20px",
                   fontFamily: "bold",
                   fontWeight: "1000",
@@ -77,7 +81,7 @@ export default function Inicio() {
           border: "2px solid #000",
           padding: "10px",
           color: "#000",
-          background: "#d6d6d6",
+          background: "#B9D7EA",
           borderRadius: "20px",
           fontFamily: "bold",
           fontWeight: "1000",
@@ -95,7 +99,7 @@ export default function Inicio() {
           border: "2px solid #000",
           padding: "10px",
           color: "#000",
-          background: "#d6d6d6",
+          background: "#B9D7EA",
           fontWeight: "1000",
         },
       });
@@ -139,7 +143,7 @@ export default function Inicio() {
             </BoxImputIcon>
           </ConatinerImput>
           <ConatinerBoton>
-            <BotonIniciar onClick={ingresar}>Iniciar Sesion</BotonIniciar>
+            <BotonIniciar disabled={carga} onClick={ingresar}>{carga ? <ImagenCarga src={require("../Imagenes/Carga.gif")}/> : <>Iniciar Sesion</>}</BotonIniciar>
           </ConatinerBoton>
         </ContainerInicioSesion>
       </Container>

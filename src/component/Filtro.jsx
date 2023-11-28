@@ -35,7 +35,7 @@ export default function Filtro({
   iniInt,
   finInt,
   datosFecha,
-  setDatosFecha
+  setDatosFecha,
 }) {
   function handleSelect(ranges) {
     setDatosFecha(ranges.selection);
@@ -48,10 +48,10 @@ export default function Filtro({
     <>
       {estado && (
         <Overlay
-          tipo={tipo === "Tutor" ? "true" : cumpleaño ? "false" : "nada"}
+          tipo={tipo === "Tutor" ? cumpleaño ? "false" : "true" : cumpleaño ? "false" : "nada"}
         >
           <ContenedorModal
-            tipo={tipo === "Tutor" ? "true" : cumpleaño ? "false" : "nada"}
+            tipo={tipo === "Tutor" ? cumpleaño ? "false" : "true" : cumpleaño ? "false" : "nada"}
           >
             <EncabezadoModal>
               <Titulo>Filtros</Titulo>
@@ -74,204 +74,214 @@ export default function Filtro({
             >
               <FontAwesomeIcon icon={faXmark} />
             </BotonCerrar>
-            {tipo === "Tutor" && (
-              <DetalleUsuario>
-                <ContainerTabla>
-                  <ContainerTexto>
-                    <Text titulo={"true"}>Fecha de nacimiento</Text>
-                    <Text titulo={"true"}>Genero</Text>
-                    <Text titulo={"true"}>Relacion</Text>
-                  </ContainerTexto>
-                  <ContainerTexto>
-                    <Text>Fecha inicio</Text>
-                    <Text
-                      seleccionado={genero === "Hombre" ? "true" : "false"}
-                      onClick={() => {
-                        genero !== "Hombre"
-                          ? setGenero((prevGenero) => {
-                              return "Hombre";
-                            })
-                          : setGenero((prevGenero) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Hombre
-                    </Text>
-                    <Text
-                      seleccionado={relacion === "Padre" ? "true" : "false"}
-                      onClick={() => {
-                        relacion !== "Padre"
-                          ? setRelacion((prev) => {
-                              return "Padre";
-                            })
-                          : setRelacion((prev) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Padre
-                    </Text>
-                  </ContainerTexto>
-                  <ContainerTexto>
-                    <Text>
-                      <InputDate
-                        type="date"
-                        value={fechaIni}
-                        onChange={(e) => {
-                          setFechaIni(e.target.value);
-                        }}
-                      />
-                    </Text>
-                    <Text
-                      seleccionado={genero === "Mujer" ? "true" : "false"}
-                      onClick={() => {
-                        genero !== "Mujer"
-                          ? setGenero((prevGenero) => {
-                              return "Mujer";
-                            })
-                          : setGenero((prevGenero) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Mujer
-                    </Text>
-                    <Text
-                      seleccionado={relacion === "Madre" ? "true" : "false"}
-                      onClick={() => {
-                        relacion !== "Madre"
-                          ? setRelacion((prev) => {
-                              return "Madre";
-                            })
-                          : setRelacion((prev) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Madre
-                    </Text>
-                  </ContainerTexto>
-                  <ContainerTexto>
-                    <Text>Fecha fin</Text>
-                    <Text></Text>
-                    <Text
-                      seleccionado={relacion === "Tio" ? "true" : "false"}
-                      onClick={() => {
-                        relacion !== "Tio"
-                          ? setRelacion((prev) => {
-                              return "Tio";
-                            })
-                          : setRelacion((prev) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Tio
-                    </Text>
-                  </ContainerTexto>
-                  <ContainerTexto>
-                    <Text>
-                      <InputDate
-                        type="date"
-                        value={fechaFin}
-                        onChange={(e) => {
-                          setFechaFin(e.target.value);
-                        }}
-                      />
-                    </Text>
-                    <Text></Text>
-                    <Text
-                      seleccionado={relacion === "Tia" ? "true" : "false"}
-                      onClick={() => {
-                        relacion !== "Tia"
-                          ? setRelacion((prev) => {
-                              return "Tia";
-                            })
-                          : setRelacion((prev) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Tia
-                    </Text>
-                  </ContainerTexto>
-                  <ContainerTexto>
-                    <Text></Text>
-                    <Text></Text>
-                    <Text
-                      seleccionado={relacion === "Abuelo" ? "true" : "false"}
-                      onClick={() => {
-                        relacion !== "Abuelo"
-                          ? setRelacion((prev) => {
-                              return "Abuelo";
-                            })
-                          : setRelacion((prev) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Abuelo
-                    </Text>
-                  </ContainerTexto>
-                  <ContainerTexto>
-                    <Text></Text>
-                    <Text></Text>
-                    <Text
-                      seleccionado={relacion === "Abuela" ? "true" : "false"}
-                      onClick={() => {
-                        relacion !== "Abuela"
-                          ? setRelacion((prev) => {
-                              return "Abuela";
-                            })
-                          : setRelacion((prev) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Abuela
-                    </Text>
-                  </ContainerTexto>
-                  <ContainerTexto>
-                    <Text></Text>
-                    <Text></Text>
-                    <Text
-                      seleccionado={
-                        relacion === "Tutor legal" ? "true" : "false"
-                      }
-                      onClick={() => {
-                        relacion !== "Tutor legal"
-                          ? setRelacion((prev) => {
-                              return "Tutor legal";
-                            })
-                          : setRelacion((prev) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      Tutor legal
-                    </Text>
-                  </ContainerTexto>
-                  <ContainerTexto>
-                    <Text></Text>
-                    <Text></Text>
-                    <Text
-                      seleccionado={relacion === "No tiene" ? "true" : "false"}
-                      onClick={() => {
-                        relacion !== "No tiene"
-                          ? setRelacion((prev) => {
-                              return "No tiene";
-                            })
-                          : setRelacion((prev) => {
-                              return "";
-                            });
-                      }}
-                    >
-                      No tiene
-                    </Text>
-                  </ContainerTexto>
-                </ContainerTabla>
-              </DetalleUsuario>
+            {!cumpleaño && (
+              <>
+                {tipo === "Tutor" && (
+                  <DetalleUsuario>
+                    <ContainerTabla>
+                      <ContainerTexto>
+                        <Text titulo={"true"}>Fecha de nacimiento</Text>
+                        <Text titulo={"true"}>Genero</Text>
+                        <Text titulo={"true"}>Relacion</Text>
+                      </ContainerTexto>
+                      <ContainerTexto>
+                        <Text>Fecha inicio</Text>
+                        <Text
+                          seleccionado={genero === "Hombre" ? "true" : "false"}
+                          onClick={() => {
+                            genero !== "Hombre"
+                              ? setGenero((prevGenero) => {
+                                  return "Hombre";
+                                })
+                              : setGenero((prevGenero) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Hombre
+                        </Text>
+                        <Text
+                          seleccionado={relacion === "Padre" ? "true" : "false"}
+                          onClick={() => {
+                            relacion !== "Padre"
+                              ? setRelacion((prev) => {
+                                  return "Padre";
+                                })
+                              : setRelacion((prev) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Padre
+                        </Text>
+                      </ContainerTexto>
+                      <ContainerTexto>
+                        <Text>
+                          <InputDate
+                            type="date"
+                            value={fechaIni}
+                            onChange={(e) => {
+                              setFechaIni(e.target.value);
+                            }}
+                          />
+                        </Text>
+                        <Text
+                          seleccionado={genero === "Mujer" ? "true" : "false"}
+                          onClick={() => {
+                            genero !== "Mujer"
+                              ? setGenero((prevGenero) => {
+                                  return "Mujer";
+                                })
+                              : setGenero((prevGenero) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Mujer
+                        </Text>
+                        <Text
+                          seleccionado={relacion === "Madre" ? "true" : "false"}
+                          onClick={() => {
+                            relacion !== "Madre"
+                              ? setRelacion((prev) => {
+                                  return "Madre";
+                                })
+                              : setRelacion((prev) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Madre
+                        </Text>
+                      </ContainerTexto>
+                      <ContainerTexto>
+                        <Text>Fecha fin</Text>
+                        <Text></Text>
+                        <Text
+                          seleccionado={relacion === "Tio" ? "true" : "false"}
+                          onClick={() => {
+                            relacion !== "Tio"
+                              ? setRelacion((prev) => {
+                                  return "Tio";
+                                })
+                              : setRelacion((prev) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Tio
+                        </Text>
+                      </ContainerTexto>
+                      <ContainerTexto>
+                        <Text>
+                          <InputDate
+                            type="date"
+                            value={fechaFin}
+                            onChange={(e) => {
+                              setFechaFin(e.target.value);
+                            }}
+                          />
+                        </Text>
+                        <Text></Text>
+                        <Text
+                          seleccionado={relacion === "Tia" ? "true" : "false"}
+                          onClick={() => {
+                            relacion !== "Tia"
+                              ? setRelacion((prev) => {
+                                  return "Tia";
+                                })
+                              : setRelacion((prev) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Tia
+                        </Text>
+                      </ContainerTexto>
+                      <ContainerTexto>
+                        <Text></Text>
+                        <Text></Text>
+                        <Text
+                          seleccionado={
+                            relacion === "Abuelo" ? "true" : "false"
+                          }
+                          onClick={() => {
+                            relacion !== "Abuelo"
+                              ? setRelacion((prev) => {
+                                  return "Abuelo";
+                                })
+                              : setRelacion((prev) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Abuelo
+                        </Text>
+                      </ContainerTexto>
+                      <ContainerTexto>
+                        <Text></Text>
+                        <Text></Text>
+                        <Text
+                          seleccionado={
+                            relacion === "Abuela" ? "true" : "false"
+                          }
+                          onClick={() => {
+                            relacion !== "Abuela"
+                              ? setRelacion((prev) => {
+                                  return "Abuela";
+                                })
+                              : setRelacion((prev) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Abuela
+                        </Text>
+                      </ContainerTexto>
+                      <ContainerTexto>
+                        <Text></Text>
+                        <Text></Text>
+                        <Text
+                          seleccionado={
+                            relacion === "Tutor legal" ? "true" : "false"
+                          }
+                          onClick={() => {
+                            relacion !== "Tutor legal"
+                              ? setRelacion((prev) => {
+                                  return "Tutor legal";
+                                })
+                              : setRelacion((prev) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          Tutor legal
+                        </Text>
+                      </ContainerTexto>
+                      <ContainerTexto>
+                        <Text></Text>
+                        <Text></Text>
+                        <Text
+                          seleccionado={
+                            relacion === "No tiene" ? "true" : "false"
+                          }
+                          onClick={() => {
+                            relacion !== "No tiene"
+                              ? setRelacion((prev) => {
+                                  return "No tiene";
+                                })
+                              : setRelacion((prev) => {
+                                  return "";
+                                });
+                          }}
+                        >
+                          No tiene
+                        </Text>
+                      </ContainerTexto>
+                    </ContainerTabla>
+                  </DetalleUsuario>
+                )}
+              </>
             )}
             {!cumpleaño && (
               <>

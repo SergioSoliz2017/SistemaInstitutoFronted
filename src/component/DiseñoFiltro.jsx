@@ -10,7 +10,7 @@ export const Overlay = styled.div`
   align-items: center;
   justify-content: center;
   transition: all 0s ease-in-out;
-  z-index: 1;
+  z-index: 100;
   ${(props) =>
     props.tipo === "true" &&
     css`
@@ -47,6 +47,7 @@ export const ContenedorModal = styled.div`
       width: max-content;
       height: max-content;
     `}
+    
 `;
 export const EncabezadoModal = styled.div`
   display: flex;

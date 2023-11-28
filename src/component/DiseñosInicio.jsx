@@ -29,6 +29,11 @@ export const ImagenLogo = styled.img`
   cursor: pointer;
   margin: 50px;
 `;
+export const ImagenCarga = styled.img`
+  position: relative;
+  height: 100%;
+  cursor: pointer;
+`;
 
 export const ContainerInicioSesion = styled.div`
   width: 450px;
@@ -95,7 +100,7 @@ export const BotonIniciar = styled.button`
   font-family: bold;
   &:hover {
     color: white;
-    background: black;
+    background: #769FCD;
     border: 1px solid white;
     transform: scale(1.1);
   }
