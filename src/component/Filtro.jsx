@@ -58,6 +58,7 @@ export default function Filtro({
             </EncabezadoModal>
             {!cumpleaño && (
               <BotonCerrar
+                title="Cumpleaños"
                 alado={"true"}
                 onClick={() => {
                   setCumpleaño(true);

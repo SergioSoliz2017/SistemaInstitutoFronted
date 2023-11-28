@@ -2178,7 +2178,7 @@ export default function PantallaPrincipal() {
                             <>
                               <ContainerTodo lista={"true"}>
                                 <ContainerTituloBusqueda>
-                                  <BoxCampo buscar={"false"}>
+                                  <BoxCampo title="Borrar filtros" buscar={"false"}>
                                     <IconoBuscar
                                       filtro={"true"}
                                       icon={faRefresh}
@@ -2299,7 +2299,7 @@ export default function PantallaPrincipal() {
                             <>
                               <ContainerTodo lista={"true"}>
                                 <ContainerTituloBusqueda>
-                                  <BoxCampo buscar={"false"}>
+                                  <BoxCampo title="Borrar filtros" buscar={"false"}>
                                     <IconoBuscar
                                       filtro={"true"}
                                       icon={faRefresh}
