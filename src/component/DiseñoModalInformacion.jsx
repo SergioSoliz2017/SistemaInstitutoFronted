@@ -18,7 +18,7 @@ export const ContenedorModal = styled.div`
   width: 50%;
   height: 80.5%;
   min-height: 100px;
-  background: #d6d6d6;
+  background: #B9D7EA;
   position: relative;
   border-radius: 5px;
   box-shadow: rgba(100, 100, 111, 0.2) 8px 7px 29px 8px;
@@ -88,8 +88,10 @@ export const BotonTutores = styled.button`
   width: 30%;
   height: 100%;
   border: none;
-  background: #a09fa2;
+  background: #B9D7EA;
   color: black;
+  border: 1px solid black;
+  border-bottom: none;
   ${(props) =>
     props.seleccionado === "true" &&
     css`

@@ -2,7 +2,7 @@ import styled, { css, keyframes } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const Nav = styled.div`
-  background: #d6d6d6;
+  background: #B9D7EA;
   height: 100vh;
   overflow-y: auto;
   position: fixed;
@@ -47,7 +47,6 @@ export const TituloDasboard = styled.div`
       margin-left: 2px;
     `}
 `;
-
 export const ContainerTitulo = styled.div`
   position: relative;
   display: flex;
@@ -66,15 +65,13 @@ export const BotonNav = styled.button`
   padding: 10px;
   
   &:hover {
-    color: #d6d6d6;
-    background: black;
+    background: #D6E6F2;
   }
   ${(props) =>
     props.seleccionado === "true" &&
     css`
-      color: #d6d6d6;
-      background: black;
-      border: 1px solid #d6d6d6;
+      background: #D6E6F2;
+      border: 1px solid #D6E6F2;
     `}
     ${(props) =>
     props.cerrar === "true" &&
@@ -95,8 +92,7 @@ export const BotonNavSelect = styled.select`
   padding: 10px;
   
   &:hover {
-    color: #d6d6d6;
-    background: black;
+    background: #D6E6F2;
   }
   ${(props) =>
     props.seleccionado === "true" &&
@@ -168,8 +164,7 @@ export const ContainerCarga = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  background: #d6d6d6;
+  background: #B9D7EA;
   border-radius: 25px;
 `;
 export const ImagenCarga = styled.img`
@@ -180,7 +175,7 @@ export const TituloLateral = styled.span`
   font-weight: 1000;
   position: relative;
   font-family: "bold";
-  color: #d6d6d6;
+  color: black;
   margin: 30px 10px 20px 100px;
 `;
 export const TituloRegistro = styled.span`
@@ -206,7 +201,7 @@ export const CircleProgress = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #a5a7aa;
+  background: #B9D7EA;
   border-radius: 50%;
   border: 1px solid black;
   ${(props) =>
@@ -214,13 +209,13 @@ export const CircleProgress = styled.div`
     css`
       background: black;
       border: 1px solid #d6d6d6;
-      color: #d6d6d6;
+      color: #D6E6F2;
     `}
 `;
 export const Rectangulo = styled.div`
   width: 25%;
   height: 10px;
-  background: #d6d6d6;
+  background: #D6E6F2;
   ${(props) =>
     props.seleccionado === "true" &&
     css`
@@ -229,7 +224,6 @@ export const Rectangulo = styled.div`
       color: #d6d6d6;
     `}
 `;
-
 export const PasosLateral = styled.button`
   color: black;
   font-weight: 1000;
@@ -237,19 +231,18 @@ export const PasosLateral = styled.button`
   border-radius: 15px;
   width: 40%;
   font-size: 20px;
-  background: #d6d6d6;
+  background: #B9D7EA;
   &:hover {
-    color: #d6d6d6;
-    background: black;
+    color: black;
+    background: #D6E6F2;
     outline: none;
-    background: black;
     box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.4);
   }
   ${(props) =>
     props.seleccionado === "true" &&
     css`
-      color: #d6d6d6;
-      background: black;
+      color: black;
+      background: #D6E6F2;
     `}
 `;
 export const BotonSiguientePasos = styled.button`
@@ -269,7 +262,6 @@ export const ContainerBotonSiguientePasos = styled.div`
   display: flex;
   position: relative;
 `;
-
 export const ContainerImgIcon = styled.div`
   position: relative;
   display: flex;
@@ -290,7 +282,7 @@ export const ContainerImgIcon = styled.div`
     css`
       &:hover {
         color: black;
-        background: #a09fa2;
+        background: #D6E6F2;
       }
     `}
   ${(props) =>
@@ -356,7 +348,6 @@ export const ContainerDatos = styled.div`
       height: 620px;
     `}
 `;
-
 export const Category = styled.div`
   display: flex;
   width: 100%;
@@ -385,7 +376,7 @@ export const Titulo = styled.div`
   width: 100%;
 `;
 export const ContainerTodo = styled.div`
-  background: #d6d6d6;
+  background: #B9D7EA;
   border-radius: 25px;
   width: 70%;
   ${(props) =>
@@ -501,7 +492,6 @@ export const BotonBuscar = styled.button`
       opacity: 0;
     `}
 `;
-
 export const BotonAbrirExe = styled.button`
   height: 40px;
   width: 40%;
@@ -526,7 +516,6 @@ export const BotonAbrirExe = styled.button`
       }
     `}
 `;
-
 export const ContainerHuella = styled.button`
   position: relative;
   width: 350px;
@@ -536,12 +525,10 @@ export const ContainerHuella = styled.button`
   background: red;
   background: transparent;
 `;
-
 export const ImagenHuella = styled.img`
   width: 100%;
   height: 100%;
 `;
-
 export const BarraEscaneo = styled.div`
   position: absolute;
   top: 50px;
@@ -550,7 +537,6 @@ export const BarraEscaneo = styled.div`
   background-color: #000000;
   animation: ${({ escaneando }) => (escaneando ? barra : "none")} 2s infinite;
 `;
-
 const barra = keyframes`
   0%, 100% {
     top: 0%;
@@ -576,7 +562,6 @@ export const ContainerTituloBusqueda = styled.div`
   width: 100%;
   justify-content: end;
 `;
-
 export const Texto = styled.span`
   font-size: 20px;
   font-family: "bold";
@@ -608,8 +593,8 @@ export const IconoBuscar = styled(FontAwesomeIcon)`
       cursor: pointer;
     `}
 `;
-export const BotonDescuento = styled.button``;
-
+export const BotonDescuento = styled.button`
+`;
 export const ContainerCurso = styled.div`
 cursor: pointer;
 text-align: center;
@@ -620,3 +605,20 @@ padding: 5px;
     border: 1px solid black;
   }
 `
+export const ContainerUser = styled.div`
+  height: max-content;
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  font-family: "bold";
+  font-weight: 1000;
+`
+export const IconoUser = styled(FontAwesomeIcon)`
+  width: 50px;
+  height: 50px;
+  transform: scale(3);
+`;

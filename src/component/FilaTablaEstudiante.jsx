@@ -28,7 +28,7 @@ const styles = makeStyles({
     borderBottom: "2px solid white",
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: "#a09fa2",
+      backgroundColor: "#D6E6F2",
     },
   },
   texto: {
@@ -116,7 +116,7 @@ export default function FilaTabla({
                     reverseButtons: true,
                     confirmButtonText: "Si",
                     cancelButtonText: "No",
-                    background: "#d6d6d6",
+                    background: "#B9D7EA",
                     iconColor: "#000",
                     color: "#000",
                   })
@@ -126,7 +126,7 @@ export default function FilaTabla({
                         title: "Cambio realizado",
                         icon: "success",
                         confirmButtonColor: "#000",
-                        background: "#d6d6d6",
+                        background: "#B9D7EA",
                         iconColor: "#000",
                         color: "#000",
                       });

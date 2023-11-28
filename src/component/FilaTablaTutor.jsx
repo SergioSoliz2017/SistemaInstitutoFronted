@@ -25,7 +25,7 @@ const styles = makeStyles({
     borderBottom: "2px solid white",
     cursor:"pointer",
     "&:hover": {
-      backgroundColor: "#a09fa2",
+      backgroundColor: "#D6E6F2",
     },
   },
   texto: {

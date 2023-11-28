@@ -76,7 +76,7 @@ export default function ModalTutor({ estado, cambiarEstado, datos, ocultar }) {
           reverseButtons: true,
           confirmButtonText: "Si",
           cancelButtonText: "No",
-          background: "#d6d6d6",
+          background: "#B9D7EA",
           iconColor: "#000",
           color: "#000",
         })

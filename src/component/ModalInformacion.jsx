@@ -44,9 +44,6 @@ const styles = makeStyles({
   celdas: {
     fontFamily: "bold",
     fontWeight: "1000",
-    borderBottom: "1px solid #d6d6d6",
-    borderLeft: "1px solid #d6d6d6",
-    borderTop: "1px solid #d6d6d6",
     color: "#000",
   },
   fila: {

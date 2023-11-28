@@ -44,6 +44,8 @@ import {
   IconoBuscar,
   ContainerCurso,
   BotonNavSelect,
+  ContainerUser,
+  IconoUser,
 } from "./DiseñoPantallaPrincipal";
 import InputValidar from "./InputValidar";
 import { useState } from "react";
@@ -73,6 +75,7 @@ import {
   faArrowRightFromBracket,
   faGear,
   faRefresh,
+  faUserCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import alerta from "sweetalert2";
 import SelectInput from "./SelectValidar";
@@ -113,16 +116,13 @@ const styles = makeStyles({
   celdas: {
     fontFamily: "bold",
     fontWeight: "1000",
-    borderBottom: "1px solid #d6d6d6",
-    borderLeft: "1px solid #d6d6d6",
-    borderTop: "1px solid #d6d6d6",
     color: "#000",
   },
   fila: {
     borderBottom: "2px solid white",
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: "#a09fa2",
+      backgroundColor: "#D6E6F2",
     },
   },
   texto: {
@@ -576,7 +576,7 @@ export default function PantallaPrincipal() {
             setModal(true);
             setOcultar("true");
           } else {
-            if (respuesta === "Existe") {
+            if (respuesta === "ExisteR") {
               setActualizo(true);
               setOpcionPasos(opcionPasos + 2);
             } else {
@@ -613,7 +613,8 @@ export default function PantallaPrincipal() {
   };
   const atrasPasoRegistro = () => {
     if (opcionPasos - 1 > 0) {
-      if (opcionPasos - 1 === 2 && respuesta === "Existe") {
+      
+      if (opcionPasos - 1 === 2 && respuesta === "ExisteR") {
         setOpcionPasos(1);
       } else {
         setOpcionPasos(opcionPasos - 1);
@@ -932,6 +933,7 @@ export default function PantallaPrincipal() {
         setGeneroTutor("");
         setOpcionPasos(opcionPasos + 1);
         setTutorSi(true);
+        setRespuesta("")
       }
       if (respuesta === "No") {
         setRelacion({ campo: "No tiene", valido: "true" });
@@ -941,10 +943,12 @@ export default function PantallaPrincipal() {
         setGeneroTutor(generoEstudiante);
         setOpcionPasos(opcionPasos + 1);
         setTutorSi(true);
+        setRespuesta("")
       }
       if (respuesta === "Existe") {
         setOpcionPasos(opcionPasos + 2);
         setTutorSi(true);
+        setRespuesta("ExisteR")
       }
     }
     if (opcion === 1 && !modal && opcionPasos === 3) {
@@ -1360,6 +1364,10 @@ export default function PantallaPrincipal() {
     <GlobalStyle>
       {trabajador !== null && (
         <>
+          <ContainerUser>
+            {trabajador.NOMBRETRABAJADOR}
+            <IconoUser icon={faUserCircle}></IconoUser>
+          </ContainerUser>
           <Nav>
             <ContainerLogo
               onClick={() => {
