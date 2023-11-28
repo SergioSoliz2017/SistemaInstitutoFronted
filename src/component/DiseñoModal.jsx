@@ -145,6 +145,23 @@ export const TextBox = styled.span`
       width: 100%;
     `}
 `;
+export const InputSearch = styled.input`
+  height: 45px;
+  font-family: bold;
+  outline: none;
+  border-radius: 5px;
+  border: 2px solid #3b256a;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: 18px;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+  &:focus {
+    border: 2px solid black;
+    outline: none;
+    box-shadow: 3px 0px 30px rgba(163, 163, 163, 0.4);
+  }
+`;
 export const Select = styled.select`
   height: 45px;
   font-family: bold;

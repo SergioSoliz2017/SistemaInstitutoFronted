@@ -10,6 +10,7 @@ import {
   DetalleUsuario,
   EncabezadoModal,
   Icono,
+  InputSearch,
   Overlay,
   Select,
   TextBox,
@@ -116,23 +117,29 @@ export default function Modal({
                   <>
                     <BoxCampo>
                       <TextBox>Tutores</TextBox>
-                      <Select
+                      <InputSearch
+                        type="search"
+                        name="busquedatutores"
+                        list="listatutores"
                         value={tutor}
                         onChange={(e) => {
                           const selectedTutor = listaTutores.find(
-                            (t) => t.CODTUTOR === e.target.value
+                            (t) =>
+                              `${t.NOMBRETUTOR} ${t.APELLIDOTUTOR}` ===
+                              e.target.value
                           );
                           setTutor(e.target.value);
-                          tutorDatos(selectedTutor); // Almacena todos los datos del tutor seleccionado
+                          tutorDatos(selectedTutor);
                         }}
-                      >
-                        <option value="">Seleccione tutor</option>
+                      />
+                      <datalist id="listatutores">
                         {listaTutores.map((tutor) => (
-                          <option key={tutor.CODTUTOR} value={tutor.CODTUTOR}>
-                            {tutor.NOMBRETUTOR} {tutor.APELLIDOTUTOR}
-                          </option>
+                          <option
+                            key={tutor.CODTUTOR}
+                            value={`${tutor.NOMBRETUTOR} ${tutor.APELLIDOTUTOR}`}
+                          />
                         ))}
-                      </Select>
+                      </datalist>
                     </BoxCampo>
                     <BoxCampo ultimo={"true"}>
                       <TextBox>Relacion:</TextBox>
@@ -190,8 +197,12 @@ export default function Modal({
                   {listaCursos.map((dato) => {
                     return (
                       <>
-                        <TextBox todo={"true"}>Materia: {dato.CURSOINSCRITO}</TextBox>
-                        <TextBox todo={"true"}>Grupo: {dato.NOMBREGRUPO}</TextBox>
+                        <TextBox todo={"true"}>
+                          Materia: {dato.CURSOINSCRITO}
+                        </TextBox>
+                        <TextBox todo={"true"}>
+                          Grupo: {dato.NOMBREGRUPO}
+                        </TextBox>
                         <TextBox todo={"true"}>Codigo: {dato.CODGRUPO}</TextBox>
                       </>
                     );
