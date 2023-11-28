@@ -1333,19 +1333,19 @@ export default function PantallaPrincipal() {
 
   const [tipoAñadir, setTipoAñadir] = useState("curso");
   const borrarFiltros = () => {
-    setGeneroFiltro ("")
-    setColegioFiltro ("")
-    setFechaIniFiltro ("")
-    setFechaFinFiltro ("")
-    setIniIn ("")
-    setFinIn("")
-  }
+    setGeneroFiltro("");
+    setColegioFiltro("");
+    setFechaIniFiltro("");
+    setFechaFinFiltro("");
+    setIniIn("");
+    setFinIn("");
+  };
   const borrarFiltrosTutor = () => {
-    setGeneroTutorFiltro ("")
-    setRelacionFiltro ("")
-    setFechaIniFiltroTutor ("")
-    setFechaFinFiltroTutor ("")
-  }
+    setGeneroTutorFiltro("");
+    setRelacionFiltro("");
+    setFechaIniFiltroTutor("");
+    setFechaFinFiltroTutor("");
+  };
   return (
     <GlobalStyle>
       {trabajador !== null && (
@@ -2168,15 +2168,15 @@ export default function PantallaPrincipal() {
                             <>
                               <ContainerTodo lista={"true"}>
                                 <ContainerTituloBusqueda>
-                                <BoxCampo buscar={"false"}>
-                                <IconoBuscar
+                                  <BoxCampo buscar={"false"}>
+                                    <IconoBuscar
                                       filtro={"true"}
                                       icon={faRefresh}
                                       onClick={() => {
-                                        borrarFiltros()
+                                        borrarFiltros();
                                       }}
                                     />
-                                </BoxCampo>
+                                  </BoxCampo>
                                   <BoxCampo buscar={"true"}>
                                     <InputBusqueda
                                       value={buscar}
@@ -2289,15 +2289,15 @@ export default function PantallaPrincipal() {
                             <>
                               <ContainerTodo lista={"true"}>
                                 <ContainerTituloBusqueda>
-                                <BoxCampo buscar={"false"}>
-                                <IconoBuscar
+                                  <BoxCampo buscar={"false"}>
+                                    <IconoBuscar
                                       filtro={"true"}
                                       icon={faRefresh}
                                       onClick={() => {
-                                        borrarFiltrosTutor()
+                                        borrarFiltrosTutor();
                                       }}
                                     />
-                                </BoxCampo>
+                                  </BoxCampo>
                                   <BoxCampo buscar={"true"}>
                                     <InputBusqueda
                                       value={buscarTutor}
@@ -2790,100 +2790,3 @@ export default function PantallaPrincipal() {
     </GlobalStyle>
   );
 }
-
-/*
-eliminar curso
-<TableCell className={classes.texto}>
-                                        <ContainerImgIcon
-                                          onClick={() => {
-                                            alerta
-                                              .fire({
-                                                title:
-                                                  "¿Esta seguro de eliminar?",
-                                                icon: "question",
-                                                showCancelButton: true,
-                                                confirmButtonColor: "#000",
-                                                cancelButtonColor: "#d33",
-                                                reverseButtons: true,
-                                                confirmButtonText: "Si",
-                                                cancelButtonText: "No",
-                                                background: "#d6d6d6",
-                                                iconColor: "#000",
-                                                color: "#000",
-                                              })
-                                              .then((result) => {
-                                                if (result.isConfirmed) {
-                                                  alerta.fire({
-                                                    title: "Operacion Exitosa",
-                                                    icon: "success",
-                                                    confirmButtonColor: "#000",
-                                                    background: "#d6d6d6",
-                                                    iconColor: "#000",
-                                                    color: "#000",
-                                                  });
-                                                  const cursoEliminar = {
-                                                    CODSEDE: curso.CODSEDE,
-                                                    CODCURSO: curso.CODCURSO,
-                                                  };
-                                                  axios
-                                                    .delete(
-                                                      url + "eliminarCurso",
-                                                      {
-                                                        data: cursoEliminar,
-                                                      }
-                                                    )
-                                                    .then((response) =>
-                                                      setActualizo(true)
-                                                    );
-                                                }
-                                              });
-                                          }}
-                                        >
-                                          <ImgIcon icon={faXmark} />
-                                        </ContainerImgIcon>
-                                      </TableCell>
-eliminar sede <TableCell className={classes.texto}>
-                                        <ContainerImgIcon
-                                          onClick={() => {
-                                            alerta
-                                              .fire({
-                                                title:
-                                                  "¿Esta seguro de eliminar?",
-                                                icon: "question",
-                                                showCancelButton: true,
-                                                confirmButtonColor: "#000",
-                                                cancelButtonColor: "#d33",
-                                                reverseButtons: true,
-                                                confirmButtonText: "Si",
-                                                cancelButtonText: "No",
-                                                background: "#d6d6d6",
-                                                iconColor: "#000",
-                                                color: "#000",
-                                              })
-                                              .then((result) => {
-                                                if (result.isConfirmed) {
-                                                  alerta.fire({
-                                                    title: "Operacion Exitosa",
-                                                    icon: "success",
-                                                    confirmButtonColor: "#000",
-                                                    background: "#d6d6d6",
-                                                    iconColor: "#000",
-                                                    color: "#000",
-                                                  });
-                                                }
-                                              });
-                                          }}
-                                        >
-                                          <ImgIcon icon={faXmark} />
-                                        </ContainerImgIcon>
-                                      </TableCell>
-<ContainerBotonBusqueda>
-                                    <BotonBuscar
-                                      onClick={() => {
-                                        setAñadirTutor(true);
-                                        setOcultar("true");
-                                      }}
-                                    >
-                                      <ImgIcon buscar={"true"} icon={faAdd} />
-                                    </BotonBuscar>
-                                  </ContainerBotonBusqueda> */
