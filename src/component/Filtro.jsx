@@ -34,6 +34,8 @@ export default function Filtro({
   setRelacion,
   iniInt,
   finInt,
+  datosFecha,
+  setDatosFecha
 }) {
   function handleSelect(ranges) {
     setDatosFecha(ranges.selection);
@@ -42,11 +44,6 @@ export default function Filtro({
   }
 
   const [cumpleaño, setCumpleaño] = useState(false);
-  const [datosFecha, setDatosFecha] = useState({
-    startDate: new Date(),
-    endDate: new Date(),
-    key: "selection",
-  });
   return (
     <>
       {estado && (

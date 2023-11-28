@@ -1332,6 +1332,11 @@ export default function PantallaPrincipal() {
   const historial = useHistory();
 
   const [tipoAñadir, setTipoAñadir] = useState("curso");
+  const [datosFecha, setDatosFecha] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    key: "selection",
+  });
   const borrarFiltros = () => {
     setGeneroFiltro("");
     setColegioFiltro("");
@@ -1339,6 +1344,11 @@ export default function PantallaPrincipal() {
     setFechaFinFiltro("");
     setIniIn("");
     setFinIn("");
+    setDatosFecha ({
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    })
   };
   const borrarFiltrosTutor = () => {
     setGeneroTutorFiltro("");
@@ -2747,6 +2757,8 @@ export default function PantallaPrincipal() {
             cambiarEstado={setFiltro}
             iniInt={setIniIn}
             finInt={setFinIn}
+            datosFecha={datosFecha}
+            setDatosFecha={setDatosFecha}
             genero={
               tipoFiltro === "Estudiante" ? generoFiltro : generoTutorFiltro
             }
