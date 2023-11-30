@@ -12,6 +12,7 @@ export const Overlay = styled.div`
   align-items: center;
   justify-content: center;
   transition: all 2s ease-in-out;
+  z-index: 80;
 `;
 export const ContenedorModal = styled.div`
   transition: all 2s ease-in-out;
@@ -24,6 +25,10 @@ export const ContenedorModal = styled.div`
   box-shadow: rgba(100, 100, 111, 0.2) 8px 7px 29px 8px;
   padding: 20px;
   top: 50px;
+  @media (max-width: 800px) {
+        width: 80%;
+        height: 50%;
+  }
 `;
 export const EncabezadoModal = styled.div`
   display: flex;
@@ -104,6 +109,9 @@ export const Botones = styled.button`
     background: #d6d6d6;
       }
     `}
+    @media (max-width: 800px) {
+        width:max-content;
+  }
 `;
 export const BoxCampo = styled.div`
   margin: 10px 10px 12px 10px;

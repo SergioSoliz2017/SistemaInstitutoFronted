@@ -277,6 +277,9 @@ export const PasosLateral = styled.button`
       color: black;
       background: #769fcd;
     `}
+    @media (max-width: 800px) {
+        width:35%;
+  }
 `;
 export const BotonSiguientePasos = styled.button`
   width: 40px;
@@ -587,6 +590,7 @@ export const ContainerBotonLista = styled.div`
   gap: 60px;
   @media (max-width: 800px) {
     gap: 20px;
+    width: 100%;
   }
 `;
 export const ContainerTituloBusqueda = styled.div`

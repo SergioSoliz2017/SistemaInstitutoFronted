@@ -35,6 +35,7 @@ export const ContenedorModal = styled.div`
     width:80%;
     height: 62%;
     z-index:90;
+    overflow-y:auto;
   }
 `;
 export const EncabezadoModal = styled.div`

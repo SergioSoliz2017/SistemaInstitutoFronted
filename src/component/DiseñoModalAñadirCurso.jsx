@@ -37,6 +37,7 @@ export const ContenedorModal = styled.div`
       width: 35%;
       @media (max-width: 800px) {
         height:70%;
+        overflow-y: auto;
   }
     `}
     @media (max-width: 800px) {
