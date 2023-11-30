@@ -19,7 +19,7 @@ export const ContenedorModal = styled.div`
   width: 30%;
   height: 35%;
   min-height: 100px;
-  background: #B9D7EA;
+  background: #F7FBFC;
   position: relative;
   border-radius: 5px;
   box-shadow: rgba(100, 100, 111, 0.2) 8px 7px 29px 8px;

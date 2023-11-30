@@ -2,7 +2,7 @@ import styled, { css, keyframes } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const Nav = styled.div`
-  background: #B9D7EA;
+  background: #F7FBFC;
   height: 100vh;
   overflow-y: auto;
   position: fixed;
@@ -17,6 +17,7 @@ export const ContainerLogo = styled.div`
   top: 30px;
   cursor: pointer;
   display: flex;
+  color: #769FCD;
 `;
 export const ImagenLogo = styled.img`
   position: relative;
@@ -65,12 +66,13 @@ export const BotonNav = styled.button`
   padding: 10px;
   
   &:hover {
-    background: #D6E6F2;
+    background: #769FCD;
+    color: #F7FBFC;
   }
   ${(props) =>
     props.seleccionado === "true" &&
     css`
-      background: #D6E6F2;
+      background: #769FCD;
       border: 1px solid #D6E6F2;
     `}
     ${(props) =>
@@ -92,7 +94,8 @@ export const BotonNavSelect = styled.select`
   padding: 10px;
   
   &:hover {
-    background: #D6E6F2;
+    color: #F7FBFC;
+    background: #769FCD;
   }
   ${(props) =>
     props.seleccionado === "true" &&
@@ -203,7 +206,7 @@ export const CircleProgress = styled.div`
   justify-content: center;
   background: #B9D7EA;
   border-radius: 50%;
-  border: 1px solid black;
+  border: 1.5px solid black;
   ${(props) =>
     props.seleccionado === "true" &&
     css`
@@ -234,7 +237,7 @@ export const PasosLateral = styled.button`
   background: #B9D7EA;
   &:hover {
     color: black;
-    background: #D6E6F2;
+    background: #769FCD;
     outline: none;
     box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.4);
   }
@@ -242,7 +245,7 @@ export const PasosLateral = styled.button`
     props.seleccionado === "true" &&
     css`
       color: black;
-      background: #D6E6F2;
+      background: #769FCD;
     `}
 `;
 export const BotonSiguientePasos = styled.button`
@@ -317,6 +320,7 @@ export const ImgIcon = styled(FontAwesomeIcon)`
     ${(props) =>
     props.menu === "true" &&
     css`
+      color: black;
       margin-left: 10px;
       margin-right: 10px;
     `}
@@ -376,7 +380,7 @@ export const Titulo = styled.div`
   width: 100%;
 `;
 export const ContainerTodo = styled.div`
-  background: #B9D7EA;
+  background: #F7FBFC;
   border-radius: 25px;
   width: 70%;
   ${(props) =>

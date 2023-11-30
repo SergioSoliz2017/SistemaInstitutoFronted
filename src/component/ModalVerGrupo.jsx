@@ -38,16 +38,13 @@ const styles = makeStyles({
   celdas: {
     fontFamily: "bold",
     fontWeight: "1000",
-    borderBottom: "1px solid #d6d6d6",
-    borderLeft: "1px solid #d6d6d6",
-    borderTop: "1px solid #d6d6d6",
     color: "#000",
   },
   fila: {
     borderBottom: "2px solid white",
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: "#a09fa2",
+      backgroundColor: "#D6E6F2",
     },
   },
   texto: {

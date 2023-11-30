@@ -28,7 +28,7 @@ export const ContenedorModal = styled.div`
   width: 38%;
   height: 250px;
   min-height: 100px;
-  background: #B9D7EA;
+  background: #F7FBFC;
   border: 1px solid black;
   position: relative;
   border-radius: 15px;

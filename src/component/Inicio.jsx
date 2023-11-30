@@ -37,6 +37,7 @@ export default function Inicio() {
             historial.push("/home/" + codigo);
           } else {
             if (response.data === "Incorrecto") {
+              setCarga(false)
               toast("Contraseña Incorrecta", {
                 icon: "⚠️",
                 duration: 3000,
@@ -51,6 +52,7 @@ export default function Inicio() {
                 },
               });
             } else {
+              setCarga(false)
               toast("ID Incorrecto", {
                 icon: "⚠️",
                 duration: 3000,

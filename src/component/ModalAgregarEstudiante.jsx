@@ -47,16 +47,14 @@ const styles = makeStyles({
   celdas: {
     fontFamily: "bold",
     fontWeight: "1000",
-    borderBottom: "1px solid #d6d6d6",
-    borderLeft: "1px solid #d6d6d6",
-    borderTop: "1px solid #d6d6d6",
+   
     color: "#000",
   },
   fila: {
     borderBottom: "2px solid white",
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: "#a09fa2",
+      backgroundColor: "#D6E6F2",
     },
   },
   texto: {
@@ -539,6 +537,7 @@ export default function ModalAgregarEstudiante({
                     <BotonSiguiente
                       onClick={() => {
                         const hoy = new Date().toLocaleDateString();
+                        const hoy1 = new Date().toISOString();
                         const estudiante = {
                           CODESTUDIANTE: datos.CODESTUDIANTE,
                           CODINSCRIPCION: generarCodInscripcion(),
@@ -548,13 +547,13 @@ export default function ModalAgregarEstudiante({
                           SEDE:sede,
                           HABILITADO:"Habilitado"
                         }
+                        const dataCurso = {
+                          CODESTUDIANTE: datos.CODESTUDIANTE,
+                          LISTACURSOS: listaCursosRes,
+                          SEDE: sede,
+                          FECHA: hoy1,
+                        };
                         axios.post (url + "agregarRegistro",estudiante).then(res => {
-                          const dataCurso = {
-                            CODESTUDIANTE: datos.CODESTUDIANTE,
-                            LISTACURSOS: listaCursosRes,
-                            SEDE: sede,
-                            FECHA: hoy,
-                          };
                           axios
                             .post(url + "agregarCursoInscrito", dataCurso)
                             .then((response) => {

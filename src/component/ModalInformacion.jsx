@@ -161,8 +161,8 @@ export default function ModalInformacion({
     setPresente("");
     setFalta("");
     setLicencia("");
-    setHorarios([])
-    setAsistencia([])
+    setHorarios([]);
+    setAsistencia([]);
   };
   const [horarios, setHorarios] = useState([]);
 
@@ -257,6 +257,7 @@ export default function ModalInformacion({
         axios
           .get(url + "obtenerHorarioEstudiante/" + datos.CODESTUDIANTE)
           .then((response) => {
+            console.log(response.data);
             setHorarios(response.data);
           });
       }
@@ -300,11 +301,11 @@ export default function ModalInformacion({
                 valido: null,
               });
         }
-        setCarga(true)
+        setCarga(true);
         axios
           .get(url + "obtenerEstudiantesTutor/" + datos.CODTUTOR)
           .then((response) => {
-            setCarga(false)
+            setCarga(false);
             setListaEstudiantes(response.data);
           });
       }
@@ -393,7 +394,6 @@ export default function ModalInformacion({
     const selectedGroup = horarios.find(
       (grupo) => grupo.NOMBREGRUPO === selectedItem
     );
-    console.log(selectedGroup);
     if (selectedGroup) {
       const { CODESTUDIANTE, CODCURSOINSCRITO, CODGRUPOINSCRITO } =
         selectedGroup;
@@ -408,12 +408,36 @@ export default function ModalInformacion({
             CODGRUPOINSCRITO
         )
         .then((response) => {
-          setAsistencia(response.data);
-          setOculto(true);
-          setGrupoAsistencia(selectedItem);
-          setPresente(contarEstados(response.data, "Presente"));
-          setFalta(contarEstados(response.data, "Falta"));
-          setLicencia(contarEstados(response.data, "Licencia"));
+          axios
+            .get(
+              url +
+                "obtenerInicio/" +
+                CODESTUDIANTE +
+                "/" +
+                CODCURSOINSCRITO +
+                "/" +
+                CODGRUPOINSCRITO
+            )
+            .then((res) => {
+              const fechaInicial = new Date(res.data); // Reemplaza con tu fecha inicial
+
+              // Calcula los días pasados
+              const fechaActual = new Date();
+              const diferenciaMilisegundos = fechaActual - fechaInicial;
+              const diasPasados = Math.floor(
+                diferenciaMilisegundos / (1000 * 60 * 60 * 24)
+              );
+
+              setAsistencia(response.data);
+              setOculto(true);
+              setGrupoAsistencia(selectedItem);
+              setPresente(contarEstados(response.data, "Presente"));
+              setLicencia(contarEstados(response.data, "Atrasado"));
+              setFalta(
+                parseInt( diasPasados - ((contarEstados(response.data, "Presente")) +
+                  parseInt(contarEstados(response.data, "Atrasado")) ))
+              );
+            });
         });
     }
   };
@@ -453,6 +477,7 @@ export default function ModalInformacion({
                   actualizo(true);
                   setSeEdito(false);
                 }
+                setHorarios([]);
                 setOpcion(1);
                 setOculto(false);
               }}
@@ -512,7 +537,6 @@ export default function ModalInformacion({
                         {" - "}
                         {pais.campo === undefined ? datos.PAIS : pais.campo}
                       </BoxCampo>
-                      
                     </>
                   )}
                   {editarEstudiante && (
@@ -756,10 +780,10 @@ export default function ModalInformacion({
                                   Asistencia: {presente}
                                 </TituloNombre>
                                 <TituloNombre asistencia={"si"}>
-                                  Falta: {falta}
+                                  Atraso: {licencia}
                                 </TituloNombre>
                                 <TituloNombre asistencia={"si"}>
-                                  Licencia: {licencia}
+                                  Falta: {falta}
                                 </TituloNombre>
                               </ContainerGrupo>
                             </ContainerGrupo>
@@ -790,7 +814,9 @@ export default function ModalInformacion({
                                             {asis.ESTADO}{" "}
                                           </TableCell>
                                           <TableCell className={classes.texto}>
-                                            {asis.OBSERVACION === null? "Falta" :asis.OBSERVACION}
+                                            {asis.OBSERVACION === null
+                                              ? "Falta"
+                                              : asis.OBSERVACION}
                                           </TableCell>
                                         </TableRow>
                                       </>
