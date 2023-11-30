@@ -2,13 +2,27 @@ import styled, { css, keyframes } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const Nav = styled.div`
-  background: #F7FBFC;
+  background: #f7fbfc;
   height: 100vh;
   overflow-y: auto;
   position: fixed;
   width: 23%;
   box-sizing: border-box;
   margin: 0;
+  @media (max-width: 800px) {
+    display: none;
+    width: 0px;
+    ${(props) =>
+    props.extender === "true" &&
+    css`
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      width: 49.9%;
+      z-index: 80;
+      height: 100vh;
+    `}
+  }
 `;
 export const ContainerLogo = styled.div`
   position: relative;
@@ -17,7 +31,7 @@ export const ContainerLogo = styled.div`
   top: 30px;
   cursor: pointer;
   display: flex;
-  color: #769FCD;
+  color: #769fcd;
 `;
 export const ImagenLogo = styled.img`
   position: relative;
@@ -25,6 +39,9 @@ export const ImagenLogo = styled.img`
   width: 20%;
   left: 5%;
   cursor: pointer;
+  @media (max-width: 800px) {
+    height: 55px;
+  }
 `;
 export const ContainerBotonNav = styled.div`
   width: 100%;
@@ -64,18 +81,18 @@ export const BotonNav = styled.button`
   cursor: pointer;
   border-radius: 20px;
   padding: 10px;
-  
+
   &:hover {
-    background: #769FCD;
-    color: #F7FBFC;
+    background: #769fcd;
+    color: #f7fbfc;
   }
   ${(props) =>
     props.seleccionado === "true" &&
     css`
-      background: #769FCD;
-      border: 1px solid #D6E6F2;
+      background: #769fcd;
+      border: 1px solid #d6e6f2;
     `}
-    ${(props) =>
+  ${(props) =>
     props.cerrar === "true" &&
     css`
       position: absolute;
@@ -92,10 +109,10 @@ export const BotonNavSelect = styled.select`
   cursor: pointer;
   border-radius: 20px;
   padding: 10px;
-  
+
   &:hover {
-    color: #F7FBFC;
-    background: #769FCD;
+    color: #f7fbfc;
+    background: #769fcd;
   }
   ${(props) =>
     props.seleccionado === "true" &&
@@ -104,7 +121,7 @@ export const BotonNavSelect = styled.select`
       background: black;
       border: 1px solid #d6d6d6;
     `}
-    ${(props) =>
+  ${(props) =>
     props.cerrar === "true" &&
     css`
       position: absolute;
@@ -119,17 +136,22 @@ export const ContainerImagenCentro = styled.div`
   align-items: center;
 `;
 export const ContainerPrincipal = styled.div`
-  box-sizing: border-box;
-  width: 77%;
-  height: 100vh;
-  overflow: auto;
-  position: relative;
-  margin-left: 23%;
-  ${(props) =>
-    props.ocultar === "true" &&
-    css`
-      opacity: 0.5;
-    `}
+  @media (min-width: 800px) {
+    box-sizing: border-box;
+    width: 77%;
+    height: 100vh;
+    overflow: auto;
+    position: relative;
+    margin-left: 23%;
+    ${(props) =>
+      props.ocultar === "true" &&
+      css`
+        opacity: 0.5;
+      `}
+  }
+  @media (max-width: 800px) {
+    width: 100%;
+  }
 `;
 export const ImagenLogoCentro = styled.img`
   position: relative;
@@ -138,6 +160,10 @@ export const ImagenLogoCentro = styled.img`
   top: 5px;
   cursor: pointer;
   padding: 5px;
+  @media (max-width: 800px) {
+    width: 60%;
+    height: 40%;
+  }
 `;
 export const ContainerContenido = styled.div`
   width: 100%;
@@ -167,7 +193,7 @@ export const ContainerCarga = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #B9D7EA;
+  background: #b9d7ea;
   border-radius: 25px;
 `;
 export const ImagenCarga = styled.img`
@@ -204,7 +230,7 @@ export const CircleProgress = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #B9D7EA;
+  background: #b9d7ea;
   border-radius: 50%;
   border: 1.5px solid black;
   ${(props) =>
@@ -212,13 +238,13 @@ export const CircleProgress = styled.div`
     css`
       background: black;
       border: 1px solid #d6d6d6;
-      color: #D6E6F2;
+      color: #d6e6f2;
     `}
 `;
 export const Rectangulo = styled.div`
   width: 25%;
   height: 10px;
-  background: #D6E6F2;
+  background: #d6e6f2;
   ${(props) =>
     props.seleccionado === "true" &&
     css`
@@ -234,10 +260,10 @@ export const PasosLateral = styled.button`
   border-radius: 15px;
   width: 40%;
   font-size: 20px;
-  background: #B9D7EA;
+  background: #b9d7ea;
   &:hover {
     color: black;
-    background: #769FCD;
+    background: #769fcd;
     outline: none;
     box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.4);
   }
@@ -245,7 +271,7 @@ export const PasosLateral = styled.button`
     props.seleccionado === "true" &&
     css`
       color: black;
-      background: #769FCD;
+      background: #769fcd;
     `}
 `;
 export const BotonSiguientePasos = styled.button`
@@ -285,7 +311,7 @@ export const ContainerImgIcon = styled.div`
     css`
       &:hover {
         color: black;
-        background: #D6E6F2;
+        background: #d6e6f2;
       }
     `}
   ${(props) =>
@@ -346,7 +372,7 @@ export const ContainerDatos = styled.div`
     css`
       margin-top: 40px;
     `}
-    ${(props) =>
+  ${(props) =>
     props.trabajador === "true" &&
     css`
       height: 620px;
@@ -380,7 +406,7 @@ export const Titulo = styled.div`
   width: 100%;
 `;
 export const ContainerTodo = styled.div`
-  background: #F7FBFC;
+  background: #f7fbfc;
   border-radius: 25px;
   width: 70%;
   ${(props) =>
@@ -391,7 +417,7 @@ export const ContainerTodo = styled.div`
       flex-direction: column;
       height: 580px;
     `}
-    ${(props) =>
+  ${(props) =>
     props.lista === "false" &&
     css`
       width: 80%;
@@ -416,19 +442,14 @@ export const ContainerTodo = styled.div`
       height: 750px;
       margin-bottom: 10px;
     `}
-    
 `;
 export const ContainerTabla = styled.div`
   width: 90%;
-  z-index: 1;
+  z-index: 0;
   margin-top: 35px;
   overflow-y: auto;
   margin-bottom: 20px;
-  ${(props) =>
-    props.cursos === "registro" &&
-    css`
-      
-    `}
+  ${(props) => props.cursos === "registro" && css``}
   ${(props) =>
     props.cursos === "true" &&
     css`
@@ -443,14 +464,14 @@ export const ContainerTabla = styled.div`
      ${(props) =>
     props.cursos === "false" &&
     css`
-     margin-top: 80px;
-     height: 420px;
+      margin-top: 80px;
+      height: 420px;
     `}
     ${(props) =>
     props.abajo === "true" &&
     css`
-    margin-top: 80px;
-     height: 620px;
+      margin-top: 80px;
+      height: 620px;
     `}
 `;
 export const ContainerBotonBusqueda = styled.div`
@@ -468,7 +489,7 @@ export const ContainerBotonBusqueda = styled.div`
       left: 45%;
       margin-top: 20px;
     `}
-    ${(props) =>
+  ${(props) =>
     props.add === "false" &&
     css`
       top: 13%;
@@ -597,18 +618,17 @@ export const IconoBuscar = styled(FontAwesomeIcon)`
       cursor: pointer;
     `}
 `;
-export const BotonDescuento = styled.button`
-`;
+export const BotonDescuento = styled.button``;
 export const ContainerCurso = styled.div`
-cursor: pointer;
-text-align: center;
-padding: 5px;
+  cursor: pointer;
+  text-align: center;
+  padding: 5px;
   &:hover {
     background: #a09fa2;
     border-radius: 15px;
     border: 1px solid black;
   }
-`
+`;
 export const ContainerUser = styled.div`
   height: max-content;
   position: absolute;
@@ -622,12 +642,32 @@ export const ContainerUser = styled.div`
   ${(props) =>
     props.arriba === "true" &&
     css`
-    right: 57px;
+      right: 57px;
       top: 15px;
     `}
-`
+`;
 export const IconoUser = styled(FontAwesomeIcon)`
   width: 50px;
   height: 50px;
   transform: scale(3);
+`;
+export const BarrasNav = styled.button`
+    width: 70px;
+    height: 50px;
+    border: none;
+    background: none;
+    color: black;
+    font-size: 45px;
+    cursor: pointer;
+    position: absolute;
+    left: 10px;
+    ${(props) =>
+    props.extender &&
+    css`
+      left: 37%;
+      z-index: 100;
+    `}
+  @media (min-width: 800px) {
+    display: none;
+  }
 `;

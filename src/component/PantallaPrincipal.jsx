@@ -46,6 +46,7 @@ import {
   BotonNavSelect,
   ContainerUser,
   IconoUser,
+  BarrasNav,
 } from "./DiseñoPantallaPrincipal";
 import InputValidar from "./InputValidar";
 import { useState } from "react";
@@ -208,7 +209,7 @@ export default function PantallaPrincipal() {
   const [grupo, setGrupo] = useState({ campo: "", valido: null });
   const [listaCursos, setListaCursos] = useState([]);
   const [listaSedes, setListaSedes] = useState([]);
-
+  const [extender, setextender] = useState(false);
   let location = useLocation();
 
   const [tutorSi, setTutorSi] = useState(false);
@@ -1100,7 +1101,7 @@ export default function PantallaPrincipal() {
     !relacionFiltro &&
     !fechaIniFiltroTutor &&
     !fechaFinFiltroTutor &&
-    !iniInTutor && 
+    !iniInTutor &&
     !finInTutor
   ) {
     listaResTutor = listaTutores;
@@ -1135,29 +1136,29 @@ export default function PantallaPrincipal() {
       const fechaDentroIntervalo =
         (!fechaIniFiltroTutor || fechaNacimiento >= fechaIniFiltroTutor) &&
         (!fechaFinFiltroTutor || fechaNacimiento <= fechaFinFiltroTutor);
-        if (iniInTutor && finInTutor) {
-          const fechaDb = new Date(fechaNacimiento);
-          const diaMesIniIn = {
-            day: iniInTutor.getDate(),
-            month: iniInTutor.getMonth() + 1,
-          };
-          const diaMesFinIn = {
-            day: finInTutor.getDate(),
-            month: finInTutor.getMonth() + 1,
-          };
-          const diaMesFechaDb = {
-            day: fechaDb.getDate(),
-            month: fechaDb.getMonth() + 1,
-          };
-          const estaEnIntervalo =
-            diaMesIniIn.month <= diaMesFechaDb.month &&
-            diaMesFechaDb.month <= diaMesFinIn.month &&
-            diaMesIniIn.day <= diaMesFechaDb.day &&
-            diaMesFechaDb.day <= diaMesFinIn.day;
-          return (
-            searchWords.every((word) => campos.includes(word)) && estaEnIntervalo
-          );
-        }
+      if (iniInTutor && finInTutor) {
+        const fechaDb = new Date(fechaNacimiento);
+        const diaMesIniIn = {
+          day: iniInTutor.getDate(),
+          month: iniInTutor.getMonth() + 1,
+        };
+        const diaMesFinIn = {
+          day: finInTutor.getDate(),
+          month: finInTutor.getMonth() + 1,
+        };
+        const diaMesFechaDb = {
+          day: fechaDb.getDate(),
+          month: fechaDb.getMonth() + 1,
+        };
+        const estaEnIntervalo =
+          diaMesIniIn.month <= diaMesFechaDb.month &&
+          diaMesFechaDb.month <= diaMesFinIn.month &&
+          diaMesIniIn.day <= diaMesFechaDb.day &&
+          diaMesFechaDb.day <= diaMesFinIn.day;
+        return (
+          searchWords.every((word) => campos.includes(word)) && estaEnIntervalo
+        );
+      }
       return (
         searchWords.every((word) => campos.includes(word)) &&
         fechaDentroIntervalo
@@ -1401,7 +1402,16 @@ export default function PantallaPrincipal() {
     <GlobalStyle>
       {trabajador !== null && (
         <>
-          <Nav>
+          <BarrasNav
+            extender={extender}
+            onClick={() => {
+              setextender(!extender);
+              console.log("click");
+            }}
+          >
+            {extender ? <>X</> : <>&#8801;</>}
+          </BarrasNav>
+          <Nav extender={extender ? "true" : "false"}>
             <ContainerLogo
               onClick={() => {
                 setOpcion(0);
@@ -1421,11 +1431,12 @@ export default function PantallaPrincipal() {
                 <BotonNav
                   onClick={() => {
                     setOpcion(2);
+                    setextender(false);
                   }}
                   seleccionado={opcion == 2 ? "true" : "false"}
                 >
                   <ImgIcon menu={"true"} icon={faListSquares} />
-                  Listas
+                  {!extender ? "Listas" : ""}
                 </BotonNav>
                 <BotonNav
                   cerrar={"true"}
@@ -1455,15 +1466,17 @@ export default function PantallaPrincipal() {
                 <BotonNav
                   onClick={() => {
                     setOpcion(1);
+                    setextender(false);
                   }}
                   seleccionado={opcion == 1 ? "true" : "false"}
                 >
                   <ImgIcon menu={"true"} icon={faFilePen} />
-                  Registro de estudiantes
+                  {!extender ? "Registro de estudiantes" : "Registro"}
                 </BotonNav>
                 <BotonNav
                   onClick={() => {
                     setOpcion(2);
+                    setextender(false);
                   }}
                   seleccionado={opcion == 2 ? "true" : "false"}
                 >
@@ -1473,6 +1486,7 @@ export default function PantallaPrincipal() {
                 <BotonNav
                   onClick={() => {
                     setOpcion(3);
+                    setextender(false);
                     setActualizo(true);
                   }}
                   seleccionado={opcion == 3 ? "true" : "false"}
@@ -1482,18 +1496,20 @@ export default function PantallaPrincipal() {
                 </BotonNav>
                 <BotonNav
                   onClick={() => {
+                    setextender(false);
                     iniciarElectron();
                     abrirExeVerificar();
                   }}
                 >
                   <ImgIcon menu={"true"} icon={faListCheck} />
-                  Control asistencia
+                  {!extender ? "Control asistencia" : "Asistencia"}
                 </BotonNav>
                 {rolTrabajador === "Director" && (
                   <>
                     {" "}
                     <BotonNav
                       onClick={() => {
+                        setextender(false);
                         setOpcion(5);
                       }}
                       seleccionado={opcion == 5 ? "true" : "false"}
@@ -1503,6 +1519,7 @@ export default function PantallaPrincipal() {
                     </BotonNav>
                     <BotonNav
                       onClick={() => {
+                        setextender(false);
                         setOpcion(6);
                       }}
                       seleccionado={opcion == 6 ? "true" : "false"}
@@ -1528,6 +1545,7 @@ export default function PantallaPrincipal() {
                   <>
                     <BotonNav
                       onClick={() => {
+                        setextender(false);
                         setOpcion(6);
                       }}
                       seleccionado={opcion == 6 ? "true" : "false"}
@@ -1568,7 +1586,7 @@ export default function PantallaPrincipal() {
                   </BotonNavSelect>
                 )}
                 <BotonNav
-                  cerrar={"true"}
+                  cerrar={extender ? "false" : "true"}
                   onClick={() => {
                     historial.replace("/");
                     toast.success("Regresa Pronto", {
@@ -1586,7 +1604,7 @@ export default function PantallaPrincipal() {
                   }}
                 >
                   <ImgIcon menu={"true"} icon={faArrowRightFromBracket} />
-                  Cerrar sesion
+                  {!extender ? "Cerrar sesion" : "Salir"}
                 </BotonNav>
               </ContainerBotonNav>
             )}
@@ -2830,8 +2848,12 @@ export default function PantallaPrincipal() {
             cambiarEstado={setFiltro}
             iniInt={tipoFiltro === "Estudiante" ? setIniIn : setIniInTutor}
             finInt={tipoFiltro === "Estudiante" ? setFinIn : setFinInTutor}
-            datosFecha={tipoFiltro === "Estudiante" ?datosFecha : datosFechaTutor}
-            setDatosFecha={tipoFiltro === "Estudiante" ? setDatosFecha : setDatosFechaTutor}
+            datosFecha={
+              tipoFiltro === "Estudiante" ? datosFecha : datosFechaTutor
+            }
+            setDatosFecha={
+              tipoFiltro === "Estudiante" ? setDatosFecha : setDatosFechaTutor
+            }
             genero={
               tipoFiltro === "Estudiante" ? generoFiltro : generoTutorFiltro
             }
