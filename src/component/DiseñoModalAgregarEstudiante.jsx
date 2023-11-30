@@ -12,7 +12,7 @@ export const Overlay = styled.div`
   align-items: center;
   justify-content: center;
   transition: all 2s ease-in-out;
-  z-index: 1;
+  z-index: 80;
 `;
 export const ContenedorModal = styled.div`
   transition: all 0.5s ease-in-out;
@@ -33,6 +33,17 @@ export const ContenedorModal = styled.div`
       height: 85%;
       overflow-y: auto;
     `}
+    @media (max-width: 800px) {
+    width:80%;
+    height: 30%;
+    ${(props) =>
+    props.paso === "true" &&
+    css`
+      width: 80%;
+      height: 85%;
+      overflow-y: auto;
+    `}
+  }
 `;
 export const EncabezadoModal = styled.div`
   display: flex;
@@ -83,6 +94,9 @@ export const BoxCampo = styled.div`
       position: relative;
       margin-right: 20px;
       z-index: 90;
+      @media (max-width: 800px) {
+    width:max-content;
+  }
     `}
     ${(props) =>
     props.precioT === "true" &&
@@ -91,6 +105,9 @@ export const BoxCampo = styled.div`
       width: calc(15% - 20px);
       position: relative;
       z-index: 90;
+      @media (max-width: 800px) {
+    width:max-content;
+  }
     `}
     ${(props) =>
     props.saldo === "true" &&
@@ -102,6 +119,10 @@ export const BoxCampo = styled.div`
       justify-content: center;
       gap: 20%;
       position: relative;
+      @media (max-width: 800px) {
+    width:100%;
+    text-align: center;
+  }
     `}
     ${(props) =>
     props.boton === "true" &&
@@ -110,6 +131,10 @@ export const BoxCampo = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
+      @media (max-width: 800px) {
+    margin-top: 0px;
+    left: -25px;
+  }
     `}
 `;
 export const TextBox = styled.span`
@@ -121,6 +146,7 @@ export const TextBox = styled.span`
     css`
       text-align: center;
     `}
+    
 `;
 export const Select = styled.select`
   height: 45px;

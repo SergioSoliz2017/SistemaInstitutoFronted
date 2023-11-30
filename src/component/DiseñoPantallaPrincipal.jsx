@@ -19,7 +19,7 @@ export const Nav = styled.div`
       flex-direction: column;
       position: absolute;
       width: 49.9%;
-      z-index: 80;
+      z-index: 99;
       height: 100vh;
     `}
   }
@@ -32,6 +32,7 @@ export const ContainerLogo = styled.div`
   cursor: pointer;
   display: flex;
   color: #769fcd;
+  
 `;
 export const ImagenLogo = styled.img`
   position: relative;
@@ -206,6 +207,9 @@ export const TituloLateral = styled.span`
   font-family: "bold";
   color: black;
   margin: 30px 10px 20px 100px;
+  @media (max-width: 800px) {
+    font-size: 22px;
+  }
 `;
 export const TituloRegistro = styled.span`
   margin: 25px;
@@ -581,11 +585,18 @@ export const ContainerBotonLista = styled.div`
   display: flex;
   justify-content: center;
   gap: 60px;
+  @media (max-width: 800px) {
+    gap: 20px;
+  }
 `;
 export const ContainerTituloBusqueda = styled.div`
   display: flex;
   width: 100%;
   justify-content: end;
+  @media (max-width: 800px) {
+    justify-content: center;
+    gap: 15px;
+  }
 `;
 export const Texto = styled.span`
   font-size: 20px;
@@ -644,7 +655,9 @@ export const ContainerUser = styled.div`
     css`
       right: 57px;
       top: 15px;
+      
     `}
+    
 `;
 export const IconoUser = styled(FontAwesomeIcon)`
   width: 50px;
@@ -661,9 +674,11 @@ export const BarrasNav = styled.button`
     cursor: pointer;
     position: absolute;
     left: 10px;
+    z-index: 100;
     ${(props) =>
     props.extender &&
     css`
+      top: -20px;
       left: 37%;
       z-index: 100;
     `}
@@ -671,3 +686,8 @@ export const BarrasNav = styled.button`
     display: none;
   }
 `;
+export const X = styled.span`
+height: 5px;
+width: 5px;
+
+`

@@ -47,6 +47,7 @@ import {
   ContainerUser,
   IconoUser,
   BarrasNav,
+  X,
 } from "./DiseñoPantallaPrincipal";
 import InputValidar from "./InputValidar";
 import { useState } from "react";
@@ -1406,10 +1407,9 @@ export default function PantallaPrincipal() {
             extender={extender}
             onClick={() => {
               setextender(!extender);
-              console.log("click");
             }}
           >
-            {extender ? <>X</> : <>&#8801;</>}
+            {extender ? <X>x</X> : <>&#8801;</>}
           </BarrasNav>
           <Nav extender={extender ? "true" : "false"}>
             <ContainerLogo

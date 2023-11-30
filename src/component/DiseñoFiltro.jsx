@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { Calendar } from 'react-date-range';
+import { Calendar } from "react-date-range";
 export const Overlay = styled.div`
   width: 100vw;
   height: 100vh;
@@ -16,19 +16,23 @@ export const Overlay = styled.div`
     css`
       left: 20.8%;
     `}
-    ${(props) =>
+  ${(props) =>
     props.tipo === "false" &&
     css`
       top: 9%;
       left: 18.4%;
     `}
+    @media (max-width: 800px) {
+    top: -16%;
+    left: 0%;
+  }
 `;
 export const ContenedorModal = styled.div`
   transition: all 0s ease-in-out;
   width: 38%;
   height: 250px;
   min-height: 100px;
-  background: #F7FBFC;
+  background: #f7fbfc;
   border: 1px solid black;
   position: relative;
   border-radius: 15px;
@@ -41,13 +45,21 @@ export const ContenedorModal = styled.div`
     css`
       width: 37%;
     `}
-    ${(props) =>
+  ${(props) =>
     props.tipo === "false" &&
     css`
       width: max-content;
       height: max-content;
     `}
-    
+    @media (max-width: 800px) {
+    width: 80%
+      ${(props) =>
+        props.tipo === "false" &&
+        css`
+        width:80%;
+        height: max-content;
+    `};
+  }
 `;
 export const EncabezadoModal = styled.div`
   display: flex;
@@ -91,10 +103,10 @@ export const Text = styled.div`
     `}
 `;
 export const InputDate = styled.input`
-width: 100%;
-border-radius: 5px;
-text-align: center;
-`
+  width: 100%;
+  border-radius: 5px;
+  text-align: center;
+`;
 export const BotonCerrar = styled.button`
   position: absolute;
   top: 20px;
@@ -115,9 +127,9 @@ export const BotonCerrar = styled.button`
     css`
       right: 60px;
       &:hover {
-        color:#d6d6d6 ;
-      background: black;
-  }
+        color: #d6d6d6;
+        background: black;
+      }
     `}
 `;
 export const DetalleUsuario = styled.div`
@@ -135,4 +147,4 @@ export const ContainerTabla = styled.div`
   height: 100%;
   overflow-y: auto;
 `;
-export const Calendario = styled(Calendar)``
+export const Calendario = styled(Calendar)``;

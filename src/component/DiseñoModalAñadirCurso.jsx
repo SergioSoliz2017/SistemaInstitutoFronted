@@ -7,6 +7,7 @@ export const Overlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 80;
   background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
@@ -34,7 +35,13 @@ export const ContenedorModal = styled.div`
     css`
       height: 85%;
       width: 35%;
+      @media (max-width: 800px) {
+        height:70%;
+  }
     `}
+    @media (max-width: 800px) {
+    width:80%;
+  }
 `;
 export const EncabezadoModal = styled.div`
   display: flex;
@@ -56,6 +63,10 @@ export const Titulo = styled.div`
     height: 3px;
     width: 100%;
     background: linear-gradient(135deg, #000000, #d6d6d6);
+  }
+  @media (max-width: 800px) {
+    font-size: 18.5px;
+        width:90%;
   }
 `;
 export const BotonCerrar = styled.button`

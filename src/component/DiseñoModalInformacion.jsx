@@ -7,6 +7,7 @@ export const Overlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 85;
   background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
@@ -24,6 +25,10 @@ export const ContenedorModal = styled.div`
   box-shadow: rgba(100, 100, 111, 0.2) 8px 7px 29px 8px;
   padding: 20px;
   top: 15px;
+  @media (max-width: 800px) {
+    width: 80%;
+    height: 50%;
+  }
 `;
 export const EncabezadoModal = styled.div`
   display: flex;
@@ -98,6 +103,9 @@ export const BotonTutores = styled.button`
       color: #d6d6d6;
       background: black;
     `}
+    @media (max-width: 800px) {
+    width:max-content;
+  }
 `;
 export const ContainerBoton = styled.div`
   position: relative;

@@ -41,20 +41,26 @@ export const BoxCampo = styled.div`
       position: relative;
       z-index: 90;
       height: 75px;
+      @media (max-width: 800px) {
+    width:max-content;
+  }
     `}
     ${(props) =>
     props.buscar === "true" &&
     css`
       margin: 20px 30px 0px 10px;
       width: calc(30% - 20px);
-      z-index: 90;
+      z-index: 80;
+      @media (max-width: 800px) {
+        width: 60%;
+      }
     `}
     ${(props) =>
     props.buscar === "false" &&
     css`
       margin: 20px -10px 0px 10px;
       width: calc(30% - 20px);
-      z-index: 90;
+      z-index: 80;
     `}
     ${(props) =>
     props.precio === "true" &&

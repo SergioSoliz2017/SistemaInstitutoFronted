@@ -12,6 +12,7 @@ export const Overlay = styled.div`
   align-items: center;
   justify-content: center;
   transition: all 2s ease-in-out;
+  z-index: 2;
 `;
 export const ContenedorModal = styled.div`
   transition: all 1s ease-in-out;
@@ -30,6 +31,11 @@ export const ContenedorModal = styled.div`
       width: 50%;
       height: 65%;
     `}
+    @media (max-width: 800px) {
+    width:80%;
+    height: 62%;
+    z-index:90;
+  }
 `;
 export const EncabezadoModal = styled.div`
   display: flex;
@@ -51,6 +57,10 @@ export const Titulo = styled.div`
     height: 3px;
     width: 100%;
     background: linear-gradient(135deg, #000000, #d6d6d6);
+  }
+  @media (max-width: 800px) {
+    font-size: 23px;
+        width:90%;
   }
 `;
 export const BotonCerrar = styled.button`
@@ -149,6 +159,10 @@ export const BoxCampo = styled.div`
       width: calc(45% - 20px);
       position: relative;
       z-index: 90;
+      @media (max-width: 800px) {
+    width:80%;
+    
+  }
     `}
   ${(props) =>
     props.boton === "true" &&

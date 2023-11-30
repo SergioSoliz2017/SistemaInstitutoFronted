@@ -12,6 +12,7 @@ export const Overlay = styled.div`
   align-items: center;
   justify-content: center;
   transition: all 2s ease-in-out;
+  z-index: 90;
 `;
 export const ContenedorModal = styled.div`
   transition: all 0.5s ease-in-out;
@@ -34,6 +35,9 @@ export const ContenedorModal = styled.div`
     css`
       height: 60%;
     `}
+    @media (max-width: 800px) {
+        width:80%;
+  }
 `;
 export const EncabezadoModal = styled.div`
   display: flex;
