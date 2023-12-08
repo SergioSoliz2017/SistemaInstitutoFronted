@@ -241,6 +241,7 @@ export default function ModalVerGrupo({
                           "Miercoles",
                           "Jueves",
                           "Viernes",
+                          "Sabado"
                         ]}
                         isObject={false}
                         placeholder="Seleccionar dias"

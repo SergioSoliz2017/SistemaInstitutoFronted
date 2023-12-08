@@ -13,15 +13,15 @@ export const Nav = styled.div`
     display: none;
     width: 0px;
     ${(props) =>
-    props.extender === "true" &&
-    css`
-      display: flex;
-      flex-direction: column;
-      position: absolute;
-      width: 49.9%;
-      z-index: 99;
-      height: 100vh;
-    `}
+      props.extender === "true" &&
+      css`
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        width: 49.9%;
+        z-index: 99;
+        height: 100vh;
+      `}
   }
 `;
 export const ContainerLogo = styled.div`
@@ -32,7 +32,6 @@ export const ContainerLogo = styled.div`
   cursor: pointer;
   display: flex;
   color: #769fcd;
-  
 `;
 export const ImagenLogo = styled.img`
   position: relative;
@@ -41,7 +40,8 @@ export const ImagenLogo = styled.img`
   left: 5%;
   cursor: pointer;
   @media (max-width: 800px) {
-    height: 55px;
+    height: 60px;
+    width: 55px;
   }
 `;
 export const ContainerBotonNav = styled.div`
@@ -156,11 +156,9 @@ export const ContainerPrincipal = styled.div`
 `;
 export const ImagenLogoCentro = styled.img`
   position: relative;
-  height: 70%;
-  width: 35%;
+  width: 80%;
+  height: 95%;
   top: 5px;
-  cursor: pointer;
-  padding: 5px;
   @media (max-width: 800px) {
     width: 60%;
     height: 40%;
@@ -277,8 +275,8 @@ export const PasosLateral = styled.button`
       color: black;
       background: #769fcd;
     `}
-    @media (max-width: 800px) {
-        width:35%;
+  @media (max-width: 800px) {
+    width: 35%;
   }
 `;
 export const BotonSiguientePasos = styled.button`
@@ -493,8 +491,8 @@ export const ContainerBotonBusqueda = styled.div`
   ${(props) =>
     props.add === "true" &&
     css`
-      left: 45%;
-      margin-top: 20px;
+      left: 90%;
+      top: -300%;
     `}
   ${(props) =>
     props.add === "false" &&
@@ -659,9 +657,7 @@ export const ContainerUser = styled.div`
     css`
       right: 57px;
       top: 15px;
-      
     `}
-    
 `;
 export const IconoUser = styled(FontAwesomeIcon)`
   width: 50px;
@@ -669,17 +665,17 @@ export const IconoUser = styled(FontAwesomeIcon)`
   transform: scale(3);
 `;
 export const BarrasNav = styled.button`
-    width: 70px;
-    height: 50px;
-    border: none;
-    background: none;
-    color: black;
-    font-size: 45px;
-    cursor: pointer;
-    position: absolute;
-    left: 10px;
-    z-index: 100;
-    ${(props) =>
+  width: 70px;
+  height: 50px;
+  border: none;
+  background: none;
+  color: black;
+  font-size: 45px;
+  cursor: pointer;
+  position: absolute;
+  left: 10px;
+  z-index: 100;
+  ${(props) =>
     props.extender &&
     css`
       top: -20px;
@@ -691,7 +687,14 @@ export const BarrasNav = styled.button`
   }
 `;
 export const X = styled.span`
-height: 5px;
-width: 5px;
-
+  height: 5px;
+  width: 5px;
+`;
+export const ContainerDatoCurso = styled.div `
+  box-shadow: 3px 0px 30px rgba(6, 6, 6, 0.4);
+  margin-top: 10px;
+  width: 90%;
+  height: 1%;
+  display: flex;
+  flex-wrap: wrap;
 `

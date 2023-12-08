@@ -37,7 +37,7 @@ export const BoxCampo = styled.div`
     props.curso === "true" &&
     css`
       margin: 00px 10px 5px 19.1px;
-      width: calc(20% - 20px);
+      width: calc(30% - 20px);
       position: relative;
       z-index: 90;
       height: 75px;
@@ -65,7 +65,7 @@ export const BoxCampo = styled.div`
     ${(props) =>
     props.precio === "true" &&
     css`
-      width: calc(20% - 20px);
+      width: calc(30% - 20px);
       position: relative;
       margin-right: 20px;
       z-index: 90;

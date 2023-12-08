@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { url } from "./VariableEntornos";
 import { GlobalStyle } from "./DiseñosInicio";
 import toast, { Toaster } from "react-hot-toast";
@@ -48,6 +48,7 @@ import {
   IconoUser,
   BarrasNav,
   X,
+  ContainerDatoCurso,
 } from "./DiseñoPantallaPrincipal";
 import InputValidar from "./InputValidar";
 import { useState } from "react";
@@ -217,7 +218,7 @@ export default function PantallaPrincipal() {
   const [sede, setSede] = useState();
 
   function esValido() {
-    var esValido = true;
+    var esValido = true;/*
     if (opcionPasos === 1) {
       if (nombre.campo === "") {
         esValido = false;
@@ -566,7 +567,7 @@ export default function PantallaPrincipal() {
           },
         });
       }
-    }
+    }*/
     return esValido;
   }
   const [respuesta, setRespuesta] = useState("");
@@ -995,6 +996,11 @@ export default function PantallaPrincipal() {
         setListaTrabajadores(listaFiltrada);
       });
     }
+    if (opcion === 5) {
+      axios
+        .get(url + "obtenerSedes")
+        .then((response) => setListaSedes(response.data));
+    }
   }, [
     editEstudiante,
     modalTutor,
@@ -1251,7 +1257,14 @@ export default function PantallaPrincipal() {
   const [esPorcentaje, setEsPorcentaje] = useState(true);
   const [tutorSeleccionado, setTutorSeleccionado] = useState(null);
   const [registro, setRegistro] = useState("tutor");
-  const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"];
+  const diasSemana = [
+    "Lunes",
+    "Martes",
+    "Miercoles",
+    "Jueves",
+    "Viernes",
+    "Sabado",
+  ];
   const cursosPorHora = {
     "06:00": [],
     "07:00": [],
@@ -1399,6 +1412,7 @@ export default function PantallaPrincipal() {
       key: "selection",
     });
   };
+  const [meses,setMeses] = useState();
   return (
     <GlobalStyle>
       {trabajador !== null && (
@@ -1921,6 +1935,7 @@ export default function PantallaPrincipal() {
                               <Titulo>Registro de cursos</Titulo>
                               <ContainerDatos>
                                 <DetalleUsuario>
+                                  <ContainerDatoCurso>
                                   <SelectCurso
                                     estado={cursoRegistrados}
                                     cambiarEstado={setCursoRegistrados}
@@ -1936,6 +1951,19 @@ export default function PantallaPrincipal() {
                                     dato={cursoRegistrados.campo}
                                     sede={sede}
                                   />
+                                  <BoxCampo precio={"true"}>
+                                    <TextBox>
+                                      Meses:{" "}
+                                    </TextBox>
+                                    <InputBox
+                                      type="number"
+                                      placeholder="Meses"
+                                      value={meses}
+                                      onChange={(e) =>
+                                          setMeses (e.target.value)
+                                      }
+                                    />
+                                  </BoxCampo>
                                   <BoxCampo precio={"true"} precioT={"true"}>
                                     <TextBox>Precio:</TextBox>
                                     <TextPrecio>
@@ -1977,36 +2005,9 @@ export default function PantallaPrincipal() {
                                       }
                                     />
                                   </BoxCampo>
-                                  <BoxCampo precio={"true"}>
-                                    <TextBox>Pago:</TextBox>
-                                    <InputBox
-                                      type="number"
-                                      placeholder="Monto"
-                                      value={montoPagado}
-                                      onChange={(e) => {
-                                        setMontoPagado(e.target.value);
-                                      }}
-                                    />
-                                  </BoxCampo>
-                                  <BoxCampo saldo={"true"}>
-                                    <TextBox saldo={"true"}>
-                                      Cantidad dias: {diasHabiles}
-                                    </TextBox>
-                                    <TextBox id="diasPagados" saldo={"true"}>
-                                      Dia pagados:{" "}
-                                      {precioConDescuento !== null
-                                        ? calcularDiasPagados(
-                                            montoPagado,
-                                            parseFloat(precioConDescuento) /
-                                              diasHabiles
-                                          )
-                                        : calcularDiasPagados(
-                                            montoPagado,
-                                            parseFloat(grupo.precio) /
-                                              diasHabiles
-                                          )}
-                                    </TextBox>
-                                  </BoxCampo>
+                                  </ContainerDatoCurso>
+                                  
+                                  
                                   <BoxCampo boton={"true"}>
                                     <ContainerBotonBusqueda add={"true"}>
                                       <BotonBuscar
@@ -2897,3 +2898,35 @@ export default function PantallaPrincipal() {
     </GlobalStyle>
   );
 }
+/*<BoxCampo precio={"true"}>
+                                    <TextBox>Pago:</TextBox>
+                                    <InputBox
+                                      type="number"
+                                      placeholder="Monto"
+                                      value={montoPagado}
+                                      onChange={(e) => {
+                                        setMontoPagado(e.target.value);
+                                      }}
+                                    />
+                                  </BoxCampo>
+                                  
+                                  
+                                  <BoxCampo saldo={"true"}>
+                                    <TextBox saldo={"true"}>
+                                      Cantidad dias: {diasHabiles}
+                                    </TextBox>
+                                    <TextBox id="diasPagados" saldo={"true"}>
+                                      Dia pagados:{" "}
+                                      {precioConDescuento !== null
+                                        ? calcularDiasPagados(
+                                            montoPagado,
+                                            parseFloat(precioConDescuento) /
+                                              diasHabiles
+                                          )
+                                        : calcularDiasPagados(
+                                            montoPagado,
+                                            parseFloat(grupo.precio) /
+                                              diasHabiles
+                                          )}
+                                    </TextBox>
+                                  </BoxCampo>*/
