@@ -28,7 +28,7 @@ export const ContenedorModal = styled.div`
   ${(props) =>
     props.tipo === "sede" &&
     css`
-      height: 50%;
+      height: 55%;
     `}
   ${(props) =>
     props.tipo === "trabajador" &&
@@ -171,9 +171,11 @@ export const MultiSelect = styled(Multiselect)`
   color: black;
   margin-top: 5px;
   border-radius: 5px;
-  z-index: 200;
-  z-index: 150;
+  z-index: 100;
   border: 2px solid #000000;
   background: white;
+  &::-ms-expand{
+    display: none;
+  }
   ${(props) => props.sede === "true" && css``}
 `;

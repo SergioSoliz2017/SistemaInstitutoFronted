@@ -17,7 +17,7 @@ export const Overlay = styled.div`
 export const ContenedorModal = styled.div`
   transition: all 0.5s ease-in-out;
   width: 30%;
-  height: 35%;
+  height: 40%;
   min-height: 100px;
   background: #F7FBFC;
   position: relative;
@@ -28,12 +28,12 @@ export const ContenedorModal = styled.div`
   ${(props) =>
     props.respuesta === "Existe" &&
     css`
-      height: 65%;
+      height: 70%;
     `}
     ${(props) =>
     props.respuesta === "false" &&
     css`
-      height: 60%;
+      height: 65%;
     `}
     @media (max-width: 800px) {
         width:80%;

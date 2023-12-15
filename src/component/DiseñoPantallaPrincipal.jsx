@@ -97,7 +97,7 @@ export const BotonNav = styled.button`
     props.cerrar === "true" &&
     css`
       position: absolute;
-      bottom: -10px;
+      bottom: -30px;
     `}
 `;
 export const BotonNavSelect = styled.select`
@@ -433,7 +433,7 @@ export const ContainerTodo = styled.div`
   ${(props) =>
     props.cursos === "true" &&
     css`
-      height: 620px;
+      height: 840px;
     `}
     ${(props) =>
     props.cursos === "false" &&
@@ -491,8 +491,8 @@ export const ContainerBotonBusqueda = styled.div`
   ${(props) =>
     props.add === "true" &&
     css`
-      left: 90%;
-      top: -300%;
+      left: 100%;
+      top: -200%;
     `}
   ${(props) =>
     props.add === "false" &&
@@ -697,4 +697,27 @@ export const ContainerDatoCurso = styled.div `
   height: 1%;
   display: flex;
   flex-wrap: wrap;
+  border-radius:25px;
+  padding: 20px;
+`
+export const ContainerFila = styled.div `
+  
+  width: 90%;
+  display: flex;
+  ${(props) =>
+    props.titulo &&
+    css`
+      font-weight: 1000;
+    `}
+`
+export const ContainerCol = styled.div `
+  
+  width: 50%;
+  display: flex;
+  ${(props) =>
+    props.numero &&
+    css`
+      text-align: center;
+      width: 10%;
+    `}
 `

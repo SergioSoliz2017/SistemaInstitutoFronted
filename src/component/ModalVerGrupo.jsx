@@ -105,14 +105,25 @@ export default function ModalVerGrupo({
       HORA: hora.campo,
       DIAS: diaSelec,
     };
-    axios.post(url + "agregarGrupo", grupoNuevo).then((response) => {
-      setAñadirGrupo("false");
-      setGrupo("");
-      setPrecio("");
-      setHora("");
-      setCantidadGrupo("");
-      setActualizo(true);
-    });
+    if (sede !== "NACIONAL") {
+      axios.post(url + "agregarGrupo", grupoNuevo).then((response) => {
+        setAñadirGrupo("false");
+        setGrupo("");
+        setPrecio("");
+        setHora("");
+        setCantidadGrupo("");
+        setActualizo(true);
+      });
+    }else{
+      alerta.fire({
+        title: "Seleccionar sede",
+        icon: "warning",
+        confirmButtonColor: "#000",
+        background: "#B9D7EA",
+        iconColor: "#000",
+        color: "#000",
+      });
+    }
   };
   const [precio, setPrecio] = useState({ campo: "", valido: null });
   const [diaSelec, setDiaSelec] = useState([]);
@@ -170,10 +181,16 @@ export default function ModalVerGrupo({
                       <Table>
                         <TableHead>
                           <TableRow>
-                            <TableCell className={classes.celdas} >Nº</TableCell>
-                            <TableCell className={classes.celdas}>Curso</TableCell>
-                            <TableCell className={classes.celdas}>Precio</TableCell>
-                            <TableCell className={classes.celdas}>Sede</TableCell>
+                            <TableCell className={classes.celdas}>Nº</TableCell>
+                            <TableCell className={classes.celdas}>
+                              Curso
+                            </TableCell>
+                            <TableCell className={classes.celdas}>
+                              Precio
+                            </TableCell>
+                            <TableCell className={classes.celdas}>
+                              Sede
+                            </TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -183,18 +200,23 @@ export default function ModalVerGrupo({
                                 <TableCell className={classes.texto}>
                                   {(cantidad = cantidad + 1)}
                                 </TableCell>
-                                <TableCell className={classes.texto}>{grupo.NOMBREGRUPO}</TableCell>
+                                <TableCell className={classes.texto}>
+                                  {grupo.NOMBREGRUPO}
+                                </TableCell>
                                 <TableCell align="center">
                                   {grupo.PRECIO}
-                                </TableCell >
-                                <TableCell className={classes.texto}>{grupo.CODSEDE}</TableCell>
+                                </TableCell>
+                                <TableCell className={classes.texto}>
+                                  {grupo.CODSEDE}
+                                </TableCell>
                               </TableRow>
                             );
                           })}
                         </TableBody>
                       </Table>
                     </ContainerTabla>
-                    <BotonAñadir title="Agregar grupo"
+                    <BotonAñadir
+                      title="Agregar grupo"
                       onClick={() => {
                         setAñadirGrupo("true");
                       }}
@@ -241,7 +263,7 @@ export default function ModalVerGrupo({
                           "Miercoles",
                           "Jueves",
                           "Viernes",
-                          "Sabado"
+                          "Sabado",
                         ]}
                         isObject={false}
                         placeholder="Seleccionar dias"

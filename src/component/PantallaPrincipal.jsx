@@ -49,6 +49,8 @@ import {
   BarrasNav,
   X,
   ContainerDatoCurso,
+  ContainerFila,
+  ContainerCol,
 } from "./DiseñoPantallaPrincipal";
 import InputValidar from "./InputValidar";
 import { useState } from "react";
@@ -218,7 +220,7 @@ export default function PantallaPrincipal() {
   const [sede, setSede] = useState();
 
   function esValido() {
-    var esValido = true;/*
+    var esValido = true; /*
     if (opcionPasos === 1) {
       if (nombre.campo === "") {
         esValido = false;
@@ -676,7 +678,12 @@ export default function PantallaPrincipal() {
     var codigoTutor = generarCodigoTutor();
     var codigoInscripcion = generarCodInscripcion();
     const hoy = new Date().toLocaleDateString();
-    var precioTotal = sumar();
+    var precioTotal =
+      precioConDescuentoTotal !== null ? precioConDescuentoTotal : total;
+    var saldo =
+      precioConDescuentoTotal !== null
+        ? precioConDescuentoTotal - parseFloat(montoPagado)
+        : total - parseFloat(montoPagado);
     const estudiante = {
       CODESTUDIANTE: codigoEstudiante,
       CODINSCRIPCION: codigoInscripcion,
@@ -696,6 +703,7 @@ export default function PantallaPrincipal() {
       HABILITADO: "Habilitado",
       FECHAINSCRIPCION: hoy,
       COSTOINSCRIPCION: precioTotal,
+      SALDO: saldo,
       SEDE: sede,
       HUELLA: respuestaHuella,
       CODTRABAJADOR: trabajador.CODTRABAJADOR,
@@ -814,6 +822,7 @@ export default function PantallaPrincipal() {
   const [seActualizo, setActualizo] = useState(false);
   const [modalAñadirTutor, setAñadirTutor] = useState(false);
   const [descuento, setDescuento] = useState("");
+  const [descuentoTotal, setDescuentoTotal] = useState("");
   const [modal, setModal] = useState(false);
   const [listaCursosRes, setListaCursosRes] = useState([]);
   const [listaTrabajadores, setListaTrabajadores] = useState([]);
@@ -1254,6 +1263,25 @@ export default function PantallaPrincipal() {
       setPrecioConDescuento(null);
     }
   };
+  const [precioConDescuentoTotal, setPrecioConDescuentoTotal] = useState(null);
+
+  const handleDescuentoChangeTotal = (valor, porcentaje, cantidad) => {
+    setDescuentoTotal(valor);
+    if (!isNaN(valor) && valor !== "" && valor >= 0) {
+      const descuentoNumerico = parseFloat(valor);
+      const precioOriginal = total;
+      if (porcentaje) {
+        const nuevoPrecioConDescuento =
+          precioOriginal - (precioOriginal * descuentoNumerico) / 100;
+        setPrecioConDescuentoTotal(nuevoPrecioConDescuento);
+      } else {
+        const nuevoPrecioConDescuento = precioOriginal - descuentoNumerico;
+        setPrecioConDescuentoTotal(nuevoPrecioConDescuento);
+      }
+    } else {
+      setPrecioConDescuentoTotal(null);
+    }
+  };
   const [esPorcentaje, setEsPorcentaje] = useState(true);
   const [tutorSeleccionado, setTutorSeleccionado] = useState(null);
   const [registro, setRegistro] = useState("tutor");
@@ -1368,11 +1396,6 @@ export default function PantallaPrincipal() {
   const [filtro, setFiltro] = useState(false);
   const [tipoFiltro, setTipoFiltro] = useState("");
   const [modalAgregar, setModalAgregar] = useState(false);
-  const [diasHabiles, setDiasHabiles] = useState(22);
-  function calcularDiasPagados(monto, precioDia) {
-    var dias = monto / precioDia;
-    return isNaN(dias) ? 0 : Math.ceil(dias);
-  }
   const historial = useHistory();
 
   const [tipoAñadir, setTipoAñadir] = useState("curso");
@@ -1412,7 +1435,12 @@ export default function PantallaPrincipal() {
       key: "selection",
     });
   };
-  const [meses,setMeses] = useState();
+  const [meses, setMeses] = useState("");
+  const total = listaCursosRes.reduce(
+    (acumulado, curso) =>
+      acumulado + parseFloat(curso.PRECIO) * parseFloat(curso.MESES),
+    0
+  );
   return (
     <GlobalStyle>
       {trabajador !== null && (
@@ -1936,196 +1964,305 @@ export default function PantallaPrincipal() {
                               <ContainerDatos>
                                 <DetalleUsuario>
                                   <ContainerDatoCurso>
-                                  <SelectCurso
-                                    estado={cursoRegistrados}
-                                    cambiarEstado={setCursoRegistrados}
-                                    label="Cursos:"
-                                    name="cursos"
-                                    dato={listaCursos}
-                                  />
-                                  <SelectGrupo
-                                    estado={grupo}
-                                    cambiarEstado={setGrupo}
-                                    label="Grupos:"
-                                    name="grupos"
-                                    dato={cursoRegistrados.campo}
-                                    sede={sede}
-                                  />
-                                  <BoxCampo precio={"true"}>
-                                    <TextBox>
-                                      Meses:{" "}
-                                    </TextBox>
-                                    <InputBox
-                                      type="number"
-                                      placeholder="Meses"
-                                      value={meses}
-                                      onChange={(e) =>
-                                          setMeses (e.target.value)
-                                      }
+                                    <SelectCurso
+                                      estado={cursoRegistrados}
+                                      cambiarEstado={setCursoRegistrados}
+                                      label="Cursos:"
+                                      name="cursos"
+                                      dato={listaCursos}
                                     />
-                                  </BoxCampo>
-                                  <BoxCampo precio={"true"} precioT={"true"}>
-                                    <TextBox>Precio:</TextBox>
-                                    <TextPrecio>
-                                      {precioConDescuento !== null
-                                        ? precioConDescuento
-                                        : grupo.precio}{" "}
-                                      {" Bs."}
-                                    </TextPrecio>
-                                  </BoxCampo>
-                                  <BoxCampo precio={"true"}>
-                                    <TextBox>
-                                      Descuento:{" "}
-                                      <ContainerImgIcon precio={"true"}>
-                                        <IconoDescuento
-                                          onClick={() => {
-                                            handleDescuentoChange(
-                                              descuento,
-                                              !esPorcentaje
-                                            );
-                                            setEsPorcentaje(!esPorcentaje);
-                                          }}
-                                          icon={
-                                            esPorcentaje
-                                              ? faPercent
-                                              : faMoneyBill
-                                          }
-                                        />
-                                      </ContainerImgIcon>
-                                    </TextBox>
-                                    <InputBox
-                                      type="number"
-                                      placeholder="Descuento"
-                                      value={descuento}
-                                      onChange={(e) =>
-                                        handleDescuentoChange(
-                                          e.target.value,
-                                          esPorcentaje
-                                        )
-                                      }
+                                    <SelectGrupo
+                                      estado={grupo}
+                                      cambiarEstado={setGrupo}
+                                      label="Grupos:"
+                                      name="grupos"
+                                      dato={cursoRegistrados.campo}
+                                      sede={sede}
                                     />
-                                  </BoxCampo>
-                                  </ContainerDatoCurso>
-                                  
-                                  
-                                  <BoxCampo boton={"true"}>
-                                    <ContainerBotonBusqueda add={"true"}>
-                                      <BotonBuscar
-                                        onClick={() => {
-                                          if (
-                                            cursoRegistrados.campo !== "" &&
-                                            grupo.campo !== "" &&
-                                            montoPagado !== ""
-                                          ) {
-                                            var cursoTemp = {
-                                              CODCURSO: cursoRegistrados.campo,
-                                              CURSOINSCRITO:
-                                                cursoRegistrados.texto,
-                                              CODGRUPO: grupo.campo,
-                                              NOMBREGRUPO: grupo.texto,
-                                              MONTOPAGADO: montoPagado,
-                                              DIAPAGADO:
-                                                precioConDescuento !== null
-                                                  ? calcularDiasPagados(
-                                                      montoPagado,
-                                                      parseFloat(
-                                                        precioConDescuento
-                                                      ) / diasHabiles
-                                                    )
-                                                  : calcularDiasPagados(
-                                                      montoPagado,
-                                                      parseFloat(grupo.precio) /
-                                                        diasHabiles
-                                                    ),
-                                            };
-                                            // Verificamos si ya existe un curso con las mismas propiedades en listaCursosRes
-                                            const cursoExistente =
-                                              listaCursosRes.find(
-                                                (curs) =>
-                                                  curs.CODCURSO ===
-                                                    cursoTemp.CODCURSO &&
-                                                  curs.NOMBREGRUPO ===
-                                                    cursoTemp.NOMBREGRUPO
+                                    <BoxCampo precio={"true"}>
+                                      <TextBox>Meses: </TextBox>
+                                      <InputBox
+                                        type="number"
+                                        placeholder="Meses"
+                                        value={meses}
+                                        onChange={(e) =>
+                                          setMeses(e.target.value)
+                                        }
+                                      />
+                                    </BoxCampo>
+                                    <BoxCampo precio={"true"} precioT={"true"}>
+                                      <TextBox>Precio:</TextBox>
+                                      <TextPrecio>
+                                        {precioConDescuento !== null
+                                          ? precioConDescuento
+                                          : grupo.precio}{" "}
+                                        {" Bs."}
+                                      </TextPrecio>
+                                    </BoxCampo>
+                                    <BoxCampo precio={"true"}>
+                                      <TextBox>
+                                        Descuento:{" "}
+                                        <ContainerImgIcon precio={"true"}>
+                                          <IconoDescuento
+                                            onClick={() => {
+                                              handleDescuentoChange(
+                                                descuento,
+                                                !esPorcentaje
                                               );
-                                            if (!cursoExistente) {
-                                              // El curso no existe, lo agregamos a la lista.
-                                              setListaCursosRes((prevLista) => [
-                                                ...prevLista,
-                                                cursoTemp,
-                                              ]);
-                                              const horarioN = {
+                                              setEsPorcentaje(!esPorcentaje);
+                                            }}
+                                            icon={
+                                              esPorcentaje
+                                                ? faPercent
+                                                : faMoneyBill
+                                            }
+                                          />
+                                        </ContainerImgIcon>
+                                      </TextBox>
+                                      <InputBox
+                                        type="number"
+                                        placeholder="Descuento"
+                                        value={descuento}
+                                        onChange={(e) =>
+                                          handleDescuentoChange(
+                                            e.target.value,
+                                            esPorcentaje
+                                          )
+                                        }
+                                      />
+                                    </BoxCampo>
+                                    <BoxCampo boton={"true"}>
+                                      <ContainerBotonBusqueda add={"true"}>
+                                        <BotonBuscar
+                                          onClick={() => {
+                                            if (
+                                              cursoRegistrados.campo !== "" &&
+                                              grupo.campo !== "" &&
+                                              meses !== ""
+                                            ) {
+                                              var cursoTemp = {
                                                 CODCURSO:
                                                   cursoRegistrados.campo,
-                                                CODSEDE: sede,
+                                                CURSOINSCRITO:
+                                                  cursoRegistrados.texto,
                                                 CODGRUPO: grupo.campo,
+                                                NOMBREGRUPO: grupo.texto,
+                                                MESES: meses,
+                                                PRECIO:
+                                                  precioConDescuento !== null
+                                                    ? parseFloat(
+                                                        precioConDescuento
+                                                      )
+                                                    : parseFloat(grupo.precio),
                                               };
-                                              axios
-                                                .post(
-                                                  url + "obtenerHorario",
-                                                  horarioN
-                                                )
-                                                .then((response) => {
-                                                  setHorarios(
-                                                    (prevHorarios) => [
-                                                      ...prevHorarios,
-                                                      ...response.data,
-                                                    ]
-                                                  );
-                                                  setCursoRegistrados({
-                                                    campo: "",
-                                                    valido: null,
+                                              const cursoExistente =
+                                                listaCursosRes.find(
+                                                  (curs) =>
+                                                    curs.CODCURSO ===
+                                                      cursoTemp.CODCURSO &&
+                                                    curs.NOMBREGRUPO ===
+                                                      cursoTemp.NOMBREGRUPO
+                                                );
+                                              if (!cursoExistente) {
+                                                // El curso no existe, lo agregamos a la lista.
+                                                setListaCursosRes(
+                                                  (prevLista) => [
+                                                    ...prevLista,
+                                                    cursoTemp,
+                                                  ]
+                                                );
+                                                const horarioN = {
+                                                  CODCURSO:
+                                                    cursoRegistrados.campo,
+                                                  CODSEDE: sede,
+                                                  CODGRUPO: grupo.campo,
+                                                };
+                                                axios
+                                                  .post(
+                                                    url + "obtenerHorario",
+                                                    horarioN
+                                                  )
+                                                  .then((response) => {
+                                                    setHorarios(
+                                                      (prevHorarios) => [
+                                                        ...prevHorarios,
+                                                        ...response.data,
+                                                      ]
+                                                    );
+                                                    setCursoRegistrados({
+                                                      campo: "",
+                                                      valido: null,
+                                                    });
+                                                    setGrupo({
+                                                      campo: "",
+                                                      valido: null,
+                                                    });
+                                                    setMeses("");
+                                                    setDescuento("");
+                                                    setPrecioConDescuento(null);
+                                                    setMontoPagado("");
                                                   });
-                                                  setGrupo({
-                                                    campo: "",
-                                                    valido: null,
-                                                  });
-                                                  setDescuento("");
-                                                  setPrecioConDescuento(null);
-                                                  setMontoPagado("");
+                                              } else {
+                                                toast("Curso ya agregado", {
+                                                  icon: "⚠️",
+                                                  duration: 3000,
+                                                  style: {
+                                                    border: "2px solid #000",
+                                                    padding: "10px",
+                                                    color: "#000",
+                                                    background: "#d6d6d6",
+                                                    borderRadius: "20px",
+                                                    fontFamily: "bold",
+                                                    fontWeight: "1000",
+                                                  },
                                                 });
-                                            } else {
-                                              toast("Curso ya agregado", {
-                                                icon: "⚠️",
-                                                duration: 3000,
-                                                style: {
-                                                  border: "2px solid #000",
-                                                  padding: "10px",
-                                                  color: "#000",
-                                                  background: "#d6d6d6",
-                                                  borderRadius: "20px",
-                                                  fontFamily: "bold",
-                                                  fontWeight: "1000",
-                                                },
-                                              });
-                                            }
-                                          } else {
-                                            toast(
-                                              cursoRegistrados.campo === ""
-                                                ? "Seleccionar curso"
-                                                : grupo.campo === ""
-                                                ? "Seleccionar grupo"
-                                                : "Ingresar Monto",
-                                              {
-                                                icon: "⚠️",
-                                                duration: 3000,
-                                                style: {
-                                                  border: "2px solid #000",
-                                                  padding: "10px",
-                                                  color: "#000",
-                                                  background: "#d6d6d6",
-                                                  borderRadius: "20px",
-                                                  fontFamily: "bold",
-                                                  fontWeight: "1000",
-                                                },
                                               }
-                                            );
-                                          }
-                                        }}
-                                      >
-                                        <ImgIcon buscar={"true"} icon={faAdd} />
-                                      </BotonBuscar>
-                                    </ContainerBotonBusqueda>
-                                  </BoxCampo>
+                                            } else {
+                                              toast(
+                                                cursoRegistrados.campo === ""
+                                                  ? "Seleccionar curso"
+                                                  : grupo.campo === ""
+                                                  ? "Seleccionar grupo"
+                                                  : "Ingresar meses",
+                                                {
+                                                  icon: "⚠️",
+                                                  duration: 3000,
+                                                  style: {
+                                                    border: "2px solid #000",
+                                                    padding: "10px",
+                                                    color: "#000",
+                                                    background: "#d6d6d6",
+                                                    borderRadius: "20px",
+                                                    fontFamily: "bold",
+                                                    fontWeight: "1000",
+                                                  },
+                                                }
+                                              );
+                                            }
+                                          }}
+                                        >
+                                          <ImgIcon
+                                            buscar={"true"}
+                                            icon={faAdd}
+                                          />
+                                        </BotonBuscar>
+                                      </ContainerBotonBusqueda>
+                                    </BoxCampo>
+                                  </ContainerDatoCurso>
+                                  {listaCursosRes.length > 0 && (
+                                    <>
+                                      <ContainerDatoCurso>
+                                        <ContainerFila titulo>
+                                          <ContainerCol numero>Nº</ContainerCol>
+                                          <ContainerCol>Grupo</ContainerCol>
+                                          <ContainerCol>Precio</ContainerCol>
+                                          <ContainerCol>Meses</ContainerCol>
+                                        </ContainerFila>
+                                        {listaCursosRes.map((curso, index) => {
+                                          return (
+                                            <ContainerFila key={index}>
+                                              <ContainerCol numero>
+                                                {index + 1}
+                                              </ContainerCol>
+                                              <ContainerCol>
+                                                {curso.NOMBREGRUPO}
+                                              </ContainerCol>
+                                              <ContainerCol>
+                                                {curso.PRECIO + " Bs."}
+                                              </ContainerCol>
+                                              <ContainerCol>
+                                                {curso.MESES}
+                                              </ContainerCol>
+                                            </ContainerFila>
+                                          );
+                                        })}
+                                      </ContainerDatoCurso>
+                                      <ContainerDatoCurso>
+                                        <BoxCampo precio={"true"}>
+                                          <TextBox>
+                                            Descuento:{" "}
+                                            <ContainerImgIcon precio={"true"}>
+                                              <IconoDescuento
+                                                onClick={() => {
+                                                  handleDescuentoChange(
+                                                    descuento,
+                                                    !esPorcentaje
+                                                  );
+                                                  setEsPorcentaje(
+                                                    !esPorcentaje
+                                                  );
+                                                }}
+                                                icon={
+                                                  esPorcentaje
+                                                    ? faPercent
+                                                    : faMoneyBill
+                                                }
+                                              />
+                                            </ContainerImgIcon>
+                                          </TextBox>
+                                          <InputBox
+                                            type="number"
+                                            placeholder="Descuento"
+                                            value={descuentoTotal}
+                                            onChange={(e) =>
+                                              handleDescuentoChangeTotal(
+                                                e.target.value,
+                                                esPorcentaje
+                                              )
+                                            }
+                                          />
+                                        </BoxCampo>
+                                        <BoxCampo
+                                          precio={"true"}
+                                          precioT={"true"}
+                                        >
+                                          <TextBox>Total:</TextBox>
+                                          <TextPrecio>
+                                            {precioConDescuentoTotal !== null
+                                              ? precioConDescuentoTotal
+                                              : total}{" "}
+                                            {" Bs."}
+                                          </TextPrecio>
+                                        </BoxCampo>
+                                        <BoxCampo precio={"true"}>
+                                          <TextBox>Pago:</TextBox>
+                                          <InputBox
+                                            type="number"
+                                            placeholder="Monto"
+                                            value={montoPagado}
+                                            onChange={(e) => {
+                                              setMontoPagado(e.target.value);
+                                            }}
+                                          />
+                                        </BoxCampo>
+                                        <BoxCampo
+                                          precio={"true"}
+                                          precioT={"true"}
+                                        >
+                                          <TextBox>Saldo:</TextBox>
+                                          <TextPrecio>
+                                            {precioConDescuentoTotal !== null
+                                              ? !isNaN(
+                                                  precioConDescuentoTotal -
+                                                    parseFloat(montoPagado)
+                                                )
+                                                ? precioConDescuentoTotal -
+                                                  parseFloat(montoPagado) +
+                                                  " Bs."
+                                                : "Bs."
+                                              : !isNaN(
+                                                  total -
+                                                    parseFloat(montoPagado)
+                                                )
+                                              ? total -
+                                                parseFloat(montoPagado) +
+                                                " Bs."
+                                              : ""}
+                                          </TextPrecio>
+                                        </BoxCampo>
+                                      </ContainerDatoCurso>
+                                    </>
+                                  )}
                                   <ContainerTabla cursos={"true"}>
                                     <Table>
                                       <TableHead>
