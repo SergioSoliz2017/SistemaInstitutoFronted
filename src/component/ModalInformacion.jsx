@@ -361,7 +361,7 @@ export default function ModalInformacion({
     valido: null,
   });
 
-  const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"];
+  const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes","Sabado"];
 
   const cursosPorHora = {};
   horarios.forEach((horario) => {

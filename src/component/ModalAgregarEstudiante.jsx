@@ -125,7 +125,7 @@ export default function ModalAgregarEstudiante({
     }
   };
   const [esPorcentaje, setEsPorcentaje] = useState(true);
-  const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"];
+  const diasSemana = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes","Sabado"];
   const cursosPorHora = {
     "06:00": [],
     "07:00": [],
